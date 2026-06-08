@@ -1,0 +1,54 @@
+<header class="top-bar">
+  <div class="top-bar__start">
+    <button
+      class="top-bar__menu-btn"
+      mat-icon-button
+      (click)="layout.toggleSidebar()"
+      aria-label="Toggle navigation"
+    >
+      <mat-icon>{{ layout.sidebarCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
+    </button>
+
+    <a class="top-bar__logo" routerLink="/dashboard" aria-label="Princess home">
+      <img src="/logo.svg" alt="Princess" height="26" />
+    </a>
+  </div>
+
+  <div class="top-bar__center">
+    <button class="top-bar__search" mat-button aria-label="Search (Ctrl+K)">
+      <mat-icon class="top-bar__search-icon">search</mat-icon>
+      <span class="top-bar__search-label">Search…</span>
+      <kbd class="top-bar__search-kbd">⌘K</kbd>
+    </button>
+  </div>
+
+  <div class="top-bar__end">
+    <button
+      mat-icon-button
+      aria-label="Notifications"
+      matTooltip="Notifications"
+    >
+      <mat-icon [matBadge]="'3'" matBadgeSize="small" matBadgeColor="warn">notifications_none</mat-icon>
+    </button>
+
+    <button
+      class="top-bar__avatar"
+      mat-icon-button
+      [matMenuTriggerFor]="userMenu"
+      aria-label="User menu"
+    >
+      <span class="top-bar__avatar-initials">{{ userInitials }}</span>
+    </button>
+
+    <mat-menu #userMenu="matMenu" xPosition="before" class="princess-menu">
+      <button mat-menu-item>
+        <mat-icon>person_outline</mat-icon>
+        Profile
+      </button>
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        Sign out
+      </button>
+    </mat-menu>
+  </div>
+</header>

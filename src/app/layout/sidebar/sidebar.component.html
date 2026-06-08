@@ -1,0 +1,51 @@
+<nav class="sidebar" [class.sidebar--collapsed]="layout.sidebarCollapsed()" aria-label="Main navigation">
+
+  <div class="sidebar__brand-line"></div>
+
+  <div class="sidebar__scroll">
+    @for (group of navGroups; track group.label) {
+      <div class="sidebar__group">
+        @if (!layout.sidebarCollapsed()) {
+          <span class="sidebar__group-label">{{ group.label }}</span>
+        } @else {
+          <div class="sidebar__group-divider"></div>
+        }
+
+        @for (item of group.items; track item.route) {
+          <a
+            class="sidebar__item"
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__item--active"
+            [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
+            matTooltipPosition="right"
+            matRipple
+            [matRippleColor]="'rgba(255,255,255,0.06)'"
+          >
+            <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
+            @if (!layout.sidebarCollapsed()) {
+              <span class="sidebar__item-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="sidebar__footer">
+    <a
+      class="sidebar__item sidebar__item--settings"
+      routerLink="/settings"
+      routerLinkActive="sidebar__item--active"
+      [matTooltip]="layout.sidebarCollapsed() ? 'Settings' : ''"
+      matTooltipPosition="right"
+      matRipple
+      [matRippleColor]="'rgba(255,255,255,0.06)'"
+    >
+      <mat-icon class="sidebar__item-icon">settings</mat-icon>
+      @if (!layout.sidebarCollapsed()) {
+        <span class="sidebar__item-label">Settings</span>
+      }
+    </a>
+  </div>
+
+</nav>

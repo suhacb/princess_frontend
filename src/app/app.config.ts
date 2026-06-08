@@ -1,9 +1,10 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, TitleStrategy } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { routes } from './app.routes';
+import { PageTitleStrategy } from './core/strategies/page-title.strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,5 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([])),
     provideAnimationsAsync(),
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
   ],
 };

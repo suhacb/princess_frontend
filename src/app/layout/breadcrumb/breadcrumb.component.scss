@@ -1,0 +1,35 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  &__item {
+    font-size: 13px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 450;
+    line-height: 1;
+
+    &--link {
+      color: var(--mat-sys-on-surface-variant);
+      text-decoration: none;
+      transition: color var(--princess-transition-speed) var(--princess-transition-easing);
+
+      &:hover {
+        color: var(--mat-sys-primary);
+      }
+    }
+
+    &--current {
+      color: var(--mat-sys-on-surface);
+      font-weight: 500;
+    }
+  }
+
+  &__separator {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--mat-sys-on-surface-variant);
+    opacity: 0.4;
+  }
+}
