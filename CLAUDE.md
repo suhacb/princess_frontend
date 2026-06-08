@@ -6,7 +6,7 @@ Angular SPA for PRINCE2 project management. Connects to a Laravel REST API backe
 ## Core Architecture
 - **Framework:** Angular 18+ with standalone components and signals (no NgModules)
 - **UI System:** Highly customized Angular Material 3 (M3)
-- **State:** Angular Signals for all reactive state; NGRX Signals Store for cross-component auth state
+- **State:** Angular Signals (`signal()`, `computed()`, `effect()`) for all reactive state — no NGRX. Use plain `Injectable` services with signals for shared/cross-component state (e.g. `AuthStore`).
 - **Style Format:** Component-scoped SCSS. Avoid global styles.
 
 ## Style & Customization Rules
