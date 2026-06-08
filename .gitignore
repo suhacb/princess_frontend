@@ -1,28 +1,40 @@
-# Angular specific
+# Angular build artefacts
 /dist/
 /out-tsc/
 /tmp/
 /coverage/
 /e2e/test-output/
-/.angular/
 .angular/
 
-# Node modules and dependency files
+# Dependencies
 /node_modules/
-/package-lock.json
+
+# Lock files — yarn only; package-lock.json IS committed for reproducible builds
 /yarn.lock
 
 # Environment files
 /.env
+/.env.*
 
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
+# Local environment overrides
+src/environments/environment.local.ts
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Playwright
+playwright-report/
+test-results/
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
