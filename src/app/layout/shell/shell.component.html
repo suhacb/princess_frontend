@@ -1,0 +1,18 @@
+<app-loading-bar />
+
+<div class="shell" [class.shell--sidebar-collapsed]="layout.sidebarCollapsed()">
+  <div class="shell__sidebar">
+    <app-sidebar />
+  </div>
+
+  <div class="shell__body">
+    <app-top-bar />
+
+    <main class="shell__content" id="main-content">
+      <div class="shell__content-inner">
+        <app-breadcrumb />
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</div>

@@ -15,32 +15,37 @@ export const routes: Routes = [
         (m) => m.CallbackComponent
       ),
   },
+  {
+    // Shell wrapper — all protected routes live here (authGuard added in FE-AUTH-01)
+    path: '',
+    loadComponent: () =>
+      import('./layout/shell/shell.component').then((m) => m.ShellComponent),
+    children: [
+      // Phase 8 — Dashboards
+      // { path: 'dashboard', loadComponent: () => import('./features/dashboard/...') },
 
-  // ── Protected routes (authGuard added in FE-AUTH-01) ──────────────────────
+      // Phase 2 — PRINCE2 Project Structure
+      // { path: 'projects', loadComponent: () => import('./features/projects/...') },
 
-  // Phase 8 — Dashboards
-  // { path: 'dashboard', loadComponent: () => import('./features/dashboard/...') },
+      // Phase 3 — Planning
+      // { path: 'planning', ...children },
 
-  // Phase 2 — PRINCE2 Project Structure
-  // { path: 'projects', loadComponent: () => import('./features/projects/...') },
+      // Phase 4 — Logs
+      // { path: 'logs', ...children },
 
-  // Phase 3 — Planning
-  // { path: 'planning', loadComponent: () => import('./features/planning/...') },
+      // Phase 5 — Quality Assurance
+      // { path: 'qa', ...children },
 
-  // Phase 4 — Logs
-  // { path: 'logs', loadComponent: () => import('./features/logs/...') },
+      // Phase 6 — Documents & Search
+      // { path: 'documents', ...children },
 
-  // Phase 5 — Quality Assurance
-  // { path: 'qa', loadComponent: () => import('./features/qa/...') },
+      // Phase 9 — Reporting
+      // { path: 'reports', ...children },
 
-  // Phase 6 — Documents & Search
-  // { path: 'documents', loadComponent: () => import('./features/documents/...') },
-
-  // Phase 9 — Reporting
-  // { path: 'reports', loadComponent: () => import('./features/reports/...') },
-
-  // Phase 7 — M365 + Settings
-  // { path: 'settings', loadComponent: () => import('./features/settings/...') },
+      // Phase 7 — M365 + Settings
+      // { path: 'settings', loadComponent: () => import('./features/settings/...') },
+    ],
+  },
 
   { path: '**', redirectTo: '' },
 ];

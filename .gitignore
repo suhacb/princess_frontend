@@ -51,3 +51,4 @@ src/environments/environment.local.ts
 # Playwright
 playwright-report/
 test-results/
+.playwright-mcp/

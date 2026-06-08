@@ -1,9 +1,9 @@
 @use '@angular/material' as mat;
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
-// Primary:   Cyan    — matches Sinecon brand teal (logo icon)
+// Primary:   Azure   — matches Sinecon brand gradient (#4561A2 → #4EB9EA)
 // Tertiary:  Orange  — matches Sinecon brand coral accent (banner CTA)
-$primary-palette: mat.$cyan-palette;
+$primary-palette: mat.$azure-palette;
 $tertiary-palette: mat.$orange-palette;
 
 // ─── Light theme token map ────────────────────────────────────────────────────
