@@ -1,0 +1,849 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - img [ref=e6]
+    - generic [ref=e8]:
+      - heading [level=2] [ref=e9]: LinkedIn respects your privacy
+      - generic [ref=e11]:
+        - paragraph [ref=e12]:
+          - text: LinkedIn and 3rd parties use essential and non-essential cookies to provide, secure, analyze and improve our Services, and to show you relevant ads (including professional and job ads) on and off LinkedIn. Learn more in our
+          - link [ref=e13] [cursor=pointer]:
+            - /url: https://www.linkedin.com/legal/cookie-policy
+            - text: Cookie Policy
+          - text: .
+        - paragraph [ref=e14]:
+          - text: Select Accept to consent or Reject to decline non-essential cookies for this use. You can update your choices at any time in your
+          - link [ref=e15] [cursor=pointer]:
+            - /url: https://www.linkedin.com/mypreferences/g/guest-cookies
+            - text: settings
+          - text: .
+      - generic [ref=e16]:
+        - button [ref=e17] [cursor=pointer]: Accept
+        - button [ref=e18] [cursor=pointer]: Reject
+  - link [ref=e19] [cursor=pointer]:
+    - /url: "#main-content"
+    - text: Skip to main content
+  - banner [ref=e20]:
+    - navigation [ref=e21]:
+      - link [ref=e22] [cursor=pointer]:
+        - /url: /?trk=organization_guest_nav-header-logo
+        - generic [ref=e23]: LinkedIn
+      - list [ref=e25]:
+        - listitem [ref=e26]:
+          - link [ref=e27] [cursor=pointer]:
+            - /url: https://www.linkedin.com/top-content?trk=organization_guest_guest_nav_menu_topContent
+            - generic [ref=e29]: Top Content
+        - listitem [ref=e30]:
+          - link [ref=e31] [cursor=pointer]:
+            - /url: https://www.linkedin.com/pub/dir/+/+?trk=organization_guest_guest_nav_menu_people
+            - generic [ref=e33]: People
+        - listitem [ref=e34]:
+          - link [ref=e35] [cursor=pointer]:
+            - /url: https://www.linkedin.com/learning/search?trk=organization_guest_guest_nav_menu_learning
+            - generic [ref=e37]: Learning
+        - listitem [ref=e38]:
+          - link [ref=e39] [cursor=pointer]:
+            - /url: https://www.linkedin.com/jobs/search?trk=organization_guest_guest_nav_menu_jobs
+            - generic [ref=e41]: Jobs
+        - listitem [ref=e42]:
+          - link [ref=e43] [cursor=pointer]:
+            - /url: https://www.linkedin.com/games?trk=organization_guest_guest_nav_menu_games
+            - generic [ref=e45]: Games
+      - generic [ref=e46]:
+        - link [ref=e47] [cursor=pointer]:
+          - /url: https://www.linkedin.com/login?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&fromSignIn=true&trk=organization_guest_nav-header-signin
+          - text: Sign in
+        - link [ref=e48] [cursor=pointer]:
+          - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_nav-header-join
+          - text: Join now
+  - main [ref=e49]:
+    - generic [ref=e50]:
+      - generic [ref=e51]:
+        - figure [ref=e52]:
+          - img [ref=e55]
+        - generic [ref=e56]:
+          - img [ref=e58]
+          - generic [ref=e59]:
+            - generic [ref=e60]:
+              - heading [level=1] [ref=e61]: Sinecon
+              - heading [level=2] [ref=e62]: IT Services and IT Consulting
+              - heading [level=4] [ref=e63]:
+                - generic [ref=e64]: We help you find the best digital solutions for your business.
+              - link [ref=e66] [cursor=pointer]:
+                - /url: https://www.linkedin.com/login?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&fromSignIn=true&trk=top-card_top-card-secondary-button-top-card-secondary-cta
+                - text: Follow
+            - list [ref=e68]:
+              - listitem [ref=e69]:
+                - link [ref=e71] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fsearch%2Fresults%2Fpeople%2F%3FfacetCurrentCompany%3D%255B78799075%252C%2B78056606%255D&trk=org-employees_cta_face-pile-cta
+                  - generic [ref=e72]:
+                    - img [ref=e73]
+                    - img [ref=e74]
+                    - img [ref=e75]
+                  - paragraph [ref=e77]: Discover all 10 employees
+          - button [ref=e80] [cursor=pointer]
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - heading [level=2] [ref=e83]: About us
+          - generic [ref=e84]:
+            - paragraph [ref=e85]: "Sinecon is a team of leading IT professionals who understand their clients and connect them in the digitalisation process with reliable suppliers of digital products and projects. We help you select the best digital solutions and suppliers, optimise purchasing costs and successfully execute digital projects. Our main focus service areas are: 1. Introduction of real IT and digital solutions 2. Project management and consulting 3. Sales If the answer to the questions below is one yes, then we are the right partner for you. 1. You are aware that you are not achieving the desired business goals with your current software, but you do not know what digitalisation can bring you and how you can select the most suitable digital products for you and also implement them successfully? 2. You want to tackle a challenging IT project, but you don't have enough experience and knowledge to bring the project to a successful conclusion within the agreed deadlines and budget? 3. You have technologically advanced IT solutions, but your sales activities are not producing the desired results because you do not have access to key potential customers, you have not designed the product properly or you need help closing the deal?"
+            - generic [ref=e86]:
+              - generic [ref=e87]:
+                - term [ref=e88]: Website
+                - definition [ref=e89]:
+                  - link [ref=e90] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/redir/redirect?url=http%3A%2F%2Fwww%2Esinecon%2Eeu&urlhash=K8I4&trk=about_website
+                    - text: http://www.sinecon.eu
+              - generic [ref=e91]:
+                - term [ref=e92]: Industry
+                - definition [ref=e93]: IT Services and IT Consulting
+              - generic [ref=e94]:
+                - term [ref=e95]: Company size
+                - definition [ref=e96]: 2-10 employees
+              - generic [ref=e97]:
+                - term [ref=e98]: Headquarters
+                - definition [ref=e99]: Ljubljana
+              - generic [ref=e100]:
+                - term [ref=e101]: Type
+                - definition [ref=e102]: Privately Held
+              - generic [ref=e103]:
+                - term [ref=e104]: Founded
+                - definition [ref=e105]: "2020"
+              - generic [ref=e106]:
+                - term [ref=e107]: Specialties
+                - definition [ref=e108]: Business consulting, Digitalisation, Digital solutions provider, Business Transformation, IT consulting, Project management, Software solution identification, Digital solutions, and Agile Transformation
+        - generic [ref=e109]:
+          - heading [level=2] [ref=e110]: Locations
+          - list [ref=e112]:
+            - listitem [ref=e113]:
+              - text: Primary
+              - generic [ref=e114]:
+                - paragraph [ref=e115]: Prušnikova ulica 2
+                - paragraph [ref=e116]: Ljubljana, 1210, SI
+              - link [ref=e117] [cursor=pointer]:
+                - /url: https://www.bing.com/maps?where=Pru%C5%A1nikova+ulica+2+Ljubljana+1210+SI&trk=org-locations_url
+                - text: Get directions
+        - generic [ref=e118]:
+          - heading [level=2] [ref=e119]: Employees at Sinecon
+          - generic [ref=e120]:
+            - list [ref=e121]:
+              - listitem [ref=e122]:
+                - link [ref=e123] [cursor=pointer]:
+                  - /url: https://si.linkedin.com/in/jakobkotnik?trk=org-employees
+                  - img [ref=e124]
+                  - heading [level=3] [ref=e126]: Jakob Kotnik
+              - listitem [ref=e127]:
+                - link [ref=e128] [cursor=pointer]:
+                  - /url: https://si.linkedin.com/in/stasakotnik?trk=org-employees
+                  - img [ref=e129]
+                  - heading [level=3] [ref=e131]: Staša Kotnik
+              - listitem [ref=e132]:
+                - link [ref=e133] [cursor=pointer]:
+                  - /url: https://si.linkedin.com/in/dejanleskovsek?trk=org-employees
+                  - img [ref=e134]
+                  - heading [level=3] [ref=e136]: Dejan Leskovšek
+              - listitem [ref=e137]:
+                - link [ref=e138] [cursor=pointer]:
+                  - /url: https://si.linkedin.com/in/blazsuhac?trk=org-employees
+                  - img [ref=e139]
+                  - heading [level=3] [ref=e141]: Blaž Suhač
+            - link [ref=e142] [cursor=pointer]:
+              - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fsearch%2Fresults%2Fpeople%2F%3FfacetCurrentCompany%3D%255B78799075%252C%2B78056606%255D&trk=public_biz_employees-join
+              - text: See all employees
+        - generic [ref=e143]:
+          - heading [level=2] [ref=e144]: Updates
+          - list [ref=e146]:
+            - listitem [ref=e147]:
+              - generic [ref=e148]:
+                - link [ref=e149] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_podjetja-imajo-danes-ogromno-podatkov-a-activity-7468217507040882689-K1tQ
+                - article [ref=e150]:
+                  - generic [ref=e151]:
+                    - generic [ref=e153]:
+                      - link [ref=e154] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e155]
+                      - generic [ref=e156]:
+                        - link [ref=e158] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e159]: 341 followers
+                        - time [ref=e161]: 4d
+                    - button [ref=e164] [cursor=pointer]
+                  - paragraph [ref=e166]:
+                    - text: Podjetja imajo danes ogromno podatkov, a kljub temu številne odločitve še vedno temeljijo na občutku in delnih vpogledih. V Sineconu pomagamo podjetjem podatke pretvoriti v boljše poslovne odločitve. Z oblikovanjem AI strategij in uvajanjem umetne inteligence v poslovne procese ustvarjamo rešitve, ki prinašajo konkretno poslovno vrednost. S podjetjem
+                    - link [ref=e167] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/company/cetrta-pot-d-o-o-?trk=organization_guest_main-feed-card-text
+                      - text: ČETRTA POT
+                    - text: "razvijamo KADRIS 4 IQ – novo generacijo inteligentnih HR procesov. Več o tej rešitvi lahko poslušate na brezplačnem webinarju. Prijavite se zdaj:"
+                    - link [ref=e168] [cursor=pointer]:
+                      - /url: https://lnkd.in/dAwYVzMt?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dAwYVzMt
+                    - text: "Govorci: 🎤"
+                    - link [ref=e169] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/urban-rozina-103994a?trk=organization_guest_main-feed-card-text
+                      - text: Urban Rozina
+                    - text: 🎤
+                    - link [ref=e170] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/blazsuhac?trk=organization_guest_main-feed-card-text
+                      - text: Blaž Suhač
+                    - text: 🎤
+                    - link [ref=e171] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/jure-jeraj?trk=organization_guest_main-feed-card-text
+                      - text: Jure Jeraj
+                    - text: "Prijavite se zdaj:"
+                    - link [ref=e172] [cursor=pointer]:
+                      - /url: https://lnkd.in/dAwYVzMt?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dAwYVzMt
+                  - list [ref=e173]:
+                    - listitem [ref=e174]:
+                      - img [ref=e175]
+                  - link [ref=e177] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e178]: "15"
+                  - generic [ref=e179]:
+                    - link [ref=e180] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e182]: Like
+                    - link [ref=e183] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e185]: Comment
+                    - link [ref=e186] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e188]: Share
+            - listitem [ref=e189]:
+              - generic [ref=e190]:
+                - link [ref=e191] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_webinar-ve%C4%8Dina-organizacij-danes-razpolaga-activity-7467111468321300480-m8SV
+                - article [ref=e192]:
+                  - generic [ref=e193]:
+                    - generic [ref=e195]:
+                      - link [ref=e196] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e197]
+                      - generic [ref=e198]:
+                        - link [ref=e200] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e201]: 341 followers
+                        - time [ref=e203]: 1w
+                    - button [ref=e206] [cursor=pointer]
+                  - paragraph [ref=e208]:
+                    - text: "[WEBINAR] Večina organizacij danes razpolaga z ogromno količino podatkov – od kadrovskih evidenc in delovnega časa do odsotnosti, stroškov dela in fluktuacije. 💣 Toda ko je podatkov preveč, hitro nastane zmeda. Kateri podatki so pomembni? Katera odstopanja zahtevajo ukrepanje? Kje se skrivajo tveganja? Kako sprejeti pametne odločitve? 🤔 Zato s podjetjem"
+                    - link [ref=e209] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/company/cetrta-pot-d-o-o-?trk=organization_guest_main-feed-card-text
+                      - text: ČETRTA POT
+                    - text: "razvijamo KADRIS 4 IQ – novo generacijo inteligentnih HR procesov, ki z uporabo umetne inteligence pomaga podatke pretvoriti v uporabne vpoglede za HR in vodstvo. Pridružite se nam na predstavitvenem webinarju, kjer bomo prikazali: ✔ kako AI nadgrajuje klasično BI analitiko, ✔ kako prepoznati anomalije, trende in tveganja, ✔ kako iz HR podatkov ustvariti podlago za boljše odločitve, ✔ kako AI uvajati na varen in zakonsko skladen način. Prijavite se ➡️"
+                    - link [ref=e210] [cursor=pointer]:
+                      - /url: https://lnkd.in/d_WP4is6?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/d_WP4is6
+                    - text: 🎤
+                    - link [ref=e211] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/urban-rozina-103994a?trk=organization_guest_main-feed-card-text
+                      - text: Urban Rozina
+                    - text: 🎤
+                    - link [ref=e212] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/blazsuhac?trk=organization_guest_main-feed-card-text
+                      - text: Blaž Suhač
+                    - text: 🎤
+                    - link [ref=e213] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/jure-jeraj?trk=organization_guest_main-feed-card-text
+                      - text: Jure Jeraj
+                    - text: 📅 10. junij 2026 ⏳ 13:00 Prijavite se ➡️
+                    - link [ref=e214] [cursor=pointer]:
+                      - /url: https://lnkd.in/d_WP4is6?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/d_WP4is6
+                  - list [ref=e215]:
+                    - listitem [ref=e216]:
+                      - img [ref=e217]
+                  - link [ref=e219] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e220]: "17"
+                  - generic [ref=e221]:
+                    - link [ref=e222] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e224]: Like
+                    - link [ref=e225] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e227]: Comment
+                    - link [ref=e228] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e230]: Share
+            - listitem [ref=e231]:
+              - generic [ref=e232]:
+                - link [ref=e233] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/activity-7463565668169232385-GOnz
+                - article [ref=e234]:
+                  - paragraph [ref=e235]:
+                    - link [ref=e236] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-reaction-header
+                      - text: Sinecon
+                    - text: reposted this
+                  - generic [ref=e237]:
+                    - generic [ref=e239]:
+                      - link [ref=e240] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/cetrta-pot-d-o-o-?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e241]
+                      - generic [ref=e242]:
+                        - link [ref=e244] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/cetrta-pot-d-o-o-?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: ČETRTA POT
+                        - paragraph [ref=e245]: 921 followers
+                        - time [ref=e247]:
+                          - text: 2w
+                          - generic [ref=e248]: ·
+                          - text: Edited
+                    - button [ref=e251] [cursor=pointer]
+                  - paragraph [ref=e253]:
+                    - text: "["
+                    - link [ref=e254] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fwebinarkadris4iq&trk=organization_guest_main-feed-card-text
+                      - text: "#webinarKADRIS4IQ"
+                    - text: "] Podjetja in organizacije ste v zadnjih letih digitalizirala HR procese. Naslednji korak pa ni več digitalizacija, temveč inteligentna podpora odločanju. V podjetju ČETRTA POT zato razvijamo KADRIS 4 IQ – novo generacijo HR analitike in AI priporočil, kjer umetna inteligenca nadgrajuje obstoječe HR procese z analitiko, vpogledi in priporočili za ukrepanje. Kako smo se tega lotili, kakšna bo dodana vrednost za uporabnike naših rešitev in kako AI uvajati na varen ter poslovno smiseln način, želimo predstaviti tudi širši javnosti. Zato vas vabimo, da se nam pridružite na webinarju, kjer bomo skupaj s podjetjem"
+                    - link [ref=e255] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card-text
+                      - text: Sinecon
+                    - text: in strokovnjakom za podatkovno analitiko
+                    - link [ref=e256] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/jure-jeraj?trk=organization_guest_main-feed-card-text
+                      - text: Jure Jeraj
+                    - text: "premierno predstavili razvoj rešitve KADRIS 4 IQ. Pokazali bomo: ✔ kako AI nadgrajuje klasično BI analitiko, ✔ kako prepoznavati anomalije, trende in tveganja, ✔ kako lahko HR podatki postanejo podlaga za hitrejše in bolj premišljeno odločanje, ✔ ter kako AI razvijati na varen, odgovoren in regulatorno skladen način. KADRIS 4 IQ ni AI agent — je inteligentni sloj nad vašimi obstoječimi HR procesi. 🎤 Predavali bodo: •"
+                    - link [ref=e257] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/urban-rozina-103994a?trk=organization_guest_main-feed-card-text
+                      - text: Urban Rozina
+                    - text: ", direktor podjetja ČETRTA POT •"
+                    - link [ref=e258] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/blazsuhac?trk=organization_guest_main-feed-card-text
+                      - text: Blaž Suhač
+                    - text: ", vodja svetovanja podjetja SINECON •"
+                    - link [ref=e259] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/jure-jeraj?trk=organization_guest_main-feed-card-text
+                      - text: Jure Jeraj
+                    - text: ", strokovnjak za upravljanje s podatki in podatkovnimi inovacijami 📅 sreda, 10. junij 2026 🕐 13.00 💻 brezplačen webinar 🎟 Prijavite se in si zagotovite svoje mesto:"
+                    - link [ref=e260] [cursor=pointer]:
+                      - /url: https://lnkd.in/dtNzAH3V?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dtNzAH3V
+                  - list [ref=e261]:
+                    - listitem [ref=e262]:
+                      - img [ref=e263]
+                  - link [ref=e265] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e266]: "20"
+                  - generic [ref=e267]:
+                    - link [ref=e268] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e270]: Like
+                    - link [ref=e271] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e273]: Comment
+                    - link [ref=e274] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e276]: Share
+            - listitem [ref=e277]:
+              - article [ref=e278]:
+                - paragraph [ref=e279]:
+                  - link [ref=e280] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-reaction-header
+                    - text: Sinecon
+                  - text: reposted this
+                - generic [ref=e281]:
+                  - generic [ref=e283]:
+                    - link [ref=e284] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/matej-%C5%A1u%C5%A1ter%C5%A1i%C4%8D-53aaa420a?trk=organization_guest_main-feed-card_feed-actor-image
+                      - img [ref=e285]
+                    - generic [ref=e286]:
+                      - link [ref=e288] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/in/matej-%C5%A1u%C5%A1ter%C5%A1i%C4%8D-53aaa420a?trk=organization_guest_main-feed-card_feed-actor-name
+                        - text: Matej Šušteršič
+                      - time [ref=e290]:
+                        - text: 3w
+                        - generic [ref=e291]: ·
+                        - text: Edited
+                  - button [ref=e294] [cursor=pointer]
+                - paragraph [ref=e296]:
+                  - text: "Iz 2-3 ur na manj kot 30 minut. Toliko se je skrajšal čas priprave poslovne ponudbe po uvedbi internega AI agenta. V našem podjetju smo pred kratkim postavili AI agenta, ki je zaposlenim dostopen prek Microsoft Teamsov. Sedaj v manj kot 30 minutah opravimo proces, ki je prej trajal 2-3 ure: → Uporabnik vnese osnovne podatke o stranki. → Agent prebere spletno stran stranke. → Iz internega kataloga storitev sestavi personaliziran osnutek 9 poglavij ponudbe. → Operater popravi ali potrdi poglavja (lahko zahteva tudi regeneracijo z AI). → Agent vse poveže v Word dokument, ki gre direktno stranki. 📊 Številke v kontekstu: → Pri 5 ponudbah tedensko: prihranek 10-12 ur dela. → Vse ponudbe imajo enako kakovost (ni odvisna od pripravljavca). → Svetovalci preživijo več časa pri strankah, manj v Word-u. Glavno vprašanje pri uvajanju AI ni \"katero orodje izbrati\", temveč \"kje v naši organizaciji AI dejansko ustvari poslovno vrednost\". Na to vprašanje odgovarjamo strukturirano: 🔹 Izhajamo iz dejanskih poslovnih izzivov in obstoječih procesov, ne iz orodij. 🔹 Identificiramo primere uporabe z merljivim učinkom in jih ločujemo od idej, ki niso primerne za izvedbo. 🔹 Svetujemo glede pristopa in tehnologije, ki je primerna za vašo organizacijo. Trije vpogledi: 1️⃣ Umetne inteligence ne uvajamo, da bi nadomestili ljudi. Uvajamo jo, da bi ljudje delali tisto, kar prinaša največjo vrednost. 2️⃣ Najboljši AI projekti niso \"kupimo novo orodje\". Začnejo se z vprašanjem, kje točno izgubljamo čas. 3️⃣ Hitre zmage z realnim učinkom premagajo dolgoročne načrte z nedoločenim ROI. Kdo pri vas pripravlja ponudbe? Bi to lahko bil naslednji proces, ki ga uredite?"
+                  - link [ref=e297] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/dataq-intelligent-solutions-for-informed-decisions?trk=organization_guest_main-feed-card-text
+                    - text: DataQ
+                  - link [ref=e298] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card-text
+                    - text: Sinecon
+                  - link [ref=e299] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Faienablement&trk=organization_guest_main-feed-card-text
+                    - text: "#AIEnablement"
+                  - link [ref=e300] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fbusinessautomation&trk=organization_guest_main-feed-card-text
+                    - text: "#BusinessAutomation"
+                  - link [ref=e301] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fmicrosoft365&trk=organization_guest_main-feed-card-text
+                    - text: "#Microsoft365"
+                  - link [ref=e302] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fcopilotstudio&trk=organization_guest_main-feed-card-text
+                    - text: "#CopilotStudio"
+                  - link [ref=e303] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fpowerplatform&trk=organization_guest_main-feed-card-text
+                    - text: "#PowerPlatform"
+                  - link [ref=e304] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fdataq&trk=organization_guest_main-feed-card-text
+                    - text: "#DataQ"
+                  - link [ref=e305] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fsinecon&trk=organization_guest_main-feed-card-text
+                    - text: "#Sinecon"
+                - iframe [ref=e306]:
+                  
+                - generic [ref=e307]:
+                  - link [ref=e308] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e309]: "23"
+                  - link [ref=e310] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-comments
+                    - text: · 3 Comments
+                - generic [ref=e311]:
+                  - link [ref=e312] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                    - generic [ref=e314]: Like
+                  - link [ref=e315] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                    - generic [ref=e317]: Comment
+                  - link [ref=e318] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                    - generic [ref=e320]: Share
+            - listitem [ref=e321]:
+              - article [ref=e322]:
+                - paragraph [ref=e323]:
+                  - link [ref=e324] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-reaction-header
+                    - text: Sinecon
+                  - text: reposted this
+                - generic [ref=e325]:
+                  - generic [ref=e327]:
+                    - link [ref=e328] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/matej-%C5%A1u%C5%A1ter%C5%A1i%C4%8D-53aaa420a?trk=organization_guest_main-feed-card_feed-actor-image
+                      - img [ref=e329]
+                    - generic [ref=e330]:
+                      - link [ref=e332] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/in/matej-%C5%A1u%C5%A1ter%C5%A1i%C4%8D-53aaa420a?trk=organization_guest_main-feed-card_feed-actor-name
+                        - text: Matej Šušteršič
+                      - time [ref=e334]:
+                        - text: 3w
+                        - generic [ref=e335]: ·
+                        - text: Edited
+                  - button [ref=e338] [cursor=pointer]
+                - paragraph [ref=e340]:
+                  - text: "Iz 2-3 ur na manj kot 30 minut. Toliko se je skrajšal čas priprave poslovne ponudbe po uvedbi internega AI agenta. V našem podjetju smo pred kratkim postavili AI agenta, ki je zaposlenim dostopen prek Microsoft Teamsov. Sedaj v manj kot 30 minutah opravimo proces, ki je prej trajal 2-3 ure: → Uporabnik vnese osnovne podatke o stranki. → Agent prebere spletno stran stranke. → Iz internega kataloga storitev sestavi personaliziran osnutek 9 poglavij ponudbe. → Operater popravi ali potrdi poglavja (lahko zahteva tudi regeneracijo z AI). → Agent vse poveže v Word dokument, ki gre direktno stranki. 📊 Številke v kontekstu: → Pri 5 ponudbah tedensko: prihranek 10-12 ur dela. → Vse ponudbe imajo enako kakovost (ni odvisna od pripravljavca). → Svetovalci preživijo več časa pri strankah, manj v Word-u. Glavno vprašanje pri uvajanju AI ni \"katero orodje izbrati\", temveč \"kje v naši organizaciji AI dejansko ustvari poslovno vrednost\". Na to vprašanje odgovarjamo strukturirano: 🔹 Izhajamo iz dejanskih poslovnih izzivov in obstoječih procesov, ne iz orodij. 🔹 Identificiramo primere uporabe z merljivim učinkom in jih ločujemo od idej, ki niso primerne za izvedbo. 🔹 Svetujemo glede pristopa in tehnologije, ki je primerna za vašo organizacijo. Trije vpogledi: 1️⃣ Umetne inteligence ne uvajamo, da bi nadomestili ljudi. Uvajamo jo, da bi ljudje delali tisto, kar prinaša največjo vrednost. 2️⃣ Najboljši AI projekti niso \"kupimo novo orodje\". Začnejo se z vprašanjem, kje točno izgubljamo čas. 3️⃣ Hitre zmage z realnim učinkom premagajo dolgoročne načrte z nedoločenim ROI. Kdo pri vas pripravlja ponudbe? Bi to lahko bil naslednji proces, ki ga uredite?"
+                  - link [ref=e341] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/dataq-intelligent-solutions-for-informed-decisions?trk=organization_guest_main-feed-card-text
+                    - text: DataQ
+                  - link [ref=e342] [cursor=pointer]:
+                    - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card-text
+                    - text: Sinecon
+                  - link [ref=e343] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Faienablement&trk=organization_guest_main-feed-card-text
+                    - text: "#AIEnablement"
+                  - link [ref=e344] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fbusinessautomation&trk=organization_guest_main-feed-card-text
+                    - text: "#BusinessAutomation"
+                  - link [ref=e345] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fmicrosoft365&trk=organization_guest_main-feed-card-text
+                    - text: "#Microsoft365"
+                  - link [ref=e346] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fcopilotstudio&trk=organization_guest_main-feed-card-text
+                    - text: "#CopilotStudio"
+                  - link [ref=e347] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fpowerplatform&trk=organization_guest_main-feed-card-text
+                    - text: "#PowerPlatform"
+                  - link [ref=e348] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fdataq&trk=organization_guest_main-feed-card-text
+                    - text: "#DataQ"
+                  - link [ref=e349] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fsinecon&trk=organization_guest_main-feed-card-text
+                    - text: "#Sinecon"
+                - iframe [ref=e350]:
+                  
+                - generic [ref=e351]:
+                  - link [ref=e352] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e353]: "23"
+                  - link [ref=e354] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-comments
+                    - text: · 3 Comments
+                - generic [ref=e355]:
+                  - link [ref=e356] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                    - generic [ref=e358]: Like
+                  - link [ref=e359] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                    - generic [ref=e361]: Comment
+                  - link [ref=e362] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                    - generic [ref=e364]: Share
+            - listitem [ref=e365]:
+              - generic [ref=e366]:
+                - link [ref=e367] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_spisali-smo-%C5%A1e-eno-uspe%C5%A1no-leto-polno-izzivov-activity-7409534578761220096-SJNN
+                - article [ref=e368]:
+                  - generic [ref=e369]:
+                    - generic [ref=e371]:
+                      - link [ref=e372] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e373]
+                      - generic [ref=e374]:
+                        - link [ref=e376] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e377]: 341 followers
+                        - time [ref=e379]: 5mo
+                    - button [ref=e382] [cursor=pointer]
+                  - paragraph [ref=e384]: Spisali smo še eno uspešno leto, polno izzivov in skupnih uspehov. ✨ V letu 2025 smo skupaj z vami gradili rešitve in iskali poti do boljših, varnejših in bolj učinkovitih poslovnih okolij. In najboljše zgodbe nastanejo takrat, ko jih gradimo skupaj, korak za korakom. 🤝 Hvala za zaupanje. ❤️ Z optimizmom vstopamo v novo leto, pripravljeni na nove priložnosti in projekte, ki nas bodo izzvali, da razmišljamo izven okvirjev in skupaj premikamo meje v digitalnem poslovanju. Želimo vam lepe praznike in uspešen začetek 2026. Ekipa Sinecon
+                  - list [ref=e385]:
+                    - listitem [ref=e386]:
+                      - img [ref=e387]
+                  - link [ref=e389] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e390]: "18"
+                  - generic [ref=e391]:
+                    - link [ref=e392] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e394]: Like
+                    - link [ref=e395] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e397]: Comment
+                    - link [ref=e398] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e400]: Share
+            - listitem [ref=e401]:
+              - generic [ref=e402]:
+                - link [ref=e403] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_seminar-zinfv1-informacijskavarnost-activity-7405194740163334144-SMRy
+                - article [ref=e404]:
+                  - generic [ref=e405]:
+                    - generic [ref=e407]:
+                      - link [ref=e408] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e409]
+                      - generic [ref=e410]:
+                        - link [ref=e412] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e413]: 341 followers
+                        - time [ref=e415]: 5mo
+                    - button [ref=e418] [cursor=pointer]
+                  - paragraph [ref=e420]:
+                    - text: "Kako se začne dober petek? ☕️ S kavo, rogljičkom in jasnimi smernicami za krepitev kibernetske odpornosti. Danes pri nas poteka že drugi 𝐬𝐞𝐦𝐢𝐧𝐚𝐫 𝐒𝐤𝐥𝐚𝐝𝐧𝐨𝐬𝐭 𝐳 𝐙𝐈𝐧𝐟𝐕-1, kjer podjetjem pomagamo graditi trdne temelje za odpornost, skladnost in varno digitalno poslovanje. Udeleženci raziskujejo ključne spremembe zakona, oblikujejo učinkovite varnostne procese in spoznavajo, kako v praksi voditi obvladovanje kibernetskih incidentov. 🔒 Če vam danes ni uspelo biti z nami, ne skrbite - imamo dobro novico: prijave za naslednji termin, 6. februar 2026, so že odprte! 👉 Več informacij in prijava:"
+                    - link [ref=e421] [cursor=pointer]:
+                      - /url: https://lnkd.in/dKQxsMBB?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dKQxsMBB
+                    - link [ref=e422] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fseminar&trk=organization_guest_main-feed-card-text
+                      - text: "#seminar"
+                    - link [ref=e423] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fzinfv1&trk=organization_guest_main-feed-card-text
+                      - text: "#ZInfV1"
+                    - link [ref=e424] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Finformacijskavarnost&trk=organization_guest_main-feed-card-text
+                      - text: "#InformacijskaVarnost"
+                    - link [ref=e425] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2FizobraAhsevanje&trk=organization_guest_main-feed-card-text
+                      - text: "#Izobraževanje"
+                  - list [ref=e426]:
+                    - listitem [ref=e427]:
+                      - img [ref=e428]
+                  - link [ref=e430] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e431]: "13"
+                  - generic [ref=e432]:
+                    - link [ref=e433] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e435]: Like
+                    - link [ref=e436] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e438]: Comment
+                    - link [ref=e439] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e441]: Share
+            - listitem [ref=e442]:
+              - generic [ref=e443]:
+                - link [ref=e444] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_zinfv1-seminar-izobra%C5%BEevanje-activity-7394316134054871040-e65O
+                - article [ref=e445]:
+                  - generic [ref=e446]:
+                    - generic [ref=e448]:
+                      - link [ref=e449] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e450]
+                      - generic [ref=e451]:
+                        - link [ref=e453] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e454]: 341 followers
+                        - time [ref=e456]: 6mo
+                    - button [ref=e459] [cursor=pointer]
+                  - paragraph [ref=e461]:
+                    - text: "⏰ Ne zamudite! Do seminarja “Skladnost z ZInfV-1” nas loči točno en mesec! Pridružite se nam 12. decembra in pridobite praktična znanja, ki vam bodo pomagala učinkovito in pravočasno uvesti skladnost v vaše podjetje. 🔒 Več informacij:"
+                    - link [ref=e462] [cursor=pointer]:
+                      - /url: https://lnkd.in/dKQxsMBB?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dKQxsMBB
+                    - link [ref=e463] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fzinfv1&trk=organization_guest_main-feed-card-text
+                      - text: "#ZInfV1"
+                    - link [ref=e464] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fseminar&trk=organization_guest_main-feed-card-text
+                      - text: "#Seminar"
+                    - link [ref=e465] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2FizobraAhsevanje&trk=organization_guest_main-feed-card-text
+                      - text: "#Izobraževanje"
+                    - link [ref=e466] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Finformacijskavarnost&trk=organization_guest_main-feed-card-text
+                      - text: "#InformacijskaVarnost"
+                  - link [ref=e468] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e469]: "6"
+                  - generic [ref=e470]:
+                    - link [ref=e471] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e473]: Like
+                    - link [ref=e474] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e476]: Comment
+                    - link [ref=e477] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e479]: Share
+            - listitem [ref=e480]:
+              - generic [ref=e481]:
+                - link [ref=e482] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_zinfv1-informacijskavarnost-kibernetskavarnost-activity-7391759460974653440-dVep
+                - article [ref=e483]:
+                  - generic [ref=e484]:
+                    - generic [ref=e486]:
+                      - link [ref=e487] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e488]
+                      - generic [ref=e489]:
+                        - link [ref=e491] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e492]: 341 followers
+                        - time [ref=e494]:
+                          - text: 7mo
+                          - generic [ref=e495]: ·
+                          - text: Edited
+                    - button [ref=e498] [cursor=pointer]
+                  - paragraph [ref=e500]:
+                    - text: "📢 Dodali smo nove termine seminarja \"𝐒𝐤𝐥𝐚𝐝𝐧𝐨𝐬𝐭 𝐳 𝐙𝐈𝐧𝐟𝐕-1\". Za seminar, ki bo potekal v živo, lahko izbirate med dvema terminoma: 1️⃣ 12. december 2025 2️⃣ 6. februar 2026 Spoznajte ključne zahteve ZInfV-1 in pridobite praktična znanja za učinkovito uvedbo skladnosti v vašem podjetju. 🗣️Seminar bo vodil"
+                    - link [ref=e501] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/bo%C5%BEo-beri%C4%8D-723b0327?trk=organization_guest_main-feed-card-text
+                      - text: Božo Berič
+                    - text: "- mednarodno certificiran svetovalec za informacijsko varnost in operativno odpornost. 🔗 Več informacij in prijava:"
+                    - link [ref=e502] [cursor=pointer]:
+                      - /url: https://lnkd.in/dKQxsMBB?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/dKQxsMBB
+                    - link [ref=e503] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fzinfv1&trk=organization_guest_main-feed-card-text
+                      - text: "#ZInfV1"
+                    - link [ref=e504] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Finformacijskavarnost&trk=organization_guest_main-feed-card-text
+                      - text: "#InformacijskaVarnost"
+                    - link [ref=e505] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fkibernetskavarnost&trk=organization_guest_main-feed-card-text
+                      - text: "#KibernetskaVarnost"
+                    - link [ref=e506] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fseminar&trk=organization_guest_main-feed-card-text
+                      - text: "#Seminar"
+                    - link [ref=e507] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fizobrazevanje&trk=organization_guest_main-feed-card-text
+                      - text: "#Izobrazevanje"
+                  - list [ref=e508]:
+                    - listitem [ref=e509]:
+                      - img [ref=e510]
+                  - link [ref=e512] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e513]: "10"
+                  - generic [ref=e514]:
+                    - link [ref=e515] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e517]: Like
+                    - link [ref=e518] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e520]: Comment
+                    - link [ref=e521] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e523]: Share
+            - listitem [ref=e524]:
+              - generic [ref=e525]:
+                - link [ref=e526] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/posts/sinecon_zinfv1-informacijskavarnost-cybersecurity-activity-7389224288274333698-mgwv
+                - article [ref=e527]:
+                  - generic [ref=e528]:
+                    - generic [ref=e530]:
+                      - link [ref=e531] [cursor=pointer]:
+                        - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-image
+                        - img [ref=e532]
+                      - generic [ref=e533]:
+                        - link [ref=e535] [cursor=pointer]:
+                          - /url: https://si.linkedin.com/company/sinecon?trk=organization_guest_main-feed-card_feed-actor-name
+                          - text: Sinecon
+                        - paragraph [ref=e536]: 341 followers
+                        - time [ref=e538]:
+                          - text: 7mo
+                          - generic [ref=e539]: ·
+                          - text: Edited
+                    - button [ref=e542] [cursor=pointer]
+                  - paragraph [ref=e544]:
+                    - text: "[📰 BLOG POST] 9 𝐤𝐨𝐫𝐚𝐤𝐨𝐯 𝐝𝐨 𝐬𝐤𝐥𝐚𝐝𝐧𝐨𝐬𝐭𝐢 𝐳 𝐙𝐚𝐤𝐨𝐧𝐨𝐦 𝐨 𝐢𝐧𝐟𝐨𝐫𝐦𝐚𝐜𝐢𝐣𝐬𝐤𝐢 𝐯𝐚𝐫𝐧𝐨𝐬𝐭𝐢 (𝐙𝐈𝐧𝐟𝐕-1) Ali vaša organizacija že izpolnjuje zahteve ZInfV-1? Ker je zakon kompleksen in vpliva na številne poslovne procese, smo pripravili vodnik, ki podjetjem v 9 korakih pomaga: ➡️ razumeti, katere obveznosti jih zadevajo, ➡️ in sistematično vzpostaviti skladnost z zahtevami zakona. Od preverjanja zavezanosti do vzpostavitve sistema vodenja informacijske varnosti (SVIV) - vsak korak vključuje jasne usmeritve in pričakovane rezultate. 📘 Preberite celoten vodnik:"
+                    - link [ref=e545] [cursor=pointer]:
+                      - /url: https://lnkd.in/d2DCrQxM?trk=organization_guest_main-feed-card-text
+                      - text: https://lnkd.in/d2DCrQxM
+                    - text: ✍️
+                    - link [ref=e546] [cursor=pointer]:
+                      - /url: https://si.linkedin.com/in/bo%C5%BEo-beri%C4%8D-723b0327?trk=organization_guest_main-feed-card-text
+                      - text: Božo Berič
+                    - text: Podjetjem pomagamo izpolniti zahteve zakona in dolgoročno okrepiti kibernetsko odpornost.
+                    - link [ref=e547] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fzinfv1&trk=organization_guest_main-feed-card-text
+                      - text: "#ZInfV1"
+                    - link [ref=e548] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Finformacijskavarnost&trk=organization_guest_main-feed-card-text
+                      - text: "#InformacijskaVarnost"
+                    - link [ref=e549] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fcybersecurity&trk=organization_guest_main-feed-card-text
+                      - text: "#CyberSecurity"
+                    - link [ref=e550] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fdigitalnaodpornost&trk=organization_guest_main-feed-card-text
+                      - text: "#DigitalnaOdpornost"
+                    - link [ref=e551] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2Fhashtag%2Fblog&trk=organization_guest_main-feed-card-text
+                      - text: "#Blog"
+                  - link [ref=e553] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_social-actions-reactions
+                    - generic [ref=e554]: "13"
+                  - generic [ref=e555]:
+                    - link [ref=e556] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_like-cta
+                      - generic [ref=e558]: Like
+                    - link [ref=e559] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_comment-cta
+                      - generic [ref=e561]: Comment
+                    - link [ref=e562] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_main-feed-card_share-cta
+                      - generic [ref=e564]: Share
+    - generic [ref=e565]:
+      - generic [ref=e566]:
+        - heading [level=2] [ref=e567]: Affiliated pages
+        - list [ref=e569]:
+          - listitem [ref=e570]:
+            - link [ref=e571] [cursor=pointer]:
+              - /url: https://si.linkedin.com/company/bizmatch-pro?trk=affiliated-pages
+              - img [ref=e572]
+              - generic [ref=e573]:
+                - heading [level=3] [ref=e574]: Bizmatch
+                - paragraph [ref=e575]: IT Services and IT Consulting
+      - generic [ref=e576]:
+        - heading [level=2] [ref=e577]: Similar pages
+        - generic [ref=e579]:
+          - list [ref=e580]:
+            - listitem [ref=e581]:
+              - link [ref=e582] [cursor=pointer]:
+                - /url: https://si.linkedin.com/company/hermes-doo?trk=similar-pages
+                - img [ref=e583]
+                - generic [ref=e584]:
+                  - heading [level=3] [ref=e585]: Hermes
+                  - paragraph [ref=e586]: IT Services and IT Consulting
+                  - paragraph [ref=e587]: Ljubljana, Ljubljana
+            - listitem [ref=e588]:
+              - link [ref=e589] [cursor=pointer]:
+                - /url: https://si.linkedin.com/company/dataq-intelligent-solutions-for-informed-decisions?trk=similar-pages
+                - img [ref=e590]
+                - generic [ref=e591]:
+                  - heading [level=3] [ref=e592]: DataQ
+                  - paragraph [ref=e593]: IT Services and IT Consulting
+                  - paragraph [ref=e594]: Četrtna skupnost Šentvid, Ljubljana
+            - listitem [ref=e595]:
+              - link [ref=e596] [cursor=pointer]:
+                - /url: https://si.linkedin.com/company/neoproject-d-o-o?trk=similar-pages
+                - img [ref=e597]
+                - generic [ref=e598]:
+                  - heading [level=3] [ref=e599]: Neoproject
+                  - paragraph [ref=e600]: Software Development
+                  - paragraph [ref=e601]: Ljubljana, Ljubljana
+            - listitem [ref=e602]:
+              - link [ref=e603] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/holyshift.ai?trk=similar-pages
+                - img [ref=e604]
+                - generic [ref=e605]:
+                  - heading [level=3] [ref=e606]: HolyShift
+                  - paragraph [ref=e607]: Software Development
+                  - paragraph [ref=e608]: Mountain View, CA
+          - button [ref=e609] [cursor=pointer]: Show more similar pages
+  - contentinfo [ref=e611]:
+    - list [ref=e612]:
+      - listitem [ref=e613]:
+        - generic [ref=e614]: LinkedIn
+        - generic [ref=e616]: © 2026
+      - listitem [ref=e617]:
+        - link [ref=e618] [cursor=pointer]:
+          - /url: https://about.linkedin.com?trk=d_org_guest_company_overview_footer-about
+          - text: About
+      - listitem [ref=e619]:
+        - link [ref=e620] [cursor=pointer]:
+          - /url: https://www.linkedin.com/accessibility?trk=d_org_guest_company_overview_footer-accessibility
+          - text: Accessibility
+      - listitem [ref=e621]:
+        - link [ref=e622] [cursor=pointer]:
+          - /url: https://www.linkedin.com/legal/user-agreement?trk=d_org_guest_company_overview_footer-user-agreement
+          - text: User Agreement
+      - listitem [ref=e623]:
+        - link [ref=e624] [cursor=pointer]:
+          - /url: https://www.linkedin.com/legal/privacy-policy?trk=d_org_guest_company_overview_footer-privacy-policy
+          - text: Privacy Policy
+      - listitem [ref=e625]:
+        - link [ref=e626] [cursor=pointer]:
+          - /url: https://www.linkedin.com/legal/cookie-policy?trk=d_org_guest_company_overview_footer-cookie-policy
+          - text: Cookie Policy
+      - listitem [ref=e627]:
+        - link [ref=e628] [cursor=pointer]:
+          - /url: https://www.linkedin.com/legal/copyright-policy?trk=d_org_guest_company_overview_footer-copyright-policy
+          - text: Copyright Policy
+      - listitem [ref=e629]:
+        - link [ref=e630] [cursor=pointer]:
+          - /url: https://brand.linkedin.com/policies?trk=d_org_guest_company_overview_footer-brand-policy
+          - text: Brand Policy
+      - listitem [ref=e631]:
+        - link [ref=e632] [cursor=pointer]:
+          - /url: https://www.linkedin.com/psettings/guest-controls?trk=d_org_guest_company_overview_footer-guest-controls
+          - text: Guest Controls
+      - listitem [ref=e633]:
+        - link [ref=e634] [cursor=pointer]:
+          - /url: https://www.linkedin.com/legal/professional-community-policies?trk=d_org_guest_company_overview_footer-community-guide
+          - text: Community Guidelines
+      - listitem [ref=e635]:
+        - button [ref=e637]: Language
+  - dialog "Sign in to see who you already know at Sinecon" [active] [ref=e640]:
+    - button "Dismiss" [ref=e641] [cursor=pointer]
+    - generic [ref=e643]:
+      - generic [ref=e644]:
+        - img [ref=e645]
+        - heading "Sign in to see who you already know at Sinecon" [level=2] [ref=e646]
+      - generic [ref=e647]:
+        - generic:
+          - generic:
+            - button "Continue with google"
+        - button "Sign in with Email" [ref=e648] [cursor=pointer]:
+          - generic [ref=e650]: Sign in with Email
+        - paragraph [ref=e652]: or
+        - generic:
+          - generic:
+            - button "Continue with google"
+        - paragraph [ref=e653]:
+          - text: New to LinkedIn?
+          - link "Join now" [ref=e654] [cursor=pointer]:
+            - /url: https://www.linkedin.com/signup/cold-join?session_redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fcompany%2Fsinecon&trk=organization_guest_contextual-sign-in-modal_join-link
+        - paragraph [ref=e655]:
+          - text: By clicking Continue to join or sign in, you agree to LinkedIn’s
+          - link "User Agreement" [ref=e656] [cursor=pointer]:
+            - /url: /legal/user-agreement?trk=linkedin-tc_auth-button_user-agreement
+          - text: ","
+          - link "Privacy Policy" [ref=e657] [cursor=pointer]:
+            - /url: /legal/privacy-policy?trk=linkedin-tc_auth-button_privacy-policy
+          - text: ", and"
+          - link "Cookie Policy" [ref=e658] [cursor=pointer]:
+            - /url: /legal/cookie-policy?trk=linkedin-tc_auth-button_cookie-policy
+          - text: .

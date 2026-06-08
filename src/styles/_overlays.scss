@@ -1,0 +1,31 @@
+// Overlay panel class overrides for Material components.
+// Applied via panelClass input — NEVER via ::ng-deep globally.
+//
+// Usage:
+//   MatDialog:    panelClass="princess-dialog"
+//   MatMenu:      panelClass="princess-menu"
+//   MatSnackBar:  panelClass="princess-snackbar"
+
+.princess-dialog {
+  .mat-mdc-dialog-container {
+    border-radius: var(--princess-border-radius-card);
+  }
+
+  .mat-mdc-dialog-surface {
+    padding: 0;
+  }
+}
+
+.princess-menu {
+  .mat-mdc-menu-panel {
+    border-radius: var(--princess-border-radius-card);
+    min-width: 200px;
+  }
+}
+
+.princess-snackbar {
+  &.mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-shape: 8px;
+    margin-bottom: 24px;
+  }
+}
