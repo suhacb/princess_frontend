@@ -1,0 +1,43 @@
+@use '@angular/material' as mat;
+
+// ─── Palette ─────────────────────────────────────────────────────────────────
+// Primary:   Cyan    — matches Sinecon brand teal (logo icon)
+// Tertiary:  Orange  — matches Sinecon brand coral accent (banner CTA)
+$primary-palette: mat.$cyan-palette;
+$tertiary-palette: mat.$orange-palette;
+
+// ─── Light theme token map ────────────────────────────────────────────────────
+$light-theme: (
+  color: (
+    theme-type: light,
+    primary: $primary-palette,
+    tertiary: $tertiary-palette,
+  ),
+  typography: Roboto,
+  density: 0,
+);
+
+// ─── Dark theme token map ─────────────────────────────────────────────────────
+$dark-theme: (
+  color: (
+    theme-type: dark,
+    primary: $primary-palette,
+    tertiary: $tertiary-palette,
+  ),
+  typography: Roboto,
+  density: 0,
+);
+
+// ─── Custom surface overrides ─────────────────────────────────────────────────
+// Fine-tune generated --mat-sys-* tokens here after mat.theme() is applied.
+// Example: slightly warmer surfaces for the light theme.
+@mixin apply-surface-overrides() {
+  --princess-sidebar-width: 260px;
+  --princess-sidebar-collapsed-width: 64px;
+  --princess-topbar-height: 64px;
+  --princess-content-max-width: 1440px;
+  --princess-border-radius-card: 12px;
+  --princess-border-radius-chip: 8px;
+  --princess-transition-speed: 200ms;
+  --princess-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
