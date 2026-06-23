@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -16,8 +17,8 @@ export const routes: Routes = [
       ),
   },
   {
-    // Shell wrapper — all protected routes live here (authGuard added in FE-AUTH-01)
     path: '',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./layout/shell/shell.component').then((m) => m.ShellComponent),
     children: [
