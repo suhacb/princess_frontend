@@ -78,7 +78,7 @@ describe('ProjectDetailComponent', () => {
     await setup();
     fixture.detectChanges();
     const tabs = fixture.nativeElement.querySelectorAll('.detail-tab');
-    expect(tabs.length).toBe(4);
+    expect(tabs.length).toBe(5);
   });
 
   it('calls projectService.load() when id input is set', async () => {
