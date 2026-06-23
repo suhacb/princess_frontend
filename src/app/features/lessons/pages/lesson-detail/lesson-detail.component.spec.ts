@@ -78,6 +78,12 @@ describe('LessonDetailComponent', () => {
     expect(fixture.nativeElement.querySelector('.source-badge--incident')).toBeTruthy();
   });
 
+  it('renders observation source badge', () => {
+    const observationLesson: Lesson = { ...stubLesson, source: 'observation' };
+    const { fixture } = setup(observationLesson);
+    expect(fixture.nativeElement.querySelector('.source-badge--observation')).toBeTruthy();
+  });
+
   it('renders category label', () => {
     const { fixture } = setup();
     expect(fixture.nativeElement.textContent).toContain('Planning');
