@@ -11,7 +11,7 @@ function setup() {
   });
   const fixture = TestBed.createComponent(CreateBoundaryDialogComponent);
   fixture.detectChanges();
-  return { fixture, closeFn };
+  return { fixture, closeFn, component: fixture.componentInstance as never };
 }
 
 describe('CreateBoundaryDialogComponent', () => {
@@ -24,13 +24,39 @@ describe('CreateBoundaryDialogComponent', () => {
     expect(createBtn?.disabled).toBe(true);
   });
 
-  it('shows End Stage Report option', () => {
+  it('includes end_stage_report as a selectable type', () => {
     const { fixture } = setup();
-    expect(fixture.nativeElement.textContent).toContain('End Stage Report');
+    const comp = fixture.componentInstance as any;
+    expect(comp.types).toContain('end_stage_report');
+    expect(comp.typeLabels['end_stage_report']).toBe('End Stage Report');
   });
 
-  it('shows Exception Report option', () => {
+  it('includes exception_report as a selectable type', () => {
     const { fixture } = setup();
-    expect(fixture.nativeElement.textContent).toContain('Exception Report');
+    const comp = fixture.componentInstance as any;
+    expect(comp.types).toContain('exception_report');
+    expect(comp.typeLabels['exception_report']).toBe('Exception Report');
+  });
+
+  it('closes with payload when type is selected and Create clicked', () => {
+    const { fixture, closeFn } = setup();
+    const comp = fixture.componentInstance as any;
+    comp.form.patchValue({ type: 'end_stage_report', title: 'My Title' });
+    fixture.detectChanges();
+    const createBtn = Array.from(fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>)
+      .find(b => b.textContent?.includes('Create'));
+    createBtn?.click();
+    expect(closeFn).toHaveBeenCalledWith({ type: 'end_stage_report', title: 'My Title' });
+  });
+
+  it('closes with null title when title is empty', () => {
+    const { fixture, closeFn } = setup();
+    const comp = fixture.componentInstance as any;
+    comp.form.patchValue({ type: 'exception_report', title: '' });
+    fixture.detectChanges();
+    const createBtn = Array.from(fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>)
+      .find(b => b.textContent?.includes('Create'));
+    createBtn?.click();
+    expect(closeFn).toHaveBeenCalledWith({ type: 'exception_report', title: null });
   });
 });

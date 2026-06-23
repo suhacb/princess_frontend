@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { StageDetailComponent } from './stage-detail.component';
 import { StageService } from '../../services/stage.service';
 import { ProjectService } from '../../../projects/services/project.service';
+import { BoundaryService } from '../../../boundaries/services/boundary.service';
 import { Stage } from '../../contracts/stage.contracts';
 import { Project } from '../../../projects/contracts/project.contracts';
 
@@ -55,12 +56,19 @@ function setup(stage: Stage | null = stubStage): {
     setCurrentStage: vi.fn().mockReturnValue(of(stubProject)),
   };
 
+  const boundaryService = {
+    boundaries: signal([]).asReadonly(),
+    loading: signal(false).asReadonly(),
+    list: vi.fn().mockReturnValue(of([])),
+  };
+
   TestBed.configureTestingModule({
     imports: [StageDetailComponent, BrowserAnimationsModule],
     providers: [
       provideRouter([]),
       { provide: StageService, useValue: stageService },
       { provide: ProjectService, useValue: projectService },
+      { provide: BoundaryService, useValue: boundaryService },
     ],
   });
 
