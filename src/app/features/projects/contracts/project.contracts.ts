@@ -49,6 +49,17 @@ export interface Project {
   createdAt: string;
 }
 
+export function normalizeTolerances(raw: ProjectTolerances | null | undefined): ProjectTolerances {
+  return {
+    time: raw?.time ?? { min: null, max: null },
+    cost: raw?.cost ?? { min: null, max: null },
+    scope: raw?.scope ?? null,
+    risk: raw?.risk ?? null,
+    quality: raw?.quality ?? null,
+    benefit: raw?.benefit ?? null,
+  };
+}
+
 export function mapProject(api: ProjectApiResource): Project {
   return {
     id: api.id,
@@ -56,7 +67,7 @@ export function mapProject(api: ProjectApiResource): Project {
     reference: api.reference,
     status: api.status,
     currentStageName: api.current_stage_name,
-    tolerances: api.tolerances,
+    tolerances: normalizeTolerances(api.tolerances),
     createdBy: api.created_by,
     createdAt: api.created_at,
   };

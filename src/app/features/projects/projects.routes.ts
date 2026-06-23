@@ -23,13 +23,13 @@ export const projectsRoutes: Routes = [
       {
         path: 'stages',
         loadComponent: () =>
-          import('../../stages/pages/stage-list/stage-list.component').then(m => m.StageListComponent),
+          import('../stages/pages/stage-list/stage-list.component').then(m => m.StageListComponent),
         title: 'Stages',
       },
       {
         path: 'stages/:stageId',
         loadComponent: () =>
-          import('../../stages/pages/stage-detail/stage-detail.component').then(m => m.StageDetailComponent),
+          import('../stages/pages/stage-detail/stage-detail.component').then(m => m.StageDetailComponent),
         title: 'Stage',
       },
       // FE-P2-04: members

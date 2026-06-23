@@ -97,6 +97,7 @@
   margin-bottom: 16px;
   background: var(--mat-sys-surface-container-low);
   transition: border-color 0.2s;
+  cursor: pointer;
 
   &:hover {
     border-color: var(--mat-sys-primary);
@@ -124,11 +125,6 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--mat-sys-on-surface);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--mat-sys-primary);
-  }
 }
 
 .stage-type-badge {

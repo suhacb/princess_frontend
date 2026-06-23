@@ -24,8 +24,8 @@
       <dl class="info-list">
         <dt>Time</dt>
         <dd>
-          @if (p.tolerances.time.min !== null || p.tolerances.time.max !== null) {
-            {{ p.tolerances.time.min ?? '—' }} / {{ p.tolerances.time.max ?? '—' }} days
+          @if (p.tolerances.time?.min !== null || p.tolerances.time?.max !== null) {
+            {{ p.tolerances.time?.min ?? '—' }} / {{ p.tolerances.time?.max ?? '—' }} days
           } @else {
             <span class="not-set">Not set</span>
           }
@@ -33,8 +33,8 @@
 
         <dt>Cost</dt>
         <dd>
-          @if (p.tolerances.cost.min !== null || p.tolerances.cost.max !== null) {
-            {{ p.tolerances.cost.min ?? '—' }} / {{ p.tolerances.cost.max ?? '—' }} €
+          @if (p.tolerances.cost?.min !== null || p.tolerances.cost?.max !== null) {
+            {{ p.tolerances.cost?.min ?? '—' }} / {{ p.tolerances.cost?.max ?? '—' }} €
           } @else {
             <span class="not-set">Not set</span>
           }

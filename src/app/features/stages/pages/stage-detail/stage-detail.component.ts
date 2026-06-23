@@ -49,6 +49,7 @@ export class StageDetailComponent {
 
   protected readonly stageTypeLabels = STAGE_TYPE_LABELS;
   protected readonly transitionError = signal<string | null>(null);
+  protected readonly loadError = signal<string | null>(null);
 
   protected readonly transitions = computed(() => {
     const stage = this.stage();
@@ -62,7 +63,10 @@ export class StageDetailComponent {
       const id = this.stageId();
       const project = this.project();
       if (id && project) {
-        this.stageService.load(project.id, +id).subscribe();
+        this.loadError.set(null);
+        this.stageService.load(project.id, +id).subscribe({
+          error: () => this.loadError.set('Failed to load stage. Please try again.'),
+        });
       }
     });
   }
