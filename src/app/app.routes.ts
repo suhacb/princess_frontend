@@ -23,7 +23,7 @@ export const routes: Routes = [
       import('./layout/shell/shell.component').then((m) => m.ShellComponent),
     children: [
       // Phase 8 — Dashboards
-      // { path: 'dashboard', loadComponent: () => import('./features/dashboard/...') },
+      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
 
       // Phase 2 — PRINCE2 Project Structure
       // { path: 'projects', loadComponent: () => import('./features/projects/...') },
