@@ -97,6 +97,11 @@ describe('QualityListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Alice');
   });
 
+  it('renders planned date', () => {
+    const { fixture } = setup([stubEntry]);
+    expect(fixture.nativeElement.textContent).toContain('2026');
+  });
+
   it('filters by result', () => {
     const { fixture } = setup([stubEntry, passedEntry]);
     const comp = fixture.componentInstance as any;

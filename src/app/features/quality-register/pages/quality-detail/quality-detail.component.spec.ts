@@ -100,6 +100,11 @@ describe('QualityDetailComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Alice');
   });
 
+  it('renders sign-off date in meta', () => {
+    const { fixture } = setup(passedEntry);
+    expect(fixture.nativeElement.textContent).toContain('2026');
+  });
+
   it('shows skeleton when loading and no entry', () => {
     const { fixture } = setup(null, true);
     expect(fixture.nativeElement.querySelector('.detail-skeleton')).toBeTruthy();
