@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
+import { projectsRoutes } from './features/projects/projects.routes';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'projects',
     pathMatch: 'full',
   },
   {
@@ -26,7 +27,7 @@ export const routes: Routes = [
       // { path: 'dashboard', loadComponent: () => import('./features/dashboard/...') },
 
       // Phase 2 — PRINCE2 Project Structure
-      // { path: 'projects', loadComponent: () => import('./features/projects/...') },
+      { path: 'projects', children: projectsRoutes },
 
       // Phase 3 — Planning
       // { path: 'planning', ...children },

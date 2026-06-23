@@ -1,0 +1,73 @@
+.step-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  min-width: 480px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.step-hint {
+  margin: 0 0 8px;
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.tolerance-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+
+  .tolerance-label {
+    width: 90px;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .tolerance-field {
+    flex: 1;
+  }
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  min-width: 480px;
+}
+
+.review-row {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+
+  .review-label {
+    width: 140px;
+    flex-shrink: 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .review-value {
+    color: var(--mat-sys-on-surface);
+    font-weight: 500;
+  }
+}
+
+.error-message {
+  color: var(--mat-sys-error);
+  font-size: 0.875rem;
+  margin: 0;
+}

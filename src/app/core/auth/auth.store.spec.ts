@@ -153,6 +153,12 @@ describe('AuthStore', () => {
       expect(await result$).toBe(true);
     });
 
+    it('returns true when the backend responds with the string "true"', async () => {
+      const result$ = firstValueFrom(store.validateAccessToken());
+      http.expectOne(VALIDATE_URL).flush('true');
+      expect(await result$).toBe(true);
+    });
+
     it('updates the token when the backend returns a refreshed token', async () => {
       const result$ = firstValueFrom(store.validateAccessToken());
       http.expectOne(VALIDATE_URL).flush({

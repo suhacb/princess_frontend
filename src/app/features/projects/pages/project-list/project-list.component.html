@@ -1,0 +1,112 @@
+<div class="page-header">
+  <div class="page-header__title">
+    <h1>Projects</h1>
+    <span class="project-count">{{ filteredProjects().length }}</span>
+  </div>
+  <button mat-flat-button (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+    New project
+  </button>
+</div>
+
+<div class="filters">
+  <mat-form-field appearance="outline" class="filters__search">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>Search projects</mat-label>
+    <input matInput [(ngModel)]="searchQuery" placeholder="Name or reference" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filters__status">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="statusFilter">
+      <mat-option value="">All statuses</mat-option>
+      @for (s of statuses; track s) {
+        <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-list">
+    @for (i of [1,2,3,4,5]; track i) {
+      <app-skeleton height="52px" borderRadius="4px" />
+    }
+  </div>
+} @else if (filteredProjects().length === 0) {
+  <app-empty-state
+    icon="folder_open"
+    title="No projects found"
+    [message]="searchQuery() || statusFilter() ? 'Try adjusting your filters.' : 'Create your first PRINCE2 project to get started.'"
+    [actionLabel]="searchQuery() || statusFilter() ? '' : 'New project'"
+    (actionClick)="openCreateDialog()"
+  />
+} @else {
+  <div class="table-container mat-elevation-z1">
+    <table mat-table [dataSource]="sortedProjects()" matSort (matSortChange)="onSortChange($event)">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let row">
+          <a [routerLink]="['/projects', row.id]" class="project-link">{{ row.name }}</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference</th>
+        <td mat-cell *matCellDef="let row">
+          <code class="reference-badge">{{ row.reference }}</code>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+        <td mat-cell *matCellDef="let row">
+          <app-project-status-chip [status]="row.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentStageName">
+        <th mat-header-cell *matHeaderCellDef>Current stage</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.currentStageName ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tolerances">
+        <th mat-header-cell *matHeaderCellDef>Tolerances</th>
+        <td mat-cell *matCellDef="let row">
+          @let health = toleranceHealth(row);
+          <span
+            class="tolerance-dot tolerance-dot--{{ health }}"
+            [matTooltip]="health === 'full' ? 'All tolerances defined' : health === 'partial' ? 'Some tolerances missing' : 'No tolerances defined'"
+          ></span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+        <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'dd MMM yyyy' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row" class="actions-cell">
+          <button mat-icon-button [matMenuTriggerFor]="rowMenu" (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #rowMenu>
+            <a mat-menu-item [routerLink]="['/projects', row.id]">
+              <mat-icon>open_in_new</mat-icon> View
+            </a>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          class="project-row"
+          [routerLink]="['/projects', row.id]"></tr>
+    </table>
+  </div>
+}
