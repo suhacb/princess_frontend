@@ -1,0 +1,144 @@
+<div class="log-header">
+  <h2 class="log-title">Daily Log</h2>
+  <button mat-flat-button (click)="showCreateForm.set(!showCreateForm())">
+    <mat-icon>{{ showCreateForm() ? 'close' : 'add' }}</mat-icon>
+    {{ showCreateForm() ? 'Cancel' : 'New Entry' }}
+  </button>
+</div>
+
+@if (showCreateForm()) {
+  <div class="create-panel">
+    <h3 class="create-panel__title">New Entry</h3>
+    <form [formGroup]="createForm" class="entry-form" (ngSubmit)="submitCreate()">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="field-date">
+          <mat-label>Date</mat-label>
+          <input matInput type="date" formControlName="date" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-type">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="entry_type">
+            @for (type of entryTypes; track type) {
+              <mat-option [value]="type">{{ typeLabels[type] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="field-body">
+        <mat-label>Entry</mat-label>
+        <textarea matInput formControlName="body" rows="4" placeholder="Record what happened, decisions made, or actions needed…"></textarea>
+      </mat-form-field>
+
+      @if (createError()) {
+        <p class="form-error">{{ createError() }}</p>
+      }
+
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="createForm.invalid">Add Entry</button>
+      </div>
+    </form>
+  </div>
+}
+
+@if (loading() && groups().length === 0) {
+  <div class="list-skeleton">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="skeleton-group">
+        <app-skeleton height="14px" width="100px" borderRadius="4px" />
+        <div class="skeleton-entries">
+          <app-skeleton height="60px" borderRadius="8px" />
+        </div>
+      </div>
+    }
+  </div>
+} @else if (groups().length === 0) {
+  <app-empty-state
+    icon="book"
+    title="No log entries yet"
+    message="Record notes, actions, reminders, and observations as the project unfolds."
+    actionLabel="New Entry"
+    (actionClick)="showCreateForm.set(true)"
+  />
+} @else {
+  <div class="log-groups">
+    @for (group of groups(); track group.date) {
+      <div class="log-group">
+        <div class="group-date-header">
+          <span class="group-date">{{ group.date | date:'EEEE, d MMMM yyyy' }}</span>
+          <span class="group-count">{{ group.entries.length }} {{ group.entries.length === 1 ? 'entry' : 'entries' }}</span>
+        </div>
+
+        <div class="group-entries">
+          @for (entry of group.entries; track entry.id) {
+            @if (editingId() === entry.id) {
+              <div class="entry-edit-panel">
+                <form [formGroup]="editForm" class="entry-form" (ngSubmit)="submitEdit(entry)">
+                  <div class="form-row">
+                    <mat-form-field appearance="outline" class="field-date">
+                      <mat-label>Date</mat-label>
+                      <input matInput type="date" formControlName="date" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field-type">
+                      <mat-label>Type</mat-label>
+                      <mat-select formControlName="entry_type">
+                        @for (type of entryTypes; track type) {
+                          <mat-option [value]="type">{{ typeLabels[type] }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <mat-form-field appearance="outline" class="field-body">
+                    <mat-label>Entry</mat-label>
+                    <textarea matInput formControlName="body" rows="3"></textarea>
+                  </mat-form-field>
+
+                  @if (editError()) {
+                    <p class="form-error">{{ editError() }}</p>
+                  }
+
+                  <div class="form-actions">
+                    <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
+                    <button mat-flat-button color="primary" type="submit" [disabled]="editForm.invalid || editForm.pristine">Save</button>
+                  </div>
+                </form>
+              </div>
+            } @else {
+              <div class="log-entry" [class.log-entry--delete-pending]="pendingDeleteId() === entry.id">
+                <div class="entry-header">
+                  <span class="type-badge type-badge--{{ entry.entryType }}">{{ typeLabels[entry.entryType] }}</span>
+                  @if (entry.author) {
+                    <span class="entry-author">{{ entry.author.name }}</span>
+                  }
+                  <div class="entry-actions">
+                    @if (pendingDeleteId() === entry.id) {
+                      <span class="delete-confirm-text">Delete this entry?</span>
+                      <button mat-button color="warn" (click)="confirmDelete(entry)">Yes, delete</button>
+                      <button mat-button (click)="pendingDeleteId.set(null)">Cancel</button>
+                    } @else {
+                      <button mat-icon-button (click)="startEdit(entry)" aria-label="Edit entry">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="pendingDeleteId.set(entry.id)" aria-label="Delete entry">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <p class="entry-body">{{ entry.body }}</p>
+
+                @if (deleteError() && pendingDeleteId() === entry.id) {
+                  <p class="form-error">{{ deleteError() }}</p>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

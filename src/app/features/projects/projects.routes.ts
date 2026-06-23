@@ -39,6 +39,12 @@ export const projectsRoutes: Routes = [
         title: 'Members',
       },
       {
+        path: 'daily-log',
+        loadComponent: () =>
+          import('../daily-log/pages/daily-log/daily-log.component').then(m => m.DailyLogComponent),
+        title: 'Daily Log',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
