@@ -115,6 +115,16 @@ describe('RiskListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Alice');
   });
 
+  it('renders proximity label', () => {
+    const { fixture } = setup([stubRisk]);
+    expect(fixture.nativeElement.textContent).toContain('Imminent');
+  });
+
+  it('renders response type label', () => {
+    const { fixture } = setup([stubRisk]);
+    expect(fixture.nativeElement.textContent).toContain('Reduce');
+  });
+
   it('sorts by score descending by default (high before low)', () => {
     const { fixture } = setup([lowRisk, stubRisk]);
     const rows = fixture.nativeElement.querySelectorAll('.risk-row');

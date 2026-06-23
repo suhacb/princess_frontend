@@ -112,13 +112,19 @@ describe('RiskDetailComponent', () => {
     expect(btn?.disabled).toBe(false);
   });
 
-  it('calls update on save', () => {
+  it('calls update on save via button click', () => {
     const { fixture, riskService } = setup();
     const comp = fixture.componentInstance as any;
     comp.form.markAsDirty();
     fixture.detectChanges();
-    comp.save();
+    const saveBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[color="primary"]');
+    saveBtn?.click();
     expect(riskService.update).toHaveBeenCalledWith(5, 1, expect.any(Object));
+  });
+
+  it('renders back button', () => {
+    const { fixture } = setup();
+    expect(fixture.nativeElement.querySelector('button[aria-label="Back"]')).toBeTruthy();
   });
 
   it('calls remove on delete', () => {
