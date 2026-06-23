@@ -130,4 +130,17 @@ describe('IssueDetailComponent', () => {
     const { fixture } = setup();
     expect(fixture.nativeElement.querySelector('button[aria-label="Back to issues"]')).toBeTruthy();
   });
+
+  it('form is disabled for closed issue', () => {
+    const { fixture } = setup(closedIssue);
+    const comp = fixture.componentInstance as any;
+    expect(comp.form.disabled).toBe(true);
+  });
+
+  it('calls remove on delete and navigates back', () => {
+    const { fixture, issueService } = setup();
+    const deleteBtn = fixture.nativeElement.querySelector('button[aria-label="Delete issue"]');
+    deleteBtn?.click();
+    expect(issueService.remove).toHaveBeenCalledWith(5, 1);
+  });
 });

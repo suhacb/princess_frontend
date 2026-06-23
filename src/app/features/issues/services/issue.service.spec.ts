@@ -60,6 +60,15 @@ describe('IssueService', () => {
       expect(service.selectedIssue()?.id).toBe(1);
     });
 
+    it('clears selectedIssue before loading', () => {
+      const getFn = vi.fn().mockReturnValue(of({ data: stubApi }));
+      const { service } = setup({ get: getFn });
+      service.load(5, 1).subscribe();
+      getFn.mockReturnValue(of({ data: { ...stubApi, id: 2 } }));
+      service.load(5, 2).subscribe();
+      expect(service.selectedIssue()?.id).toBe(2);
+    });
+
     it('calls correct endpoint', () => {
       const { service, apiService } = setup({ get: vi.fn().mockReturnValue(of({ data: stubApi })) });
       service.load(5, 1).subscribe();
@@ -95,6 +104,13 @@ describe('IssueService', () => {
       service.list(5).subscribe();
       service.update(5, 1, { title: 'Updated' }).subscribe();
       expect(service.issues()[0].title).toBe('Updated');
+    });
+
+    it('updates selectedIssue when it matches', () => {
+      const { service } = setup({ get: vi.fn().mockReturnValue(of({ data: stubApi })) });
+      service.load(5, 1).subscribe();
+      service.update(5, 1, { title: 'Updated' }).subscribe();
+      expect(service.selectedIssue()?.title).toBe('Updated');
     });
 
     it('calls correct endpoint', () => {

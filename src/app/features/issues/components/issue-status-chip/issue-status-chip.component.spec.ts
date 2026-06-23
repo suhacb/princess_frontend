@@ -17,6 +17,7 @@ describe('IssueStatusChipComponent', () => {
   it('shows Escalated label', () => expect(setup('escalated').nativeElement.textContent).toContain('Escalated'));
   it('shows Closed label', () => expect(setup('closed').nativeElement.textContent).toContain('Closed'));
   it('applies open class', () => expect(setup('open').nativeElement.querySelector('.status-chip--open')).toBeTruthy());
+  it('applies under_review class', () => expect(setup('under_review').nativeElement.querySelector('.status-chip--under_review')).toBeTruthy());
   it('applies escalated class', () => expect(setup('escalated').nativeElement.querySelector('.status-chip--escalated')).toBeTruthy());
   it('applies closed class', () => expect(setup('closed').nativeElement.querySelector('.status-chip--closed')).toBeTruthy());
 });

@@ -17,5 +17,7 @@ describe('IssuePriorityChipComponent', () => {
   it('shows High label', () => expect(setup('high').nativeElement.textContent).toContain('High'));
   it('shows Critical label', () => expect(setup('critical').nativeElement.textContent).toContain('Critical'));
   it('applies low class', () => expect(setup('low').nativeElement.querySelector('.priority-chip--low')).toBeTruthy());
+  it('applies medium class', () => expect(setup('medium').nativeElement.querySelector('.priority-chip--medium')).toBeTruthy());
+  it('applies high class', () => expect(setup('high').nativeElement.querySelector('.priority-chip--high')).toBeTruthy());
   it('applies critical class', () => expect(setup('critical').nativeElement.querySelector('.priority-chip--critical')).toBeTruthy());
 });

@@ -98,4 +98,13 @@ describe('IssueListComponent', () => {
     const { fixture } = setup([stubIssue]);
     expect(fixture.nativeElement.textContent).toContain('Alice');
   });
+
+  it('navigates to issue detail on row click', () => {
+    const { fixture } = setup([stubIssue]);
+    const comp = fixture.componentInstance as any;
+    const navigateSpy = vi.spyOn(comp.router ?? comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
+    const row = fixture.nativeElement.querySelector('.issue-row');
+    row?.click();
+    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'issues', 1]);
+  });
 });
