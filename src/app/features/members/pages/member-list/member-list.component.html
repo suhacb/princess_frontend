@@ -1,0 +1,89 @@
+<div class="members-header">
+  <h2 class="members-title">Members</h2>
+</div>
+
+@if (updateError()) {
+  <p class="action-error">{{ updateError() }}</p>
+}
+@if (removeError()) {
+  <p class="action-error">{{ removeError() }}</p>
+}
+
+@if (loading() && members().length === 0) {
+  <div class="table-skeleton">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="skeleton-row">
+        <app-skeleton height="20px" width="200px" borderRadius="4px" />
+        <app-skeleton height="24px" width="120px" borderRadius="12px" />
+        <app-skeleton height="20px" width="80px" borderRadius="4px" />
+      </div>
+    }
+  </div>
+} @else if (members().length === 0) {
+  <app-empty-state
+    icon="group"
+    title="No members yet"
+    message="Members will appear here once they are added to this project."
+  />
+} @else {
+  <table mat-table [dataSource]="members()" class="members-table">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let member">
+        <div class="person-cell">
+          <span class="person-name">{{ member.person.name }}</span>
+          @if (personMeta(member); as meta) {
+            <span class="person-meta">{{ meta }}</span>
+          }
+          @if (member.person.email) {
+            <span class="person-email">{{ member.person.email }}</span>
+          }
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>Role</th>
+      <td mat-cell *matCellDef="let member">
+        <app-member-role-chip [role]="member.role" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="side">
+      <th mat-header-cell *matHeaderCellDef>Side</th>
+      <td mat-cell *matCellDef="let member">
+        @if (member.side; as side) {
+          <span class="side-badge side-badge--{{ side }}">{{ sideLabel(side) }}</span>
+        } @else {
+          <span class="side-none">—</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let member">
+        @if (pendingRemoveId() === member.id) {
+          <div class="confirm-remove">
+            <span class="confirm-text">Remove {{ member.person.name }}?</span>
+            <button mat-button color="warn" (click)="confirmRemove(member)">Remove</button>
+            <button mat-button (click)="cancelRemove()">Cancel</button>
+          </div>
+        } @else {
+          <div class="action-buttons">
+            <button mat-icon-button (click)="openEditDialog(member)" matTooltip="Edit role / side">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="initiateRemove(member.id)" matTooltip="Remove from project" class="remove-btn">
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </div>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+}

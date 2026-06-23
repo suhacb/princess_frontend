@@ -32,7 +32,12 @@ export const projectsRoutes: Routes = [
           import('../stages/pages/stage-detail/stage-detail.component').then(m => m.StageDetailComponent),
         title: 'Stage',
       },
-      // FE-P2-04: members
+      {
+        path: 'members',
+        loadComponent: () =>
+          import('../members/pages/member-list/member-list.component').then(m => m.MemberListComponent),
+        title: 'Members',
+      },
       // Future: audit
     ],
   },
