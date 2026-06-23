@@ -1,0 +1,109 @@
+@if (loading() && !entry()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (entry(); as e) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <div class="title-row">
+          <span class="method-badge">{{ methodLabels[e.qualityMethod] }}</span>
+          <h2 class="entry-title">{{ e.productName }}</h2>
+        </div>
+        @if (e.result) {
+          <app-quality-result-chip [result]="e.result" />
+        }
+      </div>
+      <div class="header-actions">
+        <button mat-flat-button color="warn" class="delete-btn" (click)="deleteEntry()">Delete</button>
+        <button mat-flat-button color="primary" [disabled]="form.pristine || form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
+
+    @if (saveError()) {
+      <div class="error-banner">{{ saveError() }}</div>
+    }
+
+    <div class="meta-row">
+      @if (e.signOffBy) { <span>Signed off by: {{ e.signOffBy.name }}</span> }
+      @if (e.signOffAt) { <span>{{ e.signOffAt | date: 'dd MMM yyyy' }}</span> }
+    </div>
+
+    <form [formGroup]="form" class="detail-form">
+      <section class="form-section">
+        <h3 class="section-heading">Entry</h3>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Product name</mat-label>
+          <input matInput formControlName="product_name" />
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Quality method</mat-label>
+            <mat-select formControlName="quality_method">
+              @for (m of methods; track m) {
+                <mat-option [value]="m">{{ methodLabels[m] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Planned date</mat-label>
+            <input matInput type="date" formControlName="planned_date" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Outcome</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Actual date</mat-label>
+            <input matInput type="date" formControlName="actual_date" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Result</mat-label>
+            <mat-select formControlName="result">
+              <mat-option [value]="null">—</mat-option>
+              @for (r of results; track r) {
+                <mat-option [value]="r">{{ resultLabels[r] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Issues raised</mat-label>
+          <textarea matInput formControlName="issues_raised" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Signed off by</mat-label>
+            <mat-select formControlName="sign_off_by">
+              <mat-option [value]="null">—</mat-option>
+              @for (m of members(); track m.id) {
+                <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sign-off date</mat-label>
+            <input matInput type="date" formControlName="sign_off_at" />
+          </mat-form-field>
+        </div>
+      </section>
+    </form>
+  </div>
+}

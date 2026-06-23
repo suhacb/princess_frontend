@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h2 class="page-title">Quality Register</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="result-filter">
+      <mat-label>Result</mat-label>
+      <mat-select [value]="resultFilter()" (valueChange)="resultFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (r of qualityResults; track r) {
+          <mat-option [value]="r">{{ resultLabels[r] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Add Entry
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filteredEntries().length === 0) {
+  <app-empty-state
+    message="No quality entries yet"
+    hint="Add a quality entry to track product review and inspection activities."
+  />
+} @else {
+  <div class="quality-table">
+    <div class="quality-table-header">
+      <span class="col-product">Product</span>
+      <span class="col-method">Method</span>
+      <span class="col-planned">Planned</span>
+      <span class="col-actual">Actual</span>
+      <span class="col-result">Result</span>
+      <span class="col-sign-off">Signed off by</span>
+    </div>
+    @for (entry of filteredEntries(); track entry.id) {
+      <div
+        class="quality-row"
+        (click)="navigateToEntry(entry.id)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="navigateToEntry(entry.id)"
+        (keydown.space)="navigateToEntry(entry.id)"
+      >
+        <span class="col-product">{{ entry.productName }}</span>
+        <span class="col-method">{{ methodLabels[entry.qualityMethod] }}</span>
+        <span class="col-planned">{{ entry.plannedDate ? (entry.plannedDate | date: 'dd MMM yyyy') : '—' }}</span>
+        <span class="col-actual">{{ entry.actualDate ? (entry.actualDate | date: 'dd MMM yyyy') : '—' }}</span>
+        <span class="col-result">
+          @if (entry.result) {
+            <app-quality-result-chip [result]="entry.result" />
+          } @else {
+            <span class="pending-badge">Pending</span>
+          }
+        </span>
+        <span class="col-sign-off">{{ entry.signOffBy?.name ?? '—' }}</span>
+      </div>
+    }
+  </div>
+}
