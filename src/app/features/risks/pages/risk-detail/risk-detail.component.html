@@ -1,0 +1,181 @@
+@if (loading() && !risk()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (risk(); as r) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <h2 class="risk-title">{{ r.title }}</h2>
+        <div class="header-chips">
+          <app-risk-score-badge [score]="r.riskScore" />
+          <app-risk-status-chip [status]="r.status" />
+        </div>
+      </div>
+      <div class="header-actions">
+        <button
+          mat-flat-button
+          color="warn"
+          class="delete-btn"
+          (click)="deleteRisk()"
+        >Delete</button>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="form.pristine || form.invalid"
+          (click)="save()"
+        >Save</button>
+      </div>
+    </div>
+
+    @if (saveError()) {
+      <div class="error-banner">{{ saveError() }}</div>
+    }
+
+    <div class="raised-meta">
+      <span>Raised: {{ r.raisedAt | date: 'dd MMM yyyy' }}</span>
+      @if (r.owner) { <span>Owner: {{ r.owner.name }}</span> }
+    </div>
+
+    <form [formGroup]="form" class="detail-form">
+      <section class="form-section">
+        <h3 class="section-heading">Details</h3>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Category</mat-label>
+          <input matInput formControlName="category" placeholder="e.g. Technical, Resource, External" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Assessment</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Probability (1–5)</mat-label>
+            <mat-select formControlName="probability">
+              @for (n of scoreLevels; track n) {
+                <mat-option [value]="n">{{ n }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Impact (1–5)</mat-label>
+            <mat-select formControlName="impact">
+              @for (n of scoreLevels; track n) {
+                <mat-option [value]="n">{{ n }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="score-display">
+            <span class="score-label">Risk Score</span>
+            <app-risk-score-badge [score]="computedScore()" />
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Proximity</mat-label>
+          <mat-select formControlName="proximity">
+            @for (p of proximities; track p) {
+              <mat-option [value]="p">{{ proximityLabels[p] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Response</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Response type</mat-label>
+            <mat-select formControlName="response_type">
+              @for (r of responseTypes; track r) {
+                <mat-option [value]="r">{{ responseTypeLabels[r] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Risk owner</mat-label>
+            <mat-select formControlName="risk_owner">
+              @for (m of members(); track m.id) {
+                <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Response action</mat-label>
+          <textarea matInput formControlName="response_action" rows="3" placeholder="Actions taken or planned to respond to this risk"></textarea>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Residual Assessment</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Residual probability (1–5)</mat-label>
+            <mat-select formControlName="residual_probability">
+              <mat-option [value]="null">—</mat-option>
+              @for (n of scoreLevels; track n) {
+                <mat-option [value]="n">{{ n }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Residual impact (1–5)</mat-label>
+            <mat-select formControlName="residual_impact">
+              <mat-option [value]="null">—</mat-option>
+              @for (n of scoreLevels; track n) {
+                <mat-option [value]="n">{{ n }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (computedResidualScore(); as rs) {
+            <div class="score-display">
+              <span class="score-label">Residual Score</span>
+              <app-risk-score-badge [score]="rs" />
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Status</h3>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (s of statuses; track s) {
+              <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </section>
+    </form>
+  </div>
+}

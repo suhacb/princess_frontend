@@ -57,6 +57,18 @@ export const projectsRoutes: Routes = [
         title: 'Issue',
       },
       {
+        path: 'risks',
+        loadComponent: () =>
+          import('../risks/pages/risk-list/risk-list.component').then(m => m.RiskListComponent),
+        title: 'Risk Log',
+      },
+      {
+        path: 'risks/:riskId',
+        loadComponent: () =>
+          import('../risks/pages/risk-detail/risk-detail.component').then(m => m.RiskDetailComponent),
+        title: 'Risk',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
