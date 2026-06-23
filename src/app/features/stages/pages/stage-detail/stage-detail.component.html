@@ -1,4 +1,6 @@
-@if (loading() && !stage()) {
+@if (loadError()) {
+  <p class="load-error">{{ loadError() }}</p>
+} @else if (loading() && !stage()) {
   <div class="detail-skeleton">
     <app-skeleton height="32px" width="280px" borderRadius="4px" />
     <app-skeleton height="20px" width="160px" borderRadius="4px" />
@@ -71,7 +73,7 @@
 
           <div class="tolerance-item">
             <span class="tolerance-dim-label">Time</span>
-            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.time.min, s.tolerances.time.max, 'days') }}</span>
+            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.time?.min ?? null, s.tolerances.time?.max ?? null, 'days') }}</span>
             @if (s.toleranceStatus.time) {
               <span class="tolerance-health tolerance-health--{{ s.toleranceStatus.time }}">{{ s.toleranceStatus.time }}</span>
             }
@@ -79,7 +81,7 @@
 
           <div class="tolerance-item">
             <span class="tolerance-dim-label">Cost</span>
-            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.cost.min, s.tolerances.cost.max, '€') }}</span>
+            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.cost?.min ?? null, s.tolerances.cost?.max ?? null, '€') }}</span>
             @if (s.toleranceStatus.cost) {
               <span class="tolerance-health tolerance-health--{{ s.toleranceStatus.cost }}">{{ s.toleranceStatus.cost }}</span>
             }

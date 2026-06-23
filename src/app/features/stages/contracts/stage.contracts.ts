@@ -1,4 +1,4 @@
-import { ProjectTolerances } from '../../projects/contracts/project.contracts';
+import { ProjectTolerances, normalizeTolerances } from '../../projects/contracts/project.contracts';
 
 export type StageType = 'initiation' | 'delivery' | 'final';
 export type StageStatus = 'planned' | 'active' | 'completed' | 'exception';
@@ -77,7 +77,7 @@ export function mapStage(api: StageApiResource): Stage {
     plannedEndDate: api.planned_end_date,
     actualStartDate: api.actual_start_date,
     actualEndDate: api.actual_end_date,
-    tolerances: api.tolerances,
+    tolerances: normalizeTolerances(api.tolerances),
     toleranceStatus: api.tolerance_status,
     createdAt: api.created_at,
   };

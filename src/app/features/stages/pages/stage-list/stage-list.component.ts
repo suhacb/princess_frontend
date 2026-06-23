@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, effect, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -28,7 +28,6 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
 @Component({
   selector: 'app-stage-list',
   imports: [
-    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
@@ -44,6 +43,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
 export class StageListComponent {
   private readonly stageService = inject(StageService);
   private readonly projectService = inject(ProjectService);
+  private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
 
   protected readonly loading = this.stageService.loading;
@@ -55,8 +55,16 @@ export class StageListComponent {
   protected readonly transitionError = signal<string | null>(null);
 
   constructor() {
+    effect(() => {
+      const project = this.project();
+      if (project) this.stageService.list(project.id).subscribe();
+    });
+  }
+
+  protected navigateToStage(stageId: number): void {
     const project = this.project();
-    if (project) this.stageService.list(project.id).subscribe();
+    if (!project) return;
+    this.router.navigate(['/projects', project.id, 'stages', stageId]);
   }
 
   protected availableTransitions(stage: Stage): StageTransitionAction[] {

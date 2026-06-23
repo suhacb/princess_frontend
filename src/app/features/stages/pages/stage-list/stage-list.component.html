@@ -39,10 +39,10 @@
           }
         </div>
 
-        <div class="stage-card" [class.stage-card--exception]="stage.status === 'exception'">
+        <div class="stage-card" [class.stage-card--exception]="stage.status === 'exception'" (click)="navigateToStage(stage.id)">
           <div class="stage-card__header">
             <div class="stage-card__title-row">
-              <a class="stage-card__name" [routerLink]="[stage.id]">{{ stage.name }}</a>
+              <span class="stage-card__name">{{ stage.name }}</span>
               <span class="stage-type-badge">{{ stageTypeLabels[stage.type] }}</span>
               <app-stage-status-chip [status]="stage.status" />
             </div>
@@ -91,10 +91,10 @@
                 <button
                   mat-stroked-button
                   class="action-btn action-btn--{{ action }}"
-                  (click)="openTransitionDialog(stage, action); $event.stopPropagation()"
+                  (click)="$event.stopPropagation(); openTransitionDialog(stage, action)"
                 >{{ action === 'start' ? 'Start' : action === 'complete' ? 'Complete' : 'Flag Exception' }}</button>
               }
-              <button mat-button [routerLink]="[stage.id]">View details</button>
+              <button mat-button (click)="$event.stopPropagation(); navigateToStage(stage.id)">View details</button>
             </div>
           </div>
         </div>

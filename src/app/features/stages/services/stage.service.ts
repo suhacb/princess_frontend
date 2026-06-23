@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, tap } from 'rxjs';
 import { ApiService } from '../../../core/http/api.service';
 import { ApiResource, PaginatedApiResource } from '../../../shared/contracts/api.contracts';
 import {
@@ -35,11 +35,16 @@ export class StageService {
 
   load(projectId: number, stageId: number): Observable<Stage> {
     this._loading.set(true);
+    this._selectedStage.set(null);
     return this.api.get<ApiResource<StageApiResource>>(`/projects/${projectId}/stages/${stageId}`).pipe(
       map(res => mapStage(res.data)),
       tap(stage => {
         this._selectedStage.set(stage);
         this._loading.set(false);
+      }),
+      catchError(err => {
+        this._loading.set(false);
+        throw err;
       }),
     );
   }

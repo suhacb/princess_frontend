@@ -98,7 +98,7 @@ export class ProjectListComponent implements OnInit {
 
   protected toleranceHealth(project: Project): 'full' | 'partial' | 'none' {
     const t = project.tolerances;
-    const fields = [t.time.min, t.time.max, t.cost.min, t.cost.max, t.scope, t.risk, t.quality, t.benefit];
+    const fields = [t.time?.min, t.time?.max, t.cost?.min, t.cost?.max, t.scope, t.risk, t.quality, t.benefit];
     const defined = fields.filter(f => f !== null && f !== undefined && f !== '').length;
     if (defined === 0) return 'none';
     if (defined === fields.length) return 'full';

@@ -3,6 +3,11 @@
   padding: 24px 0;
 }
 
+.load-error {
+  color: var(--mat-sys-error);
+  padding: 16px;
+}
+
 .detail-skeleton {
   display: flex;
   flex-direction: column;
