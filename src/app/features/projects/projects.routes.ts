@@ -81,6 +81,18 @@ export const projectsRoutes: Routes = [
         title: 'Change',
       },
       {
+        path: 'quality-register',
+        loadComponent: () =>
+          import('../quality-register/pages/quality-list/quality-list.component').then(m => m.QualityListComponent),
+        title: 'Quality Register',
+      },
+      {
+        path: 'quality-register/:entryId',
+        loadComponent: () =>
+          import('../quality-register/pages/quality-detail/quality-detail.component').then(m => m.QualityDetailComponent),
+        title: 'Quality Entry',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
