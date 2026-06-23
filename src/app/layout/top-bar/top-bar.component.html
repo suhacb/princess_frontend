@@ -37,15 +37,22 @@
       [matMenuTriggerFor]="userMenu"
       aria-label="User menu"
     >
-      <span class="top-bar__avatar-initials">{{ userInitials }}</span>
+      <span class="top-bar__avatar-initials">{{ userInitials() }}</span>
     </button>
 
     <mat-menu #userMenu="matMenu" xPosition="before" class="princess-menu">
+      @if (user(); as u) {
+        <div class="top-bar__menu-user">
+          <span class="top-bar__menu-name">{{ u.name }} {{ u.familyName }}</span>
+          <span class="top-bar__menu-email">{{ u.email }}</span>
+        </div>
+        <mat-divider />
+      }
       <button mat-menu-item>
         <mat-icon>person_outline</mat-icon>
         Profile
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="signOut()">
         <mat-icon>logout</mat-icon>
         Sign out
       </button>

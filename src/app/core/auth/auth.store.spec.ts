@@ -18,6 +18,7 @@ function makeJwt(payload: Record<string, unknown>): string {
 }
 
 const VALIDATE_URL = `${environment.apiUrl}/auth/validate-access-token`;
+const LOGOUT_URL = `${environment.authBackendUrl}/api/auth/logout`;
 
 const stubToken: AccessToken = {
   accessToken: 'at',
@@ -143,6 +144,25 @@ describe('AuthStore', () => {
     it('returns null when access token is not a valid JWT', () => {
       store.setToken({ ...stubToken, accessToken: 'not-a-jwt' });
       expect(store.user()).toBeNull();
+    });
+  });
+
+  describe('logout()', () => {
+    it('clears the token after a successful logout call', async () => {
+      store.setToken(stubToken);
+      const result$ = firstValueFrom(store.logout());
+      http.expectOne(LOGOUT_URL).flush(null);
+      await result$;
+      expect(store.accessToken()).toBeNull();
+      expect(store.isLoggedIn()).toBe(false);
+    });
+
+    it('still clears the token when the logout endpoint returns an error', async () => {
+      store.setToken(stubToken);
+      const result$ = firstValueFrom(store.logout());
+      http.expectOne(LOGOUT_URL).flush('Server error', { status: 500, statusText: 'Error' });
+      await result$;
+      expect(store.accessToken()).toBeNull();
     });
   });
 

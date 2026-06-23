@@ -129,6 +129,25 @@
     }
   }
 
+  &__menu-user {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 16px 8px;
+    pointer-events: none;
+  }
+
+  &__menu-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__menu-email {
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
   &__avatar-initials {
     display: flex;
     align-items: center;
