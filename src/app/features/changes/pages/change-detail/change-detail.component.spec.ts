@@ -121,6 +121,24 @@ describe('ChangeDetailComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Looks good');
   });
 
+  it('shows decision rationale block for rejected change', () => {
+    const rejectedChange: Change = {
+      ...stubChange,
+      status: 'rejected',
+      decisionRationale: 'Out of scope',
+      decisionBy: { id: 20, name: 'Bob' },
+      decisionAt: '2026-06-10T10:00:00Z',
+    };
+    const { fixture } = setup(rejectedChange);
+    expect(fixture.nativeElement.querySelector('.info-block--rejected')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Out of scope');
+  });
+
+  it('renders decided by name in meta', () => {
+    const { fixture } = setup(approvedChange);
+    expect(fixture.nativeElement.textContent).toContain('Bob');
+  });
+
   it('Save button is disabled when form is pristine', () => {
     const { fixture } = setup();
     const btn = Array.from(

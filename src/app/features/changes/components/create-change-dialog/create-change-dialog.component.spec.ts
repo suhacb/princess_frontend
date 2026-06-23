@@ -49,11 +49,20 @@ describe('CreateChangeDialogComponent', () => {
   it('sets empty optional fields to null in payload', () => {
     const { fixture, dialogRef } = setup();
     const comp = fixture.componentInstance as any;
-    comp.form.patchValue({ request_type: 'rfc', title: 'Add new field', description: '', priority: '' });
+    comp.form.patchValue({
+      request_type: 'rfc',
+      title: 'Add new field',
+      description: '',
+      impact_assessment: '',
+      priority: '',
+      implementation_due: '',
+    });
     comp.confirm();
     const payload = dialogRef.close.mock.calls[0][0];
     expect(payload.description).toBeNull();
+    expect(payload.impact_assessment).toBeNull();
     expect(payload.priority).toBeNull();
+    expect(payload.implementation_due).toBeNull();
   });
 
   it('does not close when form is invalid', () => {
