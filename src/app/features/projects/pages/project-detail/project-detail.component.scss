@@ -1,0 +1,142 @@
+.detail-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.detail-header {
+  margin-bottom: 24px;
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__stage {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.reference-badge {
+  font-family: monospace;
+  font-size: 0.85rem;
+  background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// PRINCE2 lifecycle stepper
+.lifecycle-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 28px;
+  padding: 16px 20px;
+  background: var(--mat-sys-surface-container-low);
+  border-radius: var(--princess-border-radius-card);
+}
+
+.lifecycle-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 90px;
+
+  &__dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--mat-sys-outline);
+    background: var(--mat-sys-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--princess-transition-speed) var(--princess-transition-easing);
+  }
+
+  &__icon {
+    font-size: 16px;
+    color: white;
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+    white-space: nowrap;
+    transition: color var(--princess-transition-speed) var(--princess-transition-easing);
+  }
+
+  &--completed {
+    .lifecycle-step__dot {
+      background: var(--mat-sys-primary);
+      border-color: var(--mat-sys-primary);
+    }
+
+    .lifecycle-step__label {
+      color: var(--mat-sys-primary);
+    }
+  }
+
+  &--active {
+    .lifecycle-step__dot {
+      border-color: var(--mat-sys-primary);
+      border-width: 3px;
+      background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+    }
+
+    .lifecycle-step__label {
+      color: var(--mat-sys-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+.lifecycle-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--mat-sys-outline-variant);
+  margin-bottom: 22px;
+  transition: background var(--princess-transition-speed) var(--princess-transition-easing);
+
+  &--completed {
+    background: var(--mat-sys-primary);
+  }
+}
+
+// Tab navigation
+.detail-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  margin-bottom: 24px;
+}
+
+.detail-tab {
+  border-radius: 4px 4px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+
+  &--active {
+    color: var(--mat-sys-primary);
+    border-bottom: 2px solid var(--mat-sys-primary);
+  }
+}
+
+.detail-content {
+  min-height: 200px;
+}
