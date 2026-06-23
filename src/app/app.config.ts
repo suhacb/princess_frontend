@@ -5,12 +5,13 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 
 import { routes } from './app.routes';
 import { PageTitleStrategy } from './core/strategies/page-title.strategy';
+import { appHeadersInterceptor } from './core/http/app-headers.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([])),
+    provideHttpClient(withInterceptors([appHeadersInterceptor])),
     provideAnimationsAsync(),
     { provide: TitleStrategy, useClass: PageTitleStrategy },
   ],
