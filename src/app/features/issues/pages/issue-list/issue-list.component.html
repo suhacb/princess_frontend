@@ -1,0 +1,58 @@
+<div class="list-header">
+  <h2 class="list-title">Issue Log</h2>
+  <div class="list-header__actions">
+    <div class="sort-toggle">
+      <span class="sort-label">Sort by:</span>
+      <button mat-button [class.active]="sortKey() === 'priority'" (click)="sortKey.set('priority')">Priority</button>
+      <button mat-button [class.active]="sortKey() === 'raised_at'" (click)="sortKey.set('raised_at')">Newest</button>
+    </div>
+    <button mat-flat-button (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Raise Issue
+    </button>
+  </div>
+</div>
+
+@if (loading() && sortedIssues().length === 0) {
+  <div class="list-skeleton">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="skeleton-row">
+        <app-skeleton height="16px" width="60px" borderRadius="4px" />
+        <app-skeleton height="16px" width="200px" borderRadius="4px" />
+        <app-skeleton height="22px" width="80px" borderRadius="12px" />
+        <app-skeleton height="22px" width="60px" borderRadius="4px" />
+      </div>
+    }
+  </div>
+} @else if (sortedIssues().length === 0) {
+  <app-empty-state
+    icon="report_problem"
+    title="No issues raised"
+    message="Track problems, concerns, RFCs, and off-spec items here."
+    actionLabel="Raise Issue"
+    (actionClick)="openCreateDialog()"
+  />
+} @else {
+  <div class="issue-table">
+    <div class="issue-table__header">
+      <span>Type</span>
+      <span>Title</span>
+      <span>Status</span>
+      <span>Priority</span>
+      <span>Raised</span>
+    </div>
+
+    @for (issue of sortedIssues(); track issue.id) {
+      <div class="issue-row" (click)="navigateToIssue(issue.id)">
+        <span class="type-badge type-badge--{{ issue.issueType }}">{{ typeLabels[issue.issueType] }}</span>
+        <span class="issue-title">{{ issue.title }}</span>
+        <app-issue-status-chip [status]="issue.status" />
+        <app-issue-priority-chip [priority]="issue.priority" />
+        <span class="issue-meta">
+          {{ issue.raisedAt | date:'d MMM' }}
+          @if (issue.raisedBy) { · {{ issue.raisedBy.name }} }
+        </span>
+      </div>
+    }
+  </div>
+}

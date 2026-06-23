@@ -1,0 +1,137 @@
+@if (loadError()) {
+  <p class="load-error">{{ loadError() }}</p>
+}
+
+@if (loading() && !issue()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (issue(); as i) {
+  <div class="issue-detail">
+
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back to issues">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="detail-header__info">
+        <span class="type-badge type-badge--{{ i.issueType }}">{{ typeLabels[i.issueType] }}</span>
+        <app-issue-status-chip [status]="i.status" />
+        <app-issue-priority-chip [priority]="i.priority" />
+      </div>
+
+      <div class="detail-header__actions">
+        @if (canEscalate()) {
+          <button mat-stroked-button color="warn" (click)="openEscalateDialog()">
+            <mat-icon>escalator_warning</mat-icon>
+            Escalate
+          </button>
+        }
+        @if (canResolve()) {
+          <button mat-flat-button color="primary" (click)="openResolveDialog()">
+            <mat-icon>check_circle</mat-icon>
+            Mark Resolved
+          </button>
+        }
+        @if (canEdit()) {
+          <button mat-icon-button color="warn" (click)="deleteIssue()" aria-label="Delete issue">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (actionError()) {
+      <p class="action-error">{{ actionError() }}</p>
+    }
+
+    <div class="detail-meta">
+      @if (i.raisedBy) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">person</mat-icon>
+          Raised by {{ i.raisedBy.name }}
+          @if (i.raisedAt) { on {{ i.raisedAt | date:'mediumDate' }} }
+        </span>
+      }
+      @if (i.assignedTo) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">assignment_ind</mat-icon>
+          Assigned to {{ i.assignedTo.name }}
+        </span>
+      }
+      @if (i.escalatedAt) {
+        <span class="meta-item meta-item--warn">
+          <mat-icon class="meta-icon">escalator_warning</mat-icon>
+          Escalated on {{ i.escalatedAt | date:'mediumDate' }}
+        </span>
+      }
+      @if (i.resolvedAt) {
+        <span class="meta-item meta-item--success">
+          <mat-icon class="meta-icon">check_circle</mat-icon>
+          Resolved on {{ i.resolvedAt | date:'mediumDate' }}
+        </span>
+      }
+    </div>
+
+    @if (i.escalationReason) {
+      <div class="info-block info-block--warn">
+        <p class="info-block__label">Escalation Reason</p>
+        <p class="info-block__body">{{ i.escalationReason }}</p>
+      </div>
+    }
+
+    @if (i.resolution) {
+      <div class="info-block info-block--success">
+        <p class="info-block__label">Resolution</p>
+        <p class="info-block__body">{{ i.resolution }}</p>
+      </div>
+    }
+
+    <form [formGroup]="form" class="detail-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="issue_type">
+            @for (t of types; track t) {
+              <mat-option [value]="t">{{ typeLabels[t] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Priority</mat-label>
+          <mat-select formControlName="priority">
+            @for (p of priorities; track p) {
+              <mat-option [value]="p">{{ priorityLabels[p] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="5"
+          placeholder="Details, impact, context, steps to reproduce…"></textarea>
+      </mat-form-field>
+
+      @if (saveError()) {
+        <p class="save-error">{{ saveError() }}</p>
+      }
+
+      @if (canEdit()) {
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="form.pristine">
+            Save Changes
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+}

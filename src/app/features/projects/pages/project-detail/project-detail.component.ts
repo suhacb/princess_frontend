@@ -13,6 +13,7 @@ const TABS = [
   { label: 'Stages', path: 'stages' },
   { label: 'Members', path: 'members' },
   { label: 'Daily Log', path: 'daily-log' },
+  { label: 'Issues', path: 'issues' },
   { label: 'Audit', path: 'audit' },
 ] as const;
 

@@ -45,6 +45,18 @@ export const projectsRoutes: Routes = [
         title: 'Daily Log',
       },
       {
+        path: 'issues',
+        loadComponent: () =>
+          import('../issues/pages/issue-list/issue-list.component').then(m => m.IssueListComponent),
+        title: 'Issue Log',
+      },
+      {
+        path: 'issues/:issueId',
+        loadComponent: () =>
+          import('../issues/pages/issue-detail/issue-detail.component').then(m => m.IssueDetailComponent),
+        title: 'Issue',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
