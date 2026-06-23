@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h2 class="page-title">Lessons Log</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="source-filter">
+      <mat-label>Source</mat-label>
+      <mat-select [value]="sourceFilter()" (valueChange)="sourceFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of lessonSources; track s) {
+          <mat-option [value]="s">{{ sourceLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Record Lesson
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filteredLessons().length === 0) {
+  <app-empty-state
+    message="No lessons recorded yet"
+    hint="Record lessons learned to capture insights and improve future projects."
+  />
+} @else {
+  <div class="lesson-table">
+    <div class="lesson-table-header">
+      <span class="col-source">Source</span>
+      <span class="col-category">Category</span>
+      <span class="col-description">Description</span>
+      <span class="col-raised-by">Raised by</span>
+      <span class="col-date">Date</span>
+    </div>
+    @for (lesson of filteredLessons(); track lesson.id) {
+      <div
+        class="lesson-row"
+        (click)="navigateToLesson(lesson.id)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="navigateToLesson(lesson.id)"
+        (keydown.space)="navigateToLesson(lesson.id)"
+      >
+        <span class="col-source">
+          <span class="source-badge source-badge--{{ lesson.source }}">{{ sourceLabels[lesson.source] }}</span>
+        </span>
+        <span class="col-category">{{ lesson.category ?? '—' }}</span>
+        <span class="col-description">{{ lesson.description }}</span>
+        <span class="col-raised-by">{{ lesson.raisedBy?.name ?? '—' }}</span>
+        <span class="col-date">{{ lesson.raisedAt | date: 'dd MMM yyyy' }}</span>
+      </div>
+    }
+  </div>
+}

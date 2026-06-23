@@ -93,6 +93,17 @@ export class AuthStore {
     });
   }
 
+  logout(): Observable<void> {
+    return this.http
+      .post<void>(`${environment.authBackendUrl}/api/auth/logout`, {})
+      .pipe(
+        catchError(() => of(undefined)),
+        map(() => {
+          this.resetToken();
+        }),
+      );
+  }
+
   validateAccessToken(): Observable<boolean> {
     return this.http
       .get<AccessTokenApiResource | boolean | string>(

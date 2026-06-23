@@ -17,6 +17,7 @@ const TABS = [
   { label: 'Risks', path: 'risks' },
   { label: 'Changes', path: 'changes' },
   { label: 'Quality', path: 'quality-register' },
+  { label: 'Lessons', path: 'lessons' },
   { label: 'Audit', path: 'audit' },
 ] as const;
 
