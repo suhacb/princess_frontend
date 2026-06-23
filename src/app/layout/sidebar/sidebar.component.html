@@ -3,14 +3,63 @@
   <div class="sidebar__brand-line"></div>
 
   <div class="sidebar__scroll">
-    @for (group of navGroups; track group.label) {
+    @for (group of staticGroups; track group.label) {
       <div class="sidebar__group">
         @if (!layout.sidebarCollapsed()) {
           <span class="sidebar__group-label">{{ group.label }}</span>
         } @else {
           <div class="sidebar__group-divider"></div>
         }
+        @for (item of group.items; track item.route) {
+          <a
+            class="sidebar__item"
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__item--active"
+            [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
+            matTooltipPosition="right"
+            matRipple
+            [matRippleColor]="'rgba(255,255,255,0.06)'"
+          >
+            <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
+            @if (!layout.sidebarCollapsed()) {
+              <span class="sidebar__item-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
 
+    <div class="sidebar__group">
+      @if (!layout.sidebarCollapsed()) {
+        <span class="sidebar__group-label">{{ logsGroup().label }}</span>
+      } @else {
+        <div class="sidebar__group-divider"></div>
+      }
+      @for (item of logsGroup().items; track item.label) {
+        <a
+          class="sidebar__item"
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__item--active"
+          [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
+          matTooltipPosition="right"
+          matRipple
+          [matRippleColor]="'rgba(255,255,255,0.06)'"
+        >
+          <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
+          @if (!layout.sidebarCollapsed()) {
+            <span class="sidebar__item-label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </div>
+
+    @for (group of trailingGroups; track group.label) {
+      <div class="sidebar__group">
+        @if (!layout.sidebarCollapsed()) {
+          <span class="sidebar__group-label">{{ group.label }}</span>
+        } @else {
+          <div class="sidebar__group-divider"></div>
+        }
         @for (item of group.items; track item.route) {
           <a
             class="sidebar__item"
