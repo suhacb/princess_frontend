@@ -1,0 +1,72 @@
+<div class="page-header">
+  <h2 class="page-title">Risk Log</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of riskStatuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="sort-toggle">
+      <button
+        mat-button
+        [class.active]="sortKey() === 'score'"
+        (click)="sortKey.set('score')"
+      >By Score</button>
+      <button
+        mat-button
+        [class.active]="sortKey() === 'raised_at'"
+        (click)="sortKey.set('raised_at')"
+      >Newest</button>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Raise Risk
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filteredAndSorted().length === 0) {
+  <app-empty-state
+    message="No risks recorded yet"
+    hint="Raise a risk to start tracking threats to the project."
+  />
+} @else {
+  <div class="risk-table">
+    <div class="risk-table-header">
+      <span class="col-score">Score</span>
+      <span class="col-title">Title</span>
+      <span class="col-category">Category</span>
+      <span class="col-proximity">Proximity</span>
+      <span class="col-response">Response</span>
+      <span class="col-status">Status</span>
+      <span class="col-owner">Owner</span>
+    </div>
+    @for (risk of filteredAndSorted(); track risk.id) {
+      <div class="risk-row" (click)="navigateToRisk(risk.id)" role="button" tabindex="0"
+           (keydown.enter)="navigateToRisk(risk.id)" (keydown.space)="navigateToRisk(risk.id)">
+        <span class="col-score">
+          <app-risk-score-badge [score]="risk.riskScore" />
+        </span>
+        <span class="col-title">{{ risk.title }}</span>
+        <span class="col-category">{{ risk.category ?? '—' }}</span>
+        <span class="col-proximity">{{ proximityLabels[risk.proximity] }}</span>
+        <span class="col-response">{{ responseTypeLabels[risk.responseType] }}</span>
+        <span class="col-status">
+          <app-risk-status-chip [status]="risk.status" />
+        </span>
+        <span class="col-owner">{{ risk.owner?.name ?? '—' }}</span>
+      </div>
+    }
+  </div>
+}
