@@ -69,6 +69,18 @@ export const projectsRoutes: Routes = [
         title: 'Risk',
       },
       {
+        path: 'changes',
+        loadComponent: () =>
+          import('../changes/pages/change-list/change-list.component').then(m => m.ChangeListComponent),
+        title: 'Change Log',
+      },
+      {
+        path: 'changes/:changeId',
+        loadComponent: () =>
+          import('../changes/pages/change-detail/change-detail.component').then(m => m.ChangeDetailComponent),
+        title: 'Change',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
