@@ -38,6 +38,12 @@ export const projectsRoutes: Routes = [
           import('../members/pages/member-list/member-list.component').then(m => m.MemberListComponent),
         title: 'Members',
       },
+      {
+        path: 'stages/:stageId/boundaries/:boundaryId',
+        loadComponent: () =>
+          import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
+        title: 'Boundary',
+      },
       // Future: audit
     ],
   },

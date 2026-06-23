@@ -19,6 +19,7 @@ import {
   availableTransitions,
 } from '../../contracts/stage.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { BoundaryListComponent } from '../../../boundaries/pages/boundary-list/boundary-list.component';
 
 @Component({
   selector: 'app-stage-detail',
@@ -32,6 +33,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     StageStatusChipComponent,
     SkeletonComponent,
     TitleCasePipe,
+    BoundaryListComponent,
   ],
   templateUrl: './stage-detail.component.html',
   styleUrl: './stage-detail.component.scss',
@@ -54,6 +56,11 @@ export class StageDetailComponent {
   protected readonly transitions = computed(() => {
     const stage = this.stage();
     return stage ? availableTransitions(stage.status) : [];
+  });
+
+  protected readonly stageIdNum = computed(() => {
+    const id = this.stageId();
+    return id ? +id : null;
   });
 
   protected readonly textToleranceDims = ['scope', 'risk', 'quality', 'benefit'] as const;

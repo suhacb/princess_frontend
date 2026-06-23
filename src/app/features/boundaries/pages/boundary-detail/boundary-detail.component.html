@@ -1,0 +1,110 @@
+@if (loadError()) {
+  <p class="load-error">{{ loadError() }}</p>
+}
+
+@if (loading() && !boundary()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="240px" borderRadius="6px" />
+    <app-skeleton height="18px" width="160px" borderRadius="4px" />
+    <app-skeleton height="100px" width="100%" borderRadius="8px" />
+  </div>
+} @else if (boundary(); as b) {
+  <div class="boundary-detail">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back to stage">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="detail-header__info">
+        <span class="type-label">{{ typeLabels[b.type] }}</span>
+        <app-boundary-status-chip [status]="b.status" />
+      </div>
+
+      <div class="detail-header__actions">
+        @if (canSubmit()) {
+          <button mat-flat-button (click)="save()" [disabled]="form.pristine">Save</button>
+          <button mat-flat-button color="primary" (click)="submit()">Submit for Approval</button>
+        }
+        @if (canApproveReject()) {
+          <button mat-flat-button (click)="openRejectDialog()">Reject</button>
+          <button mat-flat-button color="primary" (click)="approve()">Approve</button>
+        }
+        @if (canEdit()) {
+          <button mat-icon-button color="warn" (click)="deleteBoundary()" aria-label="Delete boundary">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (actionError()) {
+      <p class="action-error">{{ actionError() }}</p>
+    }
+
+    <div class="detail-meta">
+      @if (b.createdBy) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">person</mat-icon>
+          Created by {{ b.createdBy.name }}
+        </span>
+      }
+      @if (b.submittedAt && b.submittedBy) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">send</mat-icon>
+          Submitted by {{ b.submittedBy.name }} on {{ b.submittedAt | date:'mediumDate' }}
+        </span>
+      }
+      @if (b.approvedAt && b.approvedBy) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">verified</mat-icon>
+          {{ b.status === 'approved' ? 'Approved' : 'Reviewed' }} by {{ b.approvedBy.name }}
+          on {{ b.approvedAt | date:'mediumDate' }}
+        </span>
+      }
+    </div>
+
+    <form [formGroup]="form" class="detail-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="Optional title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Notes</mat-label>
+        <textarea matInput formControlName="notes" rows="5" placeholder="Stage narrative, key decisions, lessons learned…"></textarea>
+      </mat-form-field>
+
+      @if (isExceptionReport()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Exception Summary</mat-label>
+          <textarea matInput formControlName="exception_summary" rows="4" placeholder="Describe the exception and proposed corrective action…"></textarea>
+        </mat-form-field>
+      }
+
+      @if (isEndStageReport()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Next Stage</mat-label>
+          <mat-select formControlName="next_stage_id">
+            <mat-option [value]="null">None</mat-option>
+            @for (s of otherStages(); track s.id) {
+              <mat-option [value]="s.id">{{ s.name }}</mat-option>
+            }
+          </mat-select>
+          <mat-hint>Stage that will follow if approved</mat-hint>
+        </mat-form-field>
+      }
+
+      @if (saveError()) {
+        <p class="save-error">{{ saveError() }}</p>
+      }
+
+      @if (canEdit()) {
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="form.pristine">
+            Save Changes
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+}

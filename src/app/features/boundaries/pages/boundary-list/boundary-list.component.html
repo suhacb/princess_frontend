@@ -1,0 +1,62 @@
+<div class="boundaries-header">
+  <h3 class="boundaries-title">Stage Boundaries</h3>
+  <button mat-flat-button (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+    New Boundary
+  </button>
+</div>
+
+@if (loading() && boundaries().length === 0) {
+  <div class="list-skeleton">
+    @for (i of [1, 2]; track i) {
+      <div class="skeleton-card">
+        <app-skeleton height="18px" width="160px" borderRadius="4px" />
+        <app-skeleton height="22px" width="100px" borderRadius="12px" />
+        <app-skeleton height="14px" width="200px" borderRadius="4px" />
+      </div>
+    }
+  </div>
+} @else if (boundaries().length === 0) {
+  <app-empty-state
+    icon="checklist"
+    title="No boundaries yet"
+    message="Create an End Stage Report or Exception Report to begin the approval workflow."
+    actionLabel="New Boundary"
+    (actionClick)="openCreateDialog()"
+  />
+} @else {
+  <div class="boundary-cards">
+    @for (b of boundaries(); track b.id) {
+      <div class="boundary-card boundary-card--{{ b.status }}" (click)="navigateToBoundary(b.id)">
+        <div class="boundary-card__header">
+          <span class="type-badge type-badge--{{ b.type }}">{{ typeLabels[b.type] }}</span>
+          <app-boundary-status-chip [status]="b.status" />
+        </div>
+
+        <p class="boundary-card__title">{{ b.title || typeLabels[b.type] }}</p>
+
+        <div class="boundary-card__meta">
+          @if (b.submittedAt) {
+            <span class="meta-item">
+              <mat-icon class="meta-icon">send</mat-icon>
+              Submitted {{ b.submittedAt | date:'mediumDate' }}
+              @if (b.submittedBy) { by {{ b.submittedBy.name }} }
+            </span>
+          } @else {
+            <span class="meta-item">
+              <mat-icon class="meta-icon">edit_note</mat-icon>
+              Created {{ b.createdAt | date:'mediumDate' }}
+              @if (b.createdBy) { by {{ b.createdBy.name }} }
+            </span>
+          }
+          @if (b.approvedAt && b.approvedBy) {
+            <span class="meta-item">
+              <mat-icon class="meta-icon">verified</mat-icon>
+              {{ b.status === 'approved' ? 'Approved' : 'Reviewed' }} by {{ b.approvedBy.name }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
