@@ -1,0 +1,69 @@
+@if (loading() && !lesson()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (lesson(); as l) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <div class="title-row">
+          <span class="source-badge source-badge--{{ l.source }}">{{ sourceLabels[l.source] }}</span>
+          @if (l.category) { <span class="category-label">{{ l.category }}</span> }
+        </div>
+        <p class="lesson-description">{{ l.description }}</p>
+      </div>
+      <div class="header-actions">
+        <button mat-flat-button color="warn" (click)="deleteLesson()">Delete</button>
+        <button mat-flat-button color="primary" [disabled]="form.pristine || form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
+
+    @if (saveError()) {
+      <div class="error-banner">{{ saveError() }}</div>
+    }
+
+    <div class="meta-row">
+      @if (l.raisedBy) { <span>Raised by: {{ l.raisedBy.name }}</span> }
+      <span>{{ l.raisedAt | date: 'dd MMM yyyy' }}</span>
+    </div>
+
+    <form [formGroup]="form" class="detail-form">
+      <section class="form-section">
+        <h3 class="section-heading">Details</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Source</mat-label>
+            <mat-select formControlName="source">
+              @for (s of sources; track s) {
+                <mat-option [value]="s">{{ sourceLabels[s] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category" placeholder="e.g. Planning, Communication" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Recommendation</mat-label>
+          <textarea matInput formControlName="recommendation" rows="4" placeholder="What should be done differently?"></textarea>
+        </mat-form-field>
+      </section>
+    </form>
+  </div>
+}

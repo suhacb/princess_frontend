@@ -93,6 +93,18 @@ export const projectsRoutes: Routes = [
         title: 'Quality Entry',
       },
       {
+        path: 'lessons',
+        loadComponent: () =>
+          import('../lessons/pages/lesson-list/lesson-list.component').then(m => m.LessonListComponent),
+        title: 'Lessons Log',
+      },
+      {
+        path: 'lessons/:lessonId',
+        loadComponent: () =>
+          import('../lessons/pages/lesson-detail/lesson-detail.component').then(m => m.LessonDetailComponent),
+        title: 'Lesson',
+      },
+      {
         path: 'stages/:stageId/boundaries/:boundaryId',
         loadComponent: () =>
           import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
