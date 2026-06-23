@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -55,8 +55,10 @@ export class StageListComponent {
   protected readonly transitionError = signal<string | null>(null);
 
   constructor() {
-    const project = this.project();
-    if (project) this.stageService.list(project.id).subscribe();
+    effect(() => {
+      const project = this.project();
+      if (project) this.stageService.list(project.id).subscribe();
+    });
   }
 
   protected availableTransitions(stage: Stage): StageTransitionAction[] {
