@@ -122,10 +122,9 @@
         </div>
       </mat-tab>
       <mat-tab label="Boundaries">
-        <div class="tab-placeholder">
-          <mat-icon>fence</mat-icon>
-          <p>End-stage assessment and next stage proposals will appear here.</p>
-        </div>
+        @if (project() && stageIdNum(); as sId) {
+          <app-boundary-list [projectId]="project()!.id" [stageId]="sId" />
+        }
       </mat-tab>
     </mat-tab-group>
 

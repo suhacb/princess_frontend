@@ -1,0 +1,113 @@
+:host {
+  display: block;
+  padding: 20px 0;
+}
+
+.boundaries-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.boundaries-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.list-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 30%, transparent);
+  border-radius: 10px;
+}
+
+.boundary-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.boundary-card {
+  padding: 16px 20px;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 30%, transparent);
+  border-radius: 10px;
+  background: var(--mat-sys-surface-container-low);
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: var(--mat-sys-primary); }
+
+  &--approved {
+    border-color: color-mix(in srgb, #2e7d32 30%, transparent);
+    background: color-mix(in srgb, #1b5e20 4%, var(--mat-sys-surface-container-low));
+  }
+
+  &--rejected {
+    border-color: color-mix(in srgb, var(--mat-sys-error) 30%, transparent);
+    background: color-mix(in srgb, var(--mat-sys-error) 4%, var(--mat-sys-surface-container-low));
+  }
+}
+
+.boundary-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &--end_stage_report {
+    background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+    color: var(--mat-sys-primary);
+  }
+
+  &--exception_report {
+    background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+    color: var(--mat-sys-error);
+  }
+}
+
+.boundary-card__title {
+  margin: 0 0 10px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.boundary-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.meta-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
