@@ -111,6 +111,25 @@ describe('ProjectService', () => {
     });
   });
 
+  describe('setCurrentStage()', () => {
+    it('updates current_stage_name in the projects signal', async () => {
+      service['_projects'].set([{ ...stubApi, currentStageName: null, createdBy: 'jdoe', createdAt: '2026-01-01T00:00:00Z' }]);
+      const result$ = firstValueFrom(service.setCurrentStage(1, 5));
+      http.expectOne(`${BASE}/1/current-stage`).flush({ data: { ...stubApi, current_stage_name: 'Stage 5' } });
+      await result$;
+      expect(service.projects()[0].currentStageName).toBe('Stage 5');
+    });
+
+    it('updates selectedProject when it matches', async () => {
+      service['_selectedProject'].set({ ...stubApi, currentStageName: null, createdBy: 'jdoe', createdAt: '2026-01-01T00:00:00Z' });
+      service['_projects'].set([{ ...stubApi, currentStageName: null, createdBy: 'jdoe', createdAt: '2026-01-01T00:00:00Z' }]);
+      const result$ = firstValueFrom(service.setCurrentStage(1, 5));
+      http.expectOne(`${BASE}/1/current-stage`).flush({ data: { ...stubApi, current_stage_name: 'Stage 5' } });
+      await result$;
+      expect(service.selectedProject()?.currentStageName).toBe('Stage 5');
+    });
+  });
+
   describe('remove()', () => {
     it('removes the project from the projects signal', async () => {
       service['_projects'].set([
