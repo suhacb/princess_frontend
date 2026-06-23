@@ -1,0 +1,113 @@
+@if (loading() && !change()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (change(); as c) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <div class="title-row">
+          <span class="type-badge type-badge--{{ c.requestType }}">{{ typeLabels[c.requestType] }}</span>
+          <h2 class="change-title">{{ c.title }}</h2>
+        </div>
+        <div class="header-chips">
+          <app-change-status-chip [status]="c.status" />
+          @if (c.priority) { <span class="priority-badge">{{ c.priority }}</span> }
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (canDecide()) {
+          <button mat-stroked-button color="warn" (click)="openDecideDialog('reject')">Reject</button>
+          <button mat-flat-button color="primary" (click)="openDecideDialog('approve')">Approve</button>
+        }
+        <button mat-flat-button color="warn" class="delete-btn" (click)="deleteChange()">Delete</button>
+        <button mat-flat-button color="primary" [disabled]="form.pristine || form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
+
+    @if (saveError() || actionError()) {
+      <div class="error-banner">{{ saveError() ?? actionError() }}</div>
+    }
+
+    <div class="meta-row">
+      @if (c.raisedBy) { <span>Raised by: {{ c.raisedBy.name }}</span> }
+      @if (c.raisedAt) { <span>{{ c.raisedAt | date: 'dd MMM yyyy' }}</span> }
+      @if (c.decisionBy) { <span>Decided by: {{ c.decisionBy.name }}</span> }
+    </div>
+
+    @if (c.decisionRationale) {
+      <div class="info-block info-block--{{ c.status }}">
+        <strong>Decision rationale:</strong> {{ c.decisionRationale }}
+      </div>
+    }
+
+    <form [formGroup]="form" class="detail-form">
+      <section class="form-section">
+        <h3 class="section-heading">Request</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="request_type">
+              @for (t of types; track t) {
+                <mat-option [value]="t">{{ typeLabels[t] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <input matInput formControlName="priority" placeholder="e.g. high, medium, low" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Impact assessment</mat-label>
+          <textarea matInput formControlName="impact_assessment" rows="4" placeholder="Time, cost, scope, quality impact…"></textarea>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Progress</h3>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (s of statuses; track s) {
+              <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Implementation due</mat-label>
+            <input matInput type="date" formControlName="implementation_due" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Implemented at</mat-label>
+            <input matInput type="date" formControlName="implemented_at" />
+          </mat-form-field>
+        </div>
+      </section>
+    </form>
+  </div>
+}

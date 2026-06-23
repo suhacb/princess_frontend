@@ -1,0 +1,63 @@
+<div class="page-header">
+  <h2 class="page-title">Change Log</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of changeStatuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Raise Change
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filteredChanges().length === 0) {
+  <app-empty-state
+    message="No change requests yet"
+    hint="Raise a change request to track proposed amendments to the project baseline."
+  />
+} @else {
+  <div class="change-table">
+    <div class="change-table-header">
+      <span class="col-type">Type</span>
+      <span class="col-title">Title</span>
+      <span class="col-priority">Priority</span>
+      <span class="col-status">Status</span>
+      <span class="col-raised-by">Raised by</span>
+      <span class="col-due">Due</span>
+    </div>
+    @for (change of filteredChanges(); track change.id) {
+      <div
+        class="change-row"
+        (click)="navigateToChange(change.id)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="navigateToChange(change.id)"
+        (keydown.space)="navigateToChange(change.id)"
+      >
+        <span class="col-type">
+          <span class="type-badge type-badge--{{ change.requestType }}">{{ typeLabels[change.requestType] }}</span>
+        </span>
+        <span class="col-title">{{ change.title }}</span>
+        <span class="col-priority">{{ change.priority ?? '—' }}</span>
+        <span class="col-status">
+          <app-change-status-chip [status]="change.status" />
+        </span>
+        <span class="col-raised-by">{{ change.raisedBy?.name ?? '—' }}</span>
+        <span class="col-due">{{ change.implementationDue ? (change.implementationDue | date: 'dd MMM yyyy') : '—' }}</span>
+      </div>
+    }
+  </div>
+}

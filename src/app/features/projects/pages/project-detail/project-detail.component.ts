@@ -15,6 +15,7 @@ const TABS = [
   { label: 'Daily Log', path: 'daily-log' },
   { label: 'Issues', path: 'issues' },
   { label: 'Risks', path: 'risks' },
+  { label: 'Changes', path: 'changes' },
   { label: 'Audit', path: 'audit' },
 ] as const;
 
