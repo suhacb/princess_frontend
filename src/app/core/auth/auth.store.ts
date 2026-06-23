@@ -95,16 +95,17 @@ export class AuthStore {
 
   validateAccessToken(): Observable<boolean> {
     return this.http
-      .get<AccessTokenApiResource | boolean>(
+      .get<AccessTokenApiResource | boolean | string>(
         `${environment.apiUrl}/auth/validate-access-token`,
         { observe: 'response' }
       )
       .pipe(
         map(response => {
-          if (!response.body) return false;
-          if (response.body === true) return true;
-          if (typeof response.body === 'object' && 'access_token' in response.body) {
-            this.setToken(mapAccessToken(response.body as AccessTokenApiResource));
+          const body = response.body;
+          if (!body) return false;
+          if (body === true || body === 'true') return true;
+          if (typeof body === 'object' && 'access_token' in body) {
+            this.setToken(mapAccessToken(body as AccessTokenApiResource));
             return true;
           }
           return false;
