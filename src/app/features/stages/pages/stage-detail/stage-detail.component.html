@@ -1,0 +1,131 @@
+@if (loading() && !stage()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (stage(); as s) {
+  <div class="stage-detail">
+
+    <!-- Header -->
+    <div class="detail-header">
+      <a mat-button [routerLink]="['..']" class="back-link">
+        <mat-icon>arrow_back</mat-icon>
+        All stages
+      </a>
+
+      <div class="detail-header__title-row">
+        <h2 class="detail-header__name">{{ s.name }}</h2>
+        <span class="stage-type-badge">{{ stageTypeLabels[s.type] }}</span>
+        <app-stage-status-chip [status]="s.status" />
+      </div>
+
+      @if (transitionError()) {
+        <p class="transition-error">{{ transitionError() }}</p>
+      }
+
+      <div class="detail-header__actions">
+        @for (action of transitions(); track action) {
+          <button
+            mat-stroked-button
+            class="action-btn action-btn--{{ action }}"
+            (click)="openTransitionDialog(action)"
+          >
+            <mat-icon>{{ action === 'start' ? 'play_arrow' : action === 'complete' ? 'check_circle' : 'warning' }}</mat-icon>
+            {{ action === 'start' ? 'Start' : action === 'complete' ? 'Complete' : 'Flag Exception' }}
+          </button>
+        }
+        @if (s.status === 'active' && project()?.currentStageName !== s.name) {
+          <button mat-button (click)="setCurrentStage()">Set as current stage</button>
+        }
+      </div>
+    </div>
+
+    <!-- Info grid -->
+    <div class="info-grid">
+      <div class="info-card">
+        <h3 class="info-card__title">Schedule</h3>
+        <div class="info-rows">
+          <div class="info-row">
+            <span class="info-label">Planned start</span>
+            <span class="info-value">{{ s.plannedStartDate ? (s.plannedStartDate | date:'mediumDate') : '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Planned end</span>
+            <span class="info-value">{{ s.plannedEndDate ? (s.plannedEndDate | date:'mediumDate') : '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Actual start</span>
+            <span class="info-value">{{ s.actualStartDate ? (s.actualStartDate | date:'mediumDate') : '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Actual end</span>
+            <span class="info-value">{{ s.actualEndDate ? (s.actualEndDate | date:'mediumDate') : (s.actualStartDate ? 'Ongoing' : '—') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3 class="info-card__title">Tolerances</h3>
+        <div class="tolerance-grid">
+
+          <div class="tolerance-item">
+            <span class="tolerance-dim-label">Time</span>
+            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.time.min, s.tolerances.time.max, 'days') }}</span>
+            @if (s.toleranceStatus.time) {
+              <span class="tolerance-health tolerance-health--{{ s.toleranceStatus.time }}">{{ s.toleranceStatus.time }}</span>
+            }
+          </div>
+
+          <div class="tolerance-item">
+            <span class="tolerance-dim-label">Cost</span>
+            <span class="tolerance-range">{{ formatToleranceRange(s.tolerances.cost.min, s.tolerances.cost.max, '€') }}</span>
+            @if (s.toleranceStatus.cost) {
+              <span class="tolerance-health tolerance-health--{{ s.toleranceStatus.cost }}">{{ s.toleranceStatus.cost }}</span>
+            }
+          </div>
+
+          @for (dim of textToleranceDims; track dim) {
+            <div class="tolerance-item">
+              <span class="tolerance-dim-label">{{ dim | titlecase }}</span>
+              <span class="tolerance-range tolerance-range--text">{{ getTextTolerance(dim) || '—' }}</span>
+              @if (getToleranceHealth(dim); as health) {
+                <span class="tolerance-health tolerance-health--{{ health }}">{{ health }}</span>
+              }
+            </div>
+          }
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Nested tabs: Plan / Logs / QA / Boundaries -->
+    <mat-tab-group class="stage-tabs">
+      <mat-tab label="Plan">
+        <div class="tab-placeholder">
+          <mat-icon>description</mat-icon>
+          <p>Stage plan will be shown here.</p>
+        </div>
+      </mat-tab>
+      <mat-tab label="Logs">
+        <div class="tab-placeholder">
+          <mat-icon>history</mat-icon>
+          <p>Exception logs and highlight reports will appear here.</p>
+        </div>
+      </mat-tab>
+      <mat-tab label="QA">
+        <div class="tab-placeholder">
+          <mat-icon>verified</mat-icon>
+          <p>Quality assurance records will appear here.</p>
+        </div>
+      </mat-tab>
+      <mat-tab label="Boundaries">
+        <div class="tab-placeholder">
+          <mat-icon>fence</mat-icon>
+          <p>End-stage assessment and next stage proposals will appear here.</p>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
+}

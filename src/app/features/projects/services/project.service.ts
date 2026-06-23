@@ -68,4 +68,16 @@ export class ProjectService {
       }),
     );
   }
+
+  setCurrentStage(projectId: number, stageId: number): Observable<Project> {
+    return this.api
+      .patch<ApiResource<ProjectApiResource>>(`/projects/${projectId}/current-stage`, { stage_id: stageId })
+      .pipe(
+        map(res => mapProject(res.data)),
+        tap(updated => {
+          this._projects.update(list => list.map(p => (p.id === projectId ? updated : p)));
+          if (this._selectedProject()?.id === projectId) this._selectedProject.set(updated);
+        }),
+      );
+  }
 }

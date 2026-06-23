@@ -1,0 +1,167 @@
+<h2 mat-dialog-title>New Stage</h2>
+
+<mat-dialog-content>
+  <mat-stepper linear #stepper>
+
+    <!-- Step 1: Basic Info -->
+    <mat-step label="Basic Info" [stepControl]="basicForm">
+      <form [formGroup]="basicForm" class="step-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Stage name</mat-label>
+          <input matInput formControlName="name" placeholder="e.g. Initiation Stage" />
+          @if (basicForm.get('name')?.hasError('required')) {
+            <mat-error>Name is required</mat-error>
+          }
+          @if (basicForm.get('name')?.hasError('maxlength')) {
+            <mat-error>Name must be 120 characters or fewer</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Stage type</mat-label>
+          <mat-select formControlName="type">
+            @for (type of stageTypes; track type) {
+              <mat-option [value]="type">{{ stageTypeLabels[type] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="date-row">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Planned start</mat-label>
+            <input matInput type="date" formControlName="planned_start_date" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Planned end</mat-label>
+            <input matInput type="date" formControlName="planned_end_date" />
+          </mat-form-field>
+        </div>
+
+        <div class="step-actions">
+          <button mat-button matStepperNext [disabled]="basicForm.invalid">Continue</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Tolerances -->
+    <mat-step label="Tolerances">
+      <form [formGroup]="tolerancesForm" class="step-form">
+        <p class="step-hint">Tolerances are pre-filled from the project. Override as needed.</p>
+
+        <div class="tolerance-row">
+          <span class="tolerance-label">Time (days)</span>
+          <mat-form-field appearance="outline" class="tolerance-field">
+            <mat-label>Min</mat-label>
+            <input matInput type="number" formControlName="time_min" placeholder="-5" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="tolerance-field">
+            <mat-label>Max</mat-label>
+            <input matInput type="number" formControlName="time_max" placeholder="10" />
+          </mat-form-field>
+        </div>
+
+        <div class="tolerance-row">
+          <span class="tolerance-label">Cost (€)</span>
+          <mat-form-field appearance="outline" class="tolerance-field">
+            <mat-label>Min</mat-label>
+            <input matInput type="number" formControlName="cost_min" placeholder="-1000" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="tolerance-field">
+            <mat-label>Max</mat-label>
+            <input matInput type="number" formControlName="cost_max" placeholder="5000" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Scope tolerance</mat-label>
+          <textarea matInput formControlName="scope" rows="2" placeholder="Describe acceptable scope changes"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Risk tolerance</mat-label>
+          <textarea matInput formControlName="risk" rows="2" placeholder="e.g. No threats above Medium"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Quality tolerance</mat-label>
+          <textarea matInput formControlName="quality" rows="2" placeholder="e.g. All deliverables meet ISO standards"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Benefit tolerance</mat-label>
+          <textarea matInput formControlName="benefit" rows="2" placeholder="e.g. Minimum ROI of 15%"></textarea>
+        </mat-form-field>
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button matStepperNext>Continue</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Review -->
+    <mat-step label="Review">
+      <div class="review">
+        <div class="review-row">
+          <span class="review-label">Name</span>
+          <span class="review-value">{{ basicForm.get('name')?.value }}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Type</span>
+          <span class="review-value">{{ selectedTypeLabel() }}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Planned dates</span>
+          <span class="review-value">
+            @if (basicForm.get('planned_start_date')?.value || basicForm.get('planned_end_date')?.value) {
+              {{ basicForm.get('planned_start_date')?.value || '—' }} → {{ basicForm.get('planned_end_date')?.value || '—' }}
+            } @else {
+              Not set
+            }
+          </span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Time tolerance</span>
+          <span class="review-value">
+            @if (tolerancesForm.get('time_min')?.value !== null || tolerancesForm.get('time_max')?.value !== null) {
+              {{ tolerancesForm.get('time_min')?.value ?? '—' }} / {{ tolerancesForm.get('time_max')?.value ?? '—' }} days
+            } @else {
+              Not set
+            }
+          </span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Cost tolerance</span>
+          <span class="review-value">
+            @if (tolerancesForm.get('cost_min')?.value !== null || tolerancesForm.get('cost_max')?.value !== null) {
+              {{ tolerancesForm.get('cost_min')?.value ?? '—' }} / {{ tolerancesForm.get('cost_max')?.value ?? '—' }} €
+            } @else {
+              Not set
+            }
+          </span>
+        </div>
+
+        @if (error()) {
+          <p class="error-message">{{ error() }}</p>
+        }
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious [disabled]="submitting()">Back</button>
+          <button mat-flat-button (click)="submit()" [disabled]="submitting()">
+            @if (submitting()) {
+              <mat-spinner diameter="18" />
+            } @else {
+              Create stage
+            }
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+  </mat-stepper>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="submitting()">Cancel</button>
+</mat-dialog-actions>

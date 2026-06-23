@@ -1,0 +1,104 @@
+<div class="stages-header">
+  <h2 class="stages-title">Stages</h2>
+  <button mat-flat-button (click)="openCreateDialog()" [disabled]="!project()">
+    <mat-icon>add</mat-icon>
+    New stage
+  </button>
+</div>
+
+@if (transitionError()) {
+  <p class="transition-error">{{ transitionError() }}</p>
+}
+
+@if (loading() && stages().length === 0) {
+  <div class="timeline-skeleton">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="skeleton-card">
+        <app-skeleton height="20px" width="160px" borderRadius="4px" />
+        <app-skeleton height="16px" width="240px" borderRadius="4px" />
+        <app-skeleton height="32px" width="120px" borderRadius="4px" />
+      </div>
+    }
+  </div>
+} @else if (stages().length === 0) {
+  <app-empty-state
+    icon="layers"
+    title="No stages yet"
+    message="Break this project into stages to track delivery progress."
+    actionLabel="Add first stage"
+    (actionClick)="openCreateDialog()"
+  />
+} @else {
+  <div class="timeline">
+    @for (stage of stages(); track stage.id; let last = $last) {
+      <div class="timeline-item">
+        <div class="timeline-line-container">
+          <div class="timeline-dot timeline-dot--{{ stage.status }}"></div>
+          @if (!last) {
+            <div class="timeline-connector"></div>
+          }
+        </div>
+
+        <div class="stage-card" [class.stage-card--exception]="stage.status === 'exception'">
+          <div class="stage-card__header">
+            <div class="stage-card__title-row">
+              <a class="stage-card__name" [routerLink]="[stage.id]">{{ stage.name }}</a>
+              <span class="stage-type-badge">{{ stageTypeLabels[stage.type] }}</span>
+              <app-stage-status-chip [status]="stage.status" />
+            </div>
+
+            <div class="stage-card__dates">
+              @if (stage.plannedStartDate || stage.plannedEndDate) {
+                <span class="date-range">
+                  <mat-icon class="date-icon">event</mat-icon>
+                  Planned: {{ stage.plannedStartDate | date:'mediumDate' }} → {{ stage.plannedEndDate | date:'mediumDate' }}
+                </span>
+              }
+              @if (stage.actualStartDate) {
+                <span class="date-range">
+                  <mat-icon class="date-icon">schedule</mat-icon>
+                  Actual: {{ stage.actualStartDate | date:'mediumDate' }} →
+                  {{ stage.actualEndDate ? (stage.actualEndDate | date:'mediumDate') : 'ongoing' }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="stage-card__footer">
+            <div class="tolerance-indicators">
+              @if (stage.toleranceStatus.time; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'time: ' + h"></span>
+              }
+              @if (stage.toleranceStatus.cost; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'cost: ' + h"></span>
+              }
+              @if (stage.toleranceStatus.scope; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'scope: ' + h"></span>
+              }
+              @if (stage.toleranceStatus.risk; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'risk: ' + h"></span>
+              }
+              @if (stage.toleranceStatus.quality; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'quality: ' + h"></span>
+              }
+              @if (stage.toleranceStatus.benefit; as h) {
+                <span class="tolerance-dot tolerance-dot--{{ h }}" [matTooltip]="'benefit: ' + h"></span>
+              }
+            </div>
+
+            <div class="stage-card__actions">
+              @for (action of availableTransitions(stage); track action) {
+                <button
+                  mat-stroked-button
+                  class="action-btn action-btn--{{ action }}"
+                  (click)="openTransitionDialog(stage, action); $event.stopPropagation()"
+                >{{ action === 'start' ? 'Start' : action === 'complete' ? 'Complete' : 'Flag Exception' }}</button>
+              }
+              <button mat-button [routerLink]="[stage.id]">View details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
