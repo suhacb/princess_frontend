@@ -23,6 +23,8 @@
   </div>
 
   <div class="top-bar__end">
+    <app-ai-assist-button>Ask Princess</app-ai-assist-button>
+
     <button
       mat-icon-button
       aria-label="Notifications"
@@ -32,12 +34,11 @@
     </button>
 
     <button
-      class="top-bar__avatar"
-      mat-icon-button
+      class="top-bar__avatar-btn"
       [matMenuTriggerFor]="userMenu"
       aria-label="User menu"
     >
-      <span class="top-bar__avatar-initials">{{ userInitials() }}</span>
+      <app-avatar [name]="userName()" size="md" />
     </button>
 
     <mat-menu #userMenu="matMenu" xPosition="before" class="princess-menu">

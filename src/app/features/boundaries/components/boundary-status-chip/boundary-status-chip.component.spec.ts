@@ -16,19 +16,15 @@ describe('BoundaryStatusChipComponent', () => {
     expect(setup('draft').nativeElement.textContent).toContain('Draft');
   });
 
-  it('applies draft class', () => {
-    expect(setup('draft').nativeElement.querySelector('.status-chip--draft')).toBeTruthy();
+  it('shows Submitted label', () => {
+    expect(setup('submitted').nativeElement.textContent).toContain('Submitted');
   });
 
-  it('applies submitted class', () => {
-    expect(setup('submitted').nativeElement.querySelector('.status-chip--submitted')).toBeTruthy();
+  it('shows Approved label', () => {
+    expect(setup('approved').nativeElement.textContent).toContain('Approved');
   });
 
-  it('applies approved class', () => {
-    expect(setup('approved').nativeElement.querySelector('.status-chip--approved')).toBeTruthy();
-  });
-
-  it('applies rejected class', () => {
-    expect(setup('rejected').nativeElement.querySelector('.status-chip--rejected')).toBeTruthy();
+  it('shows Rejected label', () => {
+    expect(setup('rejected').nativeElement.textContent).toContain('Rejected');
   });
 });

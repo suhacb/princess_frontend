@@ -14,6 +14,8 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
+import { AIAssistButtonComponent } from '../../shared/components/ai-assist-button/ai-assist-button.component';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -28,6 +30,8 @@ import { environment } from '../../../environments/environment';
     MatMenuModule,
     MatBadgeModule,
     MatTooltipModule,
+    AvatarComponent,
+    AIAssistButtonComponent,
   ],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.scss',
@@ -40,12 +44,10 @@ export class TopBarComponent {
 
   protected readonly user = this.authStore.user;
 
-  protected readonly userInitials = computed(() => {
+  protected readonly userName = computed(() => {
     const u = this.authStore.user();
-    if (!u) return '?';
-    const first = u.name?.[0] ?? '';
-    const last = u.familyName?.[0] ?? '';
-    return (first + last).toUpperCase() || u.username[0].toUpperCase();
+    if (!u) return '';
+    return `${u.name ?? ''} ${u.familyName ?? ''}`.trim() || u.username;
   });
 
   protected signOut(): void {

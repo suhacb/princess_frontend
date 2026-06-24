@@ -19,6 +19,10 @@ import { Component, input } from '@angular/core';
       0%   { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton { animation: none; }
+    }
   `],
 })
 export class SkeletonComponent {

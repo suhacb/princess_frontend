@@ -32,6 +32,7 @@ $dark-theme: (
 // Fine-tune generated --mat-sys-* tokens here after mat.theme() is applied.
 // Example: slightly warmer surfaces for the light theme.
 @mixin apply-surface-overrides() {
+  // ─── Layout ──────────────────────────────────────────────────────────────────
   --princess-sidebar-width: 260px;
   --princess-sidebar-collapsed-width: 64px;
   --princess-topbar-height: 64px;
@@ -40,4 +41,55 @@ $dark-theme: (
   --princess-border-radius-chip: 8px;
   --princess-transition-speed: 200ms;
   --princess-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --content-padding: 24px;
+
+  // ─── Brand ───────────────────────────────────────────────────────────────────
+  --brand-azure-1: #4561a2;
+  --brand-azure-2: #4978b3;
+  --brand-azure-3: #4da6d8;
+  --brand-azure-4: #4eb9ea;
+  --brand-gradient: linear-gradient(90deg, #4561a2, #4978b3, #4da6d8, #4eb9ea);
+  --brand-gradient-diagonal: linear-gradient(135deg, #4561a2, #4eb9ea);
+  --brand-ink: #1d252d;
+  --brand-sidebar: #0d1520;
+  --brand-sidebar-active: #4eb9ea;
+
+  // ─── Status / semantic ───────────────────────────────────────────────────────
+  --status-success: #2e7d32;
+  --status-success-strong: #1b5e20;
+  --status-warning: #f57c00;
+  --status-warning-strong: #e65100;
+  --status-caution: #f9a825;
+  --status-caution-text: #f57f17;
+  --status-danger: #ba1a1a;
+  --status-neutral: #546e7a;
+  --status-info: #475d92;
+
+  // ─── Typography ──────────────────────────────────────────────────────────────
+  --font-sans: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Instrument Sans', 'Roboto', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  // ─── Radius ──────────────────────────────────────────────────────────────────
+  --radius-sm:   4px;
+  --radius-chip: 8px;
+  --radius-card: 12px;
+  --radius-pill: 20px;
+  --radius-full: 9999px;
+
+  // ─── Elevation / shadow ──────────────────────────────────────────────────────
+  --elevation-0: none;
+  --elevation-1: 0 1px 3px rgba(0, 0, 0, .08);
+  --elevation-2: 0 2px 6px rgba(0, 0, 0, .10), 0 1px 2px rgba(0, 0, 0, .06);
+  --elevation-3: 0 8px 24px rgba(0, 0, 0, .16), 0 2px 6px rgba(0, 0, 0, .08);
+  --elevation-4: 0 12px 32px rgba(0, 0, 0, .20);
+  --focus-ring:  0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 30%, transparent);
+
+  // ─── Motion ──────────────────────────────────────────────────────────────────
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
 }
