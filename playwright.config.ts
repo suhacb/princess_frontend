@@ -11,7 +11,9 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
-    storageState: 'e2e/.auth/state.json',
+    // Default role: project_manager (broadest project permissions).
+    // Override per describe block with test.use({ storageState: roleStateFile('observer') }).
+    storageState: 'e2e/.auth/project_manager.json',
     // Sent with every browser request so the backend switches to princess_e2e
     // and skips Keycloak validation.
     extraHTTPHeaders: { 'X-E2E-Token': process.env['E2E_TOKEN'] ?? '' },
