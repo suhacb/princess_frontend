@@ -15,9 +15,23 @@ import {
   CHANGE_REQUEST_TYPE_LABELS,
   CHANGE_STATUS_LABELS,
   CHANGE_STATUSES,
+  ChangeRequestType,
   ChangeStatus,
   CreateChangePayload,
 } from '../../contracts/change.contracts';
+import { BadgeComponent, BadgeTone } from '../../../../shared/components/badge/badge.component';
+
+const CHANGE_TYPE_TONES: Record<ChangeRequestType, BadgeTone> = {
+  rfc:      'primary',
+  off_spec: 'tertiary',
+};
+
+const PRIORITY_TONES: Record<string, BadgeTone> = {
+  low:      'neutral',
+  medium:   'warning',
+  high:     'danger',
+  critical: 'danger',
+};
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 
@@ -30,6 +44,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     MatFormFieldModule,
     MatDialogModule,
     DatePipe,
+    BadgeComponent,
     ChangeStatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
@@ -45,6 +60,8 @@ export class ChangeListComponent {
 
   protected readonly loading = this.changeService.loading;
   protected readonly typeLabels = CHANGE_REQUEST_TYPE_LABELS;
+  protected readonly typeTone = (type: ChangeRequestType): BadgeTone => CHANGE_TYPE_TONES[type];
+  protected readonly priorityTone = (p: string | null): BadgeTone => PRIORITY_TONES[p ?? ''] ?? 'neutral';
   protected readonly statusLabels = CHANGE_STATUS_LABELS;
   protected readonly changeStatuses = CHANGE_STATUSES;
   protected readonly statusFilter = signal<ChangeStatus | 'all'>('all');

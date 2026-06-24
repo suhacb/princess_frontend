@@ -14,33 +14,23 @@ async function setup(status: ChangeStatus) {
 describe('ChangeStatusChipComponent', () => {
   afterEach(() => TestBed.resetTestingModule());
 
-  it('renders Proposed label with correct class', async () => {
-    const f = await setup('proposed');
-    expect(f.nativeElement.textContent).toContain('Proposed');
-    expect(f.nativeElement.querySelector('.status-chip--proposed')).toBeTruthy();
+  it('renders Proposed label', async () => {
+    expect((await setup('proposed')).nativeElement.textContent).toContain('Proposed');
   });
 
-  it('renders Assessed label with correct class', async () => {
-    const f = await setup('assessed');
-    expect(f.nativeElement.textContent).toContain('Assessed');
-    expect(f.nativeElement.querySelector('.status-chip--assessed')).toBeTruthy();
+  it('renders Assessed label', async () => {
+    expect((await setup('assessed')).nativeElement.textContent).toContain('Assessed');
   });
 
-  it('renders Approved label with correct class', async () => {
-    const f = await setup('approved');
-    expect(f.nativeElement.textContent).toContain('Approved');
-    expect(f.nativeElement.querySelector('.status-chip--approved')).toBeTruthy();
+  it('renders Approved label', async () => {
+    expect((await setup('approved')).nativeElement.textContent).toContain('Approved');
   });
 
-  it('renders Rejected label with correct class', async () => {
-    const f = await setup('rejected');
-    expect(f.nativeElement.textContent).toContain('Rejected');
-    expect(f.nativeElement.querySelector('.status-chip--rejected')).toBeTruthy();
+  it('renders Rejected label', async () => {
+    expect((await setup('rejected')).nativeElement.textContent).toContain('Rejected');
   });
 
-  it('renders Implemented label with correct class', async () => {
-    const f = await setup('implemented');
-    expect(f.nativeElement.textContent).toContain('Implemented');
-    expect(f.nativeElement.querySelector('.status-chip--implemented')).toBeTruthy();
+  it('renders Implemented label', async () => {
+    expect((await setup('implemented')).nativeElement.textContent).toContain('Implemented');
   });
 });

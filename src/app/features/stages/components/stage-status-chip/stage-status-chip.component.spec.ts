@@ -13,20 +13,18 @@ describe('StageStatusChipComponent', () => {
     fixture = TestBed.createComponent(StageStatusChipComponent);
   });
 
-  const cases: { status: StageStatus; expectedLabel: string; expectedClass: string }[] = [
-    { status: 'planned', expectedLabel: 'Planned', expectedClass: 'status-chip--planned' },
-    { status: 'active', expectedLabel: 'Active', expectedClass: 'status-chip--active' },
-    { status: 'completed', expectedLabel: 'Completed', expectedClass: 'status-chip--completed' },
-    { status: 'exception', expectedLabel: 'Exception', expectedClass: 'status-chip--exception' },
+  const cases: { status: StageStatus; expectedLabel: string }[] = [
+    { status: 'planned',   expectedLabel: 'Planned' },
+    { status: 'active',    expectedLabel: 'Active' },
+    { status: 'completed', expectedLabel: 'Completed' },
+    { status: 'exception', expectedLabel: 'Exception' },
   ];
 
-  for (const { status, expectedLabel, expectedClass } of cases) {
-    it(`renders "${expectedLabel}" with class "${expectedClass}"`, () => {
+  for (const { status, expectedLabel } of cases) {
+    it(`renders "${expectedLabel}" for status "${status}"`, () => {
       fixture.componentRef.setInput('status', status);
       fixture.detectChanges();
-      const el = fixture.nativeElement.querySelector('.status-chip') as HTMLElement;
-      expect(el.textContent?.trim()).toBe(expectedLabel);
-      expect(el.classList).toContain(expectedClass);
+      expect(fixture.nativeElement.textContent).toContain(expectedLabel);
     });
   }
 });

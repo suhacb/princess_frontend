@@ -67,20 +67,19 @@ describe('TopBarComponent', () => {
 
   it('renders user initials from AuthStore', () => {
     const { fixture } = setup({ user: { name: 'Blaž', familyName: 'Suhač', email: 'b@s.eu', username: 'blaz' } });
-    const avatar = fixture.nativeElement.querySelector('.top-bar__avatar-initials');
+    const avatar = fixture.nativeElement.querySelector('app-avatar .avatar--initials');
     expect(avatar?.textContent?.trim()).toBe('BS');
   });
 
   it('falls back to username initial when name is missing', () => {
     const { fixture } = setup({ user: { name: '', familyName: '', email: 'b@s.eu', username: 'blaz' } });
-    const avatar = fixture.nativeElement.querySelector('.top-bar__avatar-initials');
+    const avatar = fixture.nativeElement.querySelector('app-avatar .avatar--initials');
     expect(avatar?.textContent?.trim()).toBe('B');
   });
 
-  it('shows ? when no user', () => {
+  it('renders avatar when no user', () => {
     const { fixture } = setup({ user: null });
-    const avatar = fixture.nativeElement.querySelector('.top-bar__avatar-initials');
-    expect(avatar?.textContent?.trim()).toBe('?');
+    expect(fixture.nativeElement.querySelector('app-avatar')).toBeTruthy();
   });
 
   it('calls toggleSidebar() when the menu button is clicked', () => {

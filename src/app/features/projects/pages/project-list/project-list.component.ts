@@ -12,7 +12,8 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { ProjectStatusChipComponent } from '../../components/project-status-chip/project-status-chip.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { CreateProjectDialogComponent } from '../../components/create-project-dialog/create-project-dialog.component';
 import { ProjectService } from '../../services/project.service';
 import { Project, PROJECT_STATUS_LABELS, PROJECT_STATUSES, ProjectStatus } from '../../contracts/project.contracts';
@@ -35,7 +36,8 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     MatTooltipModule,
     FormsModule,
     DatePipe,
-    ProjectStatusChipComponent,
+    BadgeComponent,
+    StatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
   ],

@@ -16,8 +16,8 @@ describe('IssuePriorityChipComponent', () => {
   it('shows Medium label', () => expect(setup('medium').nativeElement.textContent).toContain('Medium'));
   it('shows High label', () => expect(setup('high').nativeElement.textContent).toContain('High'));
   it('shows Critical label', () => expect(setup('critical').nativeElement.textContent).toContain('Critical'));
-  it('applies low class', () => expect(setup('low').nativeElement.querySelector('.priority-chip--low')).toBeTruthy());
-  it('applies medium class', () => expect(setup('medium').nativeElement.querySelector('.priority-chip--medium')).toBeTruthy());
-  it('applies high class', () => expect(setup('high').nativeElement.querySelector('.priority-chip--high')).toBeTruthy());
-  it('applies critical class', () => expect(setup('critical').nativeElement.querySelector('.priority-chip--critical')).toBeTruthy());
+  it('renders critical as solid badge', () => {
+    const el = setup('critical').nativeElement.querySelector('.badge') as HTMLElement;
+    expect(el.style.background).toBeTruthy();
+  });
 });

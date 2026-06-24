@@ -44,7 +44,7 @@
 
     @for (issue of sortedIssues(); track issue.id) {
       <div class="issue-row" (click)="navigateToIssue(issue.id)">
-        <span class="type-badge type-badge--{{ issue.issueType }}">{{ typeLabels[issue.issueType] }}</span>
+        <app-badge [tone]="typeTone(issue.issueType)">{{ typeLabels[issue.issueType] }}</app-badge>
         <span class="issue-title">{{ issue.title }}</span>
         <app-issue-status-chip [status]="issue.status" />
         <app-issue-priority-chip [priority]="issue.priority" />

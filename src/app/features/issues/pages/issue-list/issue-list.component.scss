@@ -91,21 +91,6 @@
   &:hover { background: color-mix(in srgb, var(--mat-sys-primary) 4%, transparent); }
 }
 
-.type-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-
-  &--problem  { background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent); color: var(--mat-sys-error); }
-  &--concern  { background: color-mix(in srgb, #f9a825 12%, transparent); color: #f57f17; }
-  &--rfc      { background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent); color: var(--mat-sys-primary); }
-  &--off_spec { background: color-mix(in srgb, var(--mat-sys-secondary) 12%, transparent); color: var(--mat-sys-secondary); }
-}
-
 .issue-title {
   font-size: 0.9375rem;
   font-weight: 500;
