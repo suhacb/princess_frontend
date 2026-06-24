@@ -55,14 +55,14 @@
       <ng-container matColumnDef="reference">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference</th>
         <td mat-cell *matCellDef="let row">
-          <code class="reference-badge">{{ row.reference }}</code>
+          <app-badge tone="neutral">{{ row.reference }}</app-badge>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
         <td mat-cell *matCellDef="let row">
-          <app-project-status-chip [status]="row.status" />
+          <app-status-chip [status]="row.status" />
         </td>
       </ng-container>
 

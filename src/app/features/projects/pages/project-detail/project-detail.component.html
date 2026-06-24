@@ -9,8 +9,8 @@
     <div class="detail-header__meta">
       <div class="detail-header__title-row">
         <h1 class="detail-header__name">{{ p.name }}</h1>
-        <code class="reference-badge">{{ p.reference }}</code>
-        <app-project-status-chip [status]="p.status" />
+        <app-badge tone="neutral">{{ p.reference }}</app-badge>
+        <app-status-chip [status]="p.status" />
       </div>
       @if (p.currentStageName) {
         <p class="detail-header__stage">Current stage: <strong>{{ p.currentStageName }}</strong></p>
@@ -33,7 +33,7 @@
       </div>
       @if (!last) {
         <div class="lifecycle-connector"
-             [class.lifecycle-connector--completed]="isStepCompleted(status) || isStepActive(status)"></div>
+             [class.lifecycle-connector--completed]="isStepCompleted(status)"></div>
       }
     }
   </div>

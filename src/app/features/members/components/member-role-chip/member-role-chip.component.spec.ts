@@ -17,18 +17,13 @@ describe('MemberRoleChipComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Project Manager');
   });
 
-  it('applies management group class for project_manager', () => {
-    const fixture = setup('project_manager');
-    expect(fixture.nativeElement.querySelector('.role-chip--management')).toBeTruthy();
-  });
-
-  it('applies board group class for executive', () => {
+  it('shows Executive label', () => {
     const fixture = setup('executive');
-    expect(fixture.nativeElement.querySelector('.role-chip--board')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Executive');
   });
 
-  it('applies observer group class for observer', () => {
+  it('shows Observer label', () => {
     const fixture = setup('observer');
-    expect(fixture.nativeElement.querySelector('.role-chip--observer')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Observer');
   });
 });

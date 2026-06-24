@@ -48,10 +48,14 @@
         (keydown.space)="navigateToChange(change.id)"
       >
         <span class="col-type">
-          <span class="type-badge type-badge--{{ change.requestType }}">{{ typeLabels[change.requestType] }}</span>
+          <app-badge [tone]="typeTone(change.requestType)">{{ typeLabels[change.requestType] }}</app-badge>
         </span>
         <span class="col-title">{{ change.title }}</span>
-        <span class="col-priority">{{ change.priority ?? '—' }}</span>
+        <span class="col-priority">
+          @if (change.priority) {
+            <app-badge [tone]="priorityTone(change.priority)">{{ change.priority }}</app-badge>
+          } @else { — }
+        </span>
         <span class="col-status">
           <app-change-status-chip [status]="change.status" />
         </span>

@@ -12,9 +12,18 @@ import { CreateIssueDialogComponent } from '../../components/create-issue-dialog
 import {
   CreateIssuePayload,
   Issue,
+  IssueType,
   ISSUE_TYPE_LABELS,
   PRIORITY_ORDER,
 } from '../../contracts/issue.contracts';
+import { BadgeComponent, BadgeTone } from '../../../../shared/components/badge/badge.component';
+
+const ISSUE_TYPE_TONES: Record<IssueType, BadgeTone> = {
+  problem:  'danger',
+  concern:  'warning',
+  rfc:      'primary',
+  off_spec: 'tertiary',
+};
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 
@@ -27,6 +36,7 @@ type SortKey = 'priority' | 'raised_at';
     MatIconModule,
     MatDialogModule,
     DatePipe,
+    BadgeComponent,
     IssueStatusChipComponent,
     IssuePriorityChipComponent,
     EmptyStateComponent,
@@ -43,6 +53,7 @@ export class IssueListComponent {
 
   protected readonly loading = this.issueService.loading;
   protected readonly typeLabels = ISSUE_TYPE_LABELS;
+  protected readonly typeTone = (type: IssueType): BadgeTone => ISSUE_TYPE_TONES[type];
 
   protected readonly sortKey = signal<SortKey>('priority');
 

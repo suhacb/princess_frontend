@@ -33,7 +33,7 @@ export interface ProjectApiResource {
   status: ProjectStatus;
   current_stage_name: string | null;
   tolerances: ProjectTolerances;
-  created_by: string;
+  created_by: { id: number; name: string } | string | null;
   created_at: string;
   updated_at: string;
 }
@@ -68,7 +68,7 @@ export function mapProject(api: ProjectApiResource): Project {
     status: api.status,
     currentStageName: api.current_stage_name,
     tolerances: normalizeTolerances(api.tolerances),
-    createdBy: api.created_by,
+    createdBy: api.created_by && typeof api.created_by === 'object' ? api.created_by.name : (api.created_by ?? ''),
     createdAt: api.created_at,
   };
 }

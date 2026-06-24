@@ -49,18 +49,6 @@
   &:focus-visible { outline: 2px solid var(--mat-sys-primary); outline-offset: -2px; }
 }
 
-.type-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  &--rfc     { background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent); color: var(--mat-sys-primary); }
-  &--off_spec { background: color-mix(in srgb, #e65100 12%, transparent); color: #e65100; }
-}
-
 .col-title { font-weight: 500; }
 .col-priority, .col-raised-by, .col-due {
   font-size: 0.875rem;

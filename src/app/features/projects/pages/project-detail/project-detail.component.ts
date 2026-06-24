@@ -5,7 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ProjectService } from '../../services/project.service';
 import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, ProjectStatus } from '../../contracts/project.contracts';
-import { ProjectStatusChipComponent } from '../../components/project-status-chip/project-status-chip.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 
 const TABS = [
@@ -30,7 +31,8 @@ const TABS = [
     MatTabsModule,
     MatButtonModule,
     MatIconModule,
-    ProjectStatusChipComponent,
+    BadgeComponent,
+    StatusChipComponent,
     SkeletonComponent,
   ],
   templateUrl: './project-detail.component.html',
