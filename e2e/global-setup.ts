@@ -1,8 +1,5 @@
 import { mkdirSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'path';
 
 const E2E_BACKEND = process.env['E2E_BACKEND_URL'] ?? 'http://host.docker.internal:10105';
 const E2E_TOKEN   = process.env['E2E_TOKEN'] ?? '';
