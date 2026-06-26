@@ -1,0 +1,41 @@
+<div class="switcher-backdrop" (click)="onBackdropClick()"></div>
+
+<div class="switcher" role="dialog" aria-label="Switch project">
+  <div class="switcher__header">
+    <span class="switcher__title">Switch project</span>
+  </div>
+
+  <div class="switcher__list">
+    @for (project of projects(); track project.id) {
+      <button
+        class="switcher__item"
+        [class.switcher__item--active]="project.id === activeId()"
+        (click)="selectProject(project)"
+      >
+        <span
+          class="switcher__health-dot"
+          [class.switcher__health-dot--ok]="project.status === 'delivery'"
+          [class.switcher__health-dot--warn]="project.status === 'initiation'"
+        ></span>
+        <div class="switcher__item-text">
+          <span class="switcher__item-name">{{ project.name }}</span>
+          <span class="switcher__item-meta">{{ project.reference }}</span>
+        </div>
+        <app-status-chip [status]="project.status" />
+        @if (project.id === activeId()) {
+          <mat-icon class="switcher__item-check">check</mat-icon>
+        }
+      </button>
+    }
+    @if (projects().length === 0) {
+      <p class="switcher__empty">No projects yet</p>
+    }
+  </div>
+
+  <div class="switcher__footer">
+    <button class="switcher__footer-btn" (click)="goToPortfolio()">
+      <mat-icon>folder_open</mat-icon>
+      All projects
+    </button>
+  </div>
+</div>

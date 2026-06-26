@@ -1,0 +1,48 @@
+<!-- @dsCard group="Components" viewport="700x260" name="Status & lifecycle" subtitle="Project / risk status chips, risk score badges, PRINCE2 stepper" -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body { margin: 0; padding: 22px; background: var(--mat-sys-surface); }
+  .wrap { display: flex; flex-direction: column; gap: 18px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cap { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); width: 100%; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { StatusChip, ScoreBadge, LifecycleStepper } = window.PrincessDesignSystem_3d336d;
+  function Demo() {
+    return (
+      <div className="wrap">
+        <div className="row">
+          <span className="cap">Status chips</span>
+          <StatusChip status="pre_project" />
+          <StatusChip status="initiation" />
+          <StatusChip status="delivery" />
+          <StatusChip status="open" />
+          <StatusChip status="materialised" />
+        </div>
+        <div className="row">
+          <span className="cap">Risk score</span>
+          <ScoreBadge score={3} />
+          <ScoreBadge score={8} />
+          <ScoreBadge score={12} />
+          <ScoreBadge score={20} />
+        </div>
+        <div>
+          <span className="cap" style={{display:'block',marginBottom:'10px'}}>PRINCE2 lifecycle</span>
+          <LifecycleStepper stages={['Pre-Project','Initiation','Delivery','Closing','Closed']} activeIndex={2} />
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body></html>

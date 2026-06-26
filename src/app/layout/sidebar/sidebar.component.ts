@@ -1,124 +1,108 @@
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
 import { LayoutService } from '../../core/services/layout.service';
+import { ShellStore, AppRole } from '../../core/services/shell.store';
 import { ProjectService } from '../../features/projects/services/project.service';
 
 interface NavItem {
   label: string;
   icon: string;
   route: string;
+  roles?: AppRole[];
 }
 
 interface NavGroup {
   label: string;
   items: NavItem[];
+  roles?: AppRole[];
 }
 
-const STATIC_NAV_GROUPS: NavGroup[] = [
-  {
-    label: 'Overview',
-    items: [
-      { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-      { label: 'PRINCE2 Guide', icon: 'menu_book', route: '/guide' },
-    ],
-  },
-  {
-    label: 'Project',
-    items: [
-      { label: 'Projects', icon: 'folder_open', route: '/projects' },
-    ],
-  },
-  {
-    label: 'Planning',
-    items: [
-      { label: 'Work Breakdown', icon: 'account_tree', route: '/planning/wbs' },
-      { label: 'Timeline', icon: 'calendar_view_week', route: '/planning/timeline' },
-      { label: 'Tasks', icon: 'check_circle_outline', route: '/planning/tasks' },
-      { label: 'Meetings', icon: 'groups', route: '/planning/meetings' },
-    ],
-  },
-];
-
-const LOGS_ITEMS: { label: string; icon: string; path: string }[] = [
-  { label: 'Daily Log',        icon: 'edit_note',      path: 'daily-log' },
-  { label: 'Issue Log',        icon: 'bug_report',     path: 'issues' },
-  { label: 'Risk Log',         icon: 'warning_amber',  path: 'risks' },
-  { label: 'Change Log',       icon: 'sync_alt',       path: 'changes' },
-  { label: 'Quality Register', icon: 'fact_check',     path: 'quality-register' },
-  { label: 'Lessons Log',      icon: 'school',         path: 'lessons' },
-];
-
-const TRAILING_NAV_GROUPS: NavGroup[] = [
-  {
-    label: 'Quality',
-    items: [
-      { label: 'Requirements',       icon: 'list_alt',             route: '/qa/requirements' },
-      { label: 'Acceptance Criteria',icon: 'task_alt',             route: '/qa/acceptance-criteria' },
-      { label: 'Test Cases',         icon: 'science',              route: '/qa/test-cases' },
-      { label: 'Test Sessions',      icon: 'play_circle_outline',  route: '/qa/sessions' },
-      { label: 'Traceability',       icon: 'hub',                  route: '/qa/traceability' },
-    ],
-  },
-  {
-    label: 'Documents',
-    items: [
-      { label: 'Registry',      icon: 'folder',         route: '/documents' },
-      { label: 'Review Queue',  icon: 'rate_review',    route: '/documents/queue' },
-      { label: 'Search',        icon: 'manage_search',  route: '/documents/search' },
-    ],
-  },
-  {
-    label: 'Reports',
-    items: [
-      { label: 'Highlight Reports',  icon: 'summarize',      route: '/reports/highlight' },
-      { label: 'Checkpoint Reports', icon: 'flag',           route: '/reports/checkpoint' },
-      { label: 'Plan vs Actual',     icon: 'insights',       route: '/reports/plan-vs-actual' },
-      { label: 'Exception Reports',  icon: 'report_problem', route: '/reports/exceptions' },
-    ],
-  },
-  {
-    label: 'Microsoft 365',
-    items: [
-      { label: 'Email',            icon: 'mail_outline', route: '/m365/email' },
-      { label: 'SharePoint',       icon: 'cloud_queue',  route: '/m365/sharepoint' },
-      { label: 'Teams & Calendar', icon: 'video_call',   route: '/m365/teams' },
-    ],
-  },
-  {
-    label: 'AI',
-    items: [
-      { label: 'Suggestions', icon: 'auto_awesome', route: '/ai/suggestions' },
-    ],
-  },
+const PORTFOLIO_ITEMS: NavItem[] = [
+  { label: 'All projects', icon: 'folder_open', route: '/projects' },
 ];
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, MatListModule, MatIconModule, MatTooltipModule, MatRippleModule],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, MatTooltipModule, MatRippleModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
   protected readonly layout = inject(LayoutService);
-  private readonly projectService = inject(ProjectService);
+  protected readonly shell = inject(ShellStore);
+  protected readonly projectService = inject(ProjectService);
+  private readonly router = inject(Router);
 
-  protected readonly staticGroups = STATIC_NAV_GROUPS;
-  protected readonly trailingGroups = TRAILING_NAV_GROUPS;
+  protected readonly portfolioItems = PORTFOLIO_ITEMS;
+  protected readonly project = this.projectService.selectedProject;
+  protected readonly role = this.shell.role;
 
-  protected readonly logsGroup = computed<NavGroup>(() => {
-    const project = this.projectService.selectedProject();
-    const base = project ? `/projects/${project.id}` : '/projects';
-    return {
-      label: 'Logs',
-      items: LOGS_ITEMS.map(item => ({
-        label: item.label,
-        icon: item.icon,
-        route: project ? `${base}/${item.path}` : base,
-      })),
-    };
+  protected readonly projectNavGroups = computed<NavGroup[]>(() => {
+    const id = this.shell.activeProjectId();
+    const role = this.role();
+    if (!id) return [];
+
+    const base = `/p/${id}`;
+    const all: NavGroup[] = [
+      {
+        label: 'Overview',
+        items: [
+          { label: 'Home', icon: 'dashboard', route: `${base}/home` },
+        ],
+      },
+      {
+        label: 'Planning',
+        roles: ['pm', 'pmo'],
+        items: [
+          { label: 'Plan & stages', icon: 'account_tree', route: `${base}/plan`, roles: ['pm', 'pmo'] },
+        ],
+      },
+      {
+        label: 'Logs',
+        items: [
+          { label: 'Risk Log',    icon: 'warning_amber', route: `${base}/risks` },
+          { label: 'Issue Log',   icon: 'bug_report',    route: `${base}/issues` },
+          { label: 'Change Log',  icon: 'sync_alt',      route: `${base}/changes`,  roles: ['pm', 'pmo'] },
+          { label: 'Quality',     icon: 'fact_check',    route: `${base}/quality`,  roles: ['pm', 'pmo'] },
+          { label: 'Lessons',     icon: 'school',        route: `${base}/lessons`,  roles: ['pm', 'pmo'] },
+        ],
+      },
+      {
+        label: 'Reports',
+        roles: ['pm', 'pmo'],
+        items: [
+          { label: 'Highlight',  icon: 'summarize',      route: `${base}/reports/highlight` },
+          { label: 'Exceptions', icon: 'report_problem', route: `${base}/reports/exceptions` },
+        ],
+      },
+      {
+        label: 'Documents',
+        items: [
+          { label: 'Documents', icon: 'folder_open', route: `${base}/documents` },
+        ],
+      },
+    ];
+
+    return all
+      .filter(g => !g.roles || g.roles.includes(role))
+      .map(g => ({
+        ...g,
+        items: g.items.filter(i => !i.roles || i.roles.includes(role)),
+      }))
+      .filter(g => g.items.length > 0);
   });
+
+  protected readonly collapsed = computed(() => this.layout.sidebarCollapsed());
+
+  protected openSwitcher(): void {
+    this.shell.openSwitcher();
+  }
+
+  protected goToPortfolio(): void {
+    this.shell.setProject(null);
+    this.router.navigate(['/projects']);
+  }
 }

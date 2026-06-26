@@ -139,7 +139,7 @@ export class RiskDetailComponent {
 
   protected goBack(): void {
     const project = this.project();
-    if (project) this.router.navigate(['/projects', project.id, 'risks']);
+    if (project) this.router.navigate(['/p', project.id, 'risks']);
   }
 
   protected save(): void {

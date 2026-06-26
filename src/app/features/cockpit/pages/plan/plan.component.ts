@@ -1,0 +1,30 @@
+import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ProjectService } from '../../../projects/services/project.service';
+import { LifecycleStepperComponent } from '../../../../shared/components/lifecycle-stepper/lifecycle-stepper.component';
+import { AISuggestionCardComponent } from '../../../../shared/components/ai-suggestion-card/ai-suggestion-card.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+
+const LIFECYCLE_STEPS = ['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed'];
+const STATUS_INDEX: Record<string, number> = {
+  pre_project: 0, initiation: 1, delivery: 2, closing: 3, closed: 4,
+};
+
+@Component({
+  selector: 'app-plan',
+  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, AISuggestionCardComponent, EmptyStateComponent],
+  templateUrl: './plan.component.html',
+  styleUrl: './plan.component.scss',
+})
+export class PlanComponent {
+  private readonly projectService = inject(ProjectService);
+
+  protected readonly project = this.projectService.selectedProject;
+  protected readonly lifecycleSteps = LIFECYCLE_STEPS;
+
+  protected activeStepIndex(): number {
+    const p = this.project();
+    return p ? (STATUS_INDEX[p.status] ?? 0) : 0;
+  }
+}

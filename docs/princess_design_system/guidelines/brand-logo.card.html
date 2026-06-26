@@ -1,0 +1,18 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Logo" subtitle="Sinecon wordmark — navy ink on light, on dark, and the swoosh mark" -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 0; font-family: var(--font-display); display: grid; grid-template-columns: 2fr 1fr; }
+  .light { background: #fff; padding: 28px 24px; display: flex; align-items: center; }
+  .dark { background: var(--brand-sidebar); padding: 28px 24px; display: flex; align-items: center; }
+  .mark { background: var(--mat-sys-surface-container-low); display: flex; align-items: center; justify-content: center; }
+  .light img { height: 30px; }
+  .dark img { height: 30px; filter: brightness(0) invert(1); }
+  .mark img { height: 38px; }
+</style></head>
+<body>
+  <div class="light"><img src="../assets/logo.svg" alt="Sinecon"></div>
+  <div class="mark"><img src="../assets/favicon.svg" alt="mark"></div>
+  <div class="dark" style="grid-column:1 / -1"><img src="../assets/logo.svg" alt="Sinecon on dark"></div>
+</body></html>

@@ -90,6 +90,6 @@ export class IssueListComponent {
   protected navigateToIssue(issueId: number): void {
     const project = this.projectService.selectedProject();
     if (!project) return;
-    this.router.navigate(['/projects', project.id, 'issues', issueId]);
+    this.router.navigate(['/p', project.id, 'issues', issueId]);
   }
 }

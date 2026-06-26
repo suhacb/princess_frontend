@@ -1,97 +1,111 @@
-<nav class="sidebar" [class.sidebar--collapsed]="layout.sidebarCollapsed()" aria-label="Main navigation">
+<nav class="sidebar" [class.sidebar--collapsed]="collapsed()" aria-label="Main navigation">
 
   <div class="sidebar__brand-line"></div>
 
   <div class="sidebar__scroll">
-    @for (group of staticGroups; track group.label) {
-      <div class="sidebar__group">
-        @if (!layout.sidebarCollapsed()) {
-          <span class="sidebar__group-label">{{ group.label }}</span>
-        } @else {
-          <div class="sidebar__group-divider"></div>
-        }
-        @for (item of group.items; track item.route) {
-          <a
-            class="sidebar__item"
-            [routerLink]="item.route"
-            routerLinkActive="sidebar__item--active"
-            [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
-            matTooltipPosition="right"
-            matRipple
-            [matRippleColor]="'rgba(255,255,255,0.06)'"
-          >
-            <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
-            @if (!layout.sidebarCollapsed()) {
-              <span class="sidebar__item-label">{{ item.label }}</span>
-            }
-          </a>
-        }
-      </div>
-    }
 
-    <div class="sidebar__group">
-      @if (!layout.sidebarCollapsed()) {
-        <span class="sidebar__group-label">{{ logsGroup().label }}</span>
-      } @else {
-        <div class="sidebar__group-divider"></div>
-      }
-      @for (item of logsGroup().items; track item.label) {
-        <a
-          class="sidebar__item"
-          [routerLink]="item.route"
-          routerLinkActive="sidebar__item--active"
-          [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
+    <!-- Project picker -->
+    <div class="sidebar__project-picker">
+      @if (project(); as p) {
+        <button
+          class="sidebar__project-btn"
+          (click)="openSwitcher()"
+          [matTooltip]="collapsed() ? p.name : ''"
           matTooltipPosition="right"
-          matRipple
-          [matRippleColor]="'rgba(255,255,255,0.06)'"
         >
-          <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
-          @if (!layout.sidebarCollapsed()) {
-            <span class="sidebar__item-label">{{ item.label }}</span>
+          <span class="sidebar__project-icon">
+            <mat-icon>folder_open</mat-icon>
+          </span>
+          @if (!collapsed()) {
+            <span class="sidebar__project-name">{{ p.name }}</span>
+            <mat-icon class="sidebar__project-chevron">expand_more</mat-icon>
           }
-        </a>
+        </button>
+      } @else {
+        <button
+          class="sidebar__project-btn sidebar__project-btn--empty"
+          (click)="openSwitcher()"
+          [matTooltip]="collapsed() ? 'Select project' : ''"
+          matTooltipPosition="right"
+        >
+          <span class="sidebar__project-icon">
+            <mat-icon>add_circle_outline</mat-icon>
+          </span>
+          @if (!collapsed()) {
+            <span class="sidebar__project-name sidebar__project-name--empty">Select project</span>
+          }
+        </button>
       }
     </div>
 
-    @for (group of trailingGroups; track group.label) {
+    <div class="sidebar__divider"></div>
+
+    <!-- Project nav (when project active) -->
+    @if (shell.activeProjectId()) {
+      @for (group of projectNavGroups(); track group.label) {
+        <div class="sidebar__group">
+          @if (!collapsed()) {
+            <span class="sidebar__group-label">{{ group.label }}</span>
+          } @else {
+            <div class="sidebar__group-divider"></div>
+          }
+          @for (item of group.items; track item.route) {
+            <a
+              class="sidebar__item"
+              [routerLink]="item.route"
+              routerLinkActive="sidebar__item--active"
+              [matTooltip]="collapsed() ? item.label : ''"
+              matTooltipPosition="right"
+              matRipple
+              [matRippleColor]="'rgba(255,255,255,0.06)'"
+            >
+              <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
+              @if (!collapsed()) {
+                <span class="sidebar__item-label">{{ item.label }}</span>
+              }
+            </a>
+          }
+        </div>
+      }
+    } @else {
+      <!-- Portfolio nav (no project selected) -->
       <div class="sidebar__group">
-        @if (!layout.sidebarCollapsed()) {
-          <span class="sidebar__group-label">{{ group.label }}</span>
-        } @else {
-          <div class="sidebar__group-divider"></div>
+        @if (!collapsed()) {
+          <span class="sidebar__group-label">Portfolio</span>
         }
-        @for (item of group.items; track item.route) {
+        @for (item of portfolioItems; track item.route) {
           <a
             class="sidebar__item"
             [routerLink]="item.route"
             routerLinkActive="sidebar__item--active"
-            [matTooltip]="layout.sidebarCollapsed() ? item.label : ''"
+            [matTooltip]="collapsed() ? item.label : ''"
             matTooltipPosition="right"
             matRipple
             [matRippleColor]="'rgba(255,255,255,0.06)'"
           >
             <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
-            @if (!layout.sidebarCollapsed()) {
+            @if (!collapsed()) {
               <span class="sidebar__item-label">{{ item.label }}</span>
             }
           </a>
         }
       </div>
     }
+
   </div>
 
   <div class="sidebar__footer">
     <a
       class="sidebar__item sidebar__item--settings"
-      routerLink="/settings"
+      [routerLink]="shell.activeProjectId() ? ['/p', shell.activeProjectId(), 'settings'] : '/projects'"
       routerLinkActive="sidebar__item--active"
-      [matTooltip]="layout.sidebarCollapsed() ? 'Settings' : ''"
+      [matTooltip]="collapsed() ? 'Settings' : ''"
       matTooltipPosition="right"
       matRipple
       [matRippleColor]="'rgba(255,255,255,0.06)'"
     >
       <mat-icon class="sidebar__item-icon">settings</mat-icon>
-      @if (!layout.sidebarCollapsed()) {
+      @if (!collapsed()) {
         <span class="sidebar__item-label">Settings</span>
       }
     </a>

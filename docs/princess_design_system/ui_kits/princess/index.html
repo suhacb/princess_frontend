@@ -1,0 +1,174 @@
+<!-- @dsCard group="Princess App" viewport="1440x900" name="Princess — PRINCE2 PM" subtitle="Interactive app shell: projects, risk log, project detail, AI suggestions" -->
+<!-- @startingPoint section="Princess App" subtitle="Full PRINCE2 project-management app shell" viewport="1440x900" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Princess — PRINCE2 Project Management</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--mat-sys-surface); font-family: var(--font-sans); color: var(--mat-sys-on-surface); }
+  #root { height: 100vh; }
+
+  .pk-app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ─────────────────────────────────────────── */
+  .pk-sidebar { width: 260px; flex: none; background: var(--brand-sidebar); display: flex; flex-direction: column; overflow: hidden; }
+  .pk-sidebar__brand { height: 2px; flex: none; background: var(--brand-gradient); }
+  .pk-sidebar__scroll { flex: 1; overflow-y: auto; padding: 8px 0; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent; }
+  .pk-sidebar__scroll::-webkit-scrollbar { width: 4px; }
+  .pk-sidebar__scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+  .pk-group { padding: 4px 0; }
+  .pk-group__label { display: block; padding: 10px 16px 4px; font-family: var(--font-display); font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.3); }
+  .pk-item { display: flex; align-items: center; gap: 10px; height: 36px; margin: 1px 8px; padding: 0 12px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.72); text-decoration: none; transition: background var(--duration-base) var(--ease-standard), color var(--duration-base) var(--ease-standard); }
+  .pk-item:hover { background: rgba(255,255,255,.05); color: rgba(255,255,255,.92); }
+  .pk-item--active { background: rgba(78,185,234,.12); color: var(--brand-sidebar-active); }
+  .pk-item__icon { font-size: 18px; width: 18px; opacity: .85; }
+  .pk-item--active .pk-item__icon { opacity: 1; color: var(--brand-sidebar-active); }
+  .pk-item__label { font-family: var(--font-display); font-size: 12px; letter-spacing: .01em; }
+  .pk-sidebar__footer { flex: none; border-top: 1px solid rgba(255,255,255,.06); padding: 4px 0; }
+
+  /* ── Body / top bar ──────────────────────────────────── */
+  .pk-body { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--mat-sys-surface-container-lowest); }
+  .pk-topbar { display: flex; align-items: center; height: 64px; flex: none; padding: 0 12px 0 8px; background: var(--mat-sys-surface); border-bottom: 1px solid var(--mat-sys-outline-variant); box-shadow: var(--elevation-1); position: relative; z-index: 10; }
+  .pk-topbar__start { display: flex; align-items: center; gap: 6px; width: 252px; flex: none; }
+  .pk-topbar__logo { display: flex; align-items: center; opacity: .9; }
+  .pk-topbar__center { flex: 1; display: flex; justify-content: center; padding: 0 16px; }
+  .pk-search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 10px; min-width: 280px; max-width: 460px; width: 100%; border-radius: 20px; border: 1px solid var(--mat-sys-outline-variant); background: var(--mat-sys-surface-container); color: var(--mat-sys-on-surface-variant); font-family: var(--font-display); font-size: 13px; cursor: pointer; transition: border-color var(--duration-base), background var(--duration-base); }
+  .pk-search:hover { border-color: var(--mat-sys-primary); background: var(--mat-sys-surface-container-high); }
+  .pk-search__icon { font-size: 16px; opacity: .6; }
+  .pk-search__label { flex: 1; text-align: left; }
+  .pk-search__kbd { padding: 1px 5px; border-radius: 4px; background: var(--mat-sys-surface-variant); border: 1px solid var(--mat-sys-outline-variant); font-size: 11px; opacity: .7; }
+  .pk-topbar__end { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Content ─────────────────────────────────────────── */
+  .pk-content { flex: 1; overflow-y: auto; }
+  .pk-page { max-width: 1280px; margin: 0 auto; padding: 28px 32px 64px; display: flex; flex-direction: column; gap: 18px; }
+  .pk-pagehead { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .pk-pagehead__title { display: flex; align-items: baseline; gap: 10px; }
+  .pk-pagehead__title h1 { margin: 0; font-size: 1.6rem; font-weight: 400; }
+  .pk-pagehead__actions { display: flex; align-items: center; gap: 10px; }
+  .pk-count { font-family: var(--font-display); font-size: .8125rem; color: var(--text-secondary); background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent); padding: 2px 9px; border-radius: 12px; }
+  .pk-lede { margin: -6px 0 4px; font-size: .9375rem; color: var(--text-secondary); max-width: 680px; line-height: 1.55; }
+  .pk-filters { display: flex; align-items: center; gap: 12px; }
+
+  /* segmented control (risk sort) */
+  .pk-segment { display: flex; border: 1px solid var(--mat-sys-outline-variant); border-radius: 20px; overflow: hidden; font-family: var(--font-display); }
+  .pk-segment button { appearance: none; border: none; background: transparent; padding: 7px 16px; font-size: .8rem; font-weight: 500; color: var(--text-secondary); cursor: pointer; }
+  .pk-segment button.is-active { background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent); color: var(--mat-sys-primary); }
+
+  /* ── Tables ──────────────────────────────────────────── */
+  .pk-tablecard { border: 1px solid var(--mat-sys-outline-variant); border-radius: var(--radius-card); overflow: hidden; background: var(--mat-sys-surface-container-lowest); }
+  .pk-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  .pk-table th { text-align: left; padding: 12px 16px; background: var(--mat-sys-surface-container); font-family: var(--font-display); font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-secondary); }
+  .pk-table td { padding: 12px 16px; border-top: 1px solid var(--mat-sys-outline-variant); color: var(--text-primary); }
+  .pk-table tbody tr { cursor: pointer; transition: background var(--duration-fast); }
+  .pk-table tbody tr:hover { background: var(--mat-sys-surface-container-low); }
+  .pk-table--risk tbody tr { cursor: default; }
+  .pk-cell-link { color: var(--mat-sys-primary); font-weight: 500; }
+  .pk-cell-strong { font-weight: 500; }
+  .pk-muted { color: var(--text-secondary); }
+  .pk-cell-action { width: 40px; text-align: right; color: var(--mat-sys-outline); }
+  .pk-cell-action .material-icons { font-size: 18px; }
+  .pk-ref { font-family: var(--font-mono); font-size: .78rem; background: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
+  .pk-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+  .pk-dot--full { background: var(--status-success); }
+  .pk-dot--partial { background: var(--status-warning); }
+  .pk-dot--none { background: var(--mat-sys-outline); }
+
+  /* ── Project detail ──────────────────────────────────── */
+  .pk-back { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-family: var(--font-display); font-size: .8125rem; padding: 0; }
+  .pk-back:hover { color: var(--mat-sys-primary); }
+  .pk-back .material-icons { font-size: 18px; }
+  .pk-detailhead__row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pk-detailhead__row h1 { margin: 0; font-size: 1.75rem; font-weight: 400; }
+  .pk-detailhead__stage { margin: 6px 0 0; font-size: .875rem; color: var(--text-secondary); }
+  .pk-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-top: 4px; }
+  .pk-dl { display: grid; grid-template-columns: 120px 1fr; gap: 9px 16px; margin: 0; font-size: .875rem; }
+  .pk-dl dt { color: var(--text-secondary); }
+  .pk-dl dd { margin: 0; }
+
+  /* ── AI suggestions screen ───────────────────────────── */
+  .pk-ai-list { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+  .pk-ai-item { display: flex; flex-direction: column; gap: 6px; }
+  .pk-ai-context { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-display); font-size: .75rem; color: var(--text-secondary); padding-left: 4px; }
+  .pk-ai-context .material-icons { font-size: 14px; }
+  .pk-ai-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 56px; color: var(--text-secondary); text-align: center; }
+  .pk-ai-empty .material-icons { font-size: 40px; opacity: .4; }
+
+  /* ── Placeholder ─────────────────────────────────────── */
+  .pk-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 80px; color: var(--text-secondary); text-align: center; }
+  .pk-placeholder .material-icons { font-size: 44px; opacity: .35; }
+  .pk-placeholder h2 { margin: 6px 0 0; font-weight: 500; color: var(--text-primary); }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="data.js"></script>
+<script type="text/babel" src="Sidebar.jsx"></script>
+<script type="text/babel" src="TopBar.jsx"></script>
+<script type="text/babel" src="Projects.jsx"></script>
+<script type="text/babel" src="RiskLog.jsx"></script>
+<script type="text/babel" src="ProjectDetail.jsx"></script>
+<script type="text/babel" src="AISuggestions.jsx"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="14" fill="#0d1520"/>
+    <rect x="30" y="40" width="40" height="3" rx="1.5" fill="url(#g)"/>
+    <text x="50" y="62" font-family="Instrument Sans, sans-serif" font-size="26" font-weight="700" fill="#fff" text-anchor="middle">P</text>
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4561a2"/><stop offset="1" stop-color="#4eb9ea"/>
+    </linearGradient></defs>
+  </svg>
+</template>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+  const { useState } = React;
+
+  function Placeholder({ label }) {
+    return (
+      <div className="pk-page"><div className="pk-placeholder">
+        <span className="material-icons">construction</span>
+        <h2>{label}</h2>
+        <p>This view is part of the Princess product map. Browse Projects, the Risk Log, a project's detail, or AI Suggestions.</p>
+      </div></div>
+    );
+  }
+
+  function App() {
+    const [route, setRoute] = useState('projects');
+    const [project, setProject] = useState(null);
+
+    function navigate(key) { setProject(null); setRoute(key); }
+
+    let screen;
+    if (route === 'detail') screen = <window.ProjectDetail project={project} onBack={() => navigate('projects')} />;
+    else if (route === 'projects') screen = <window.Projects onOpenProject={(p) => { setProject(p); setRoute('detail'); }} />;
+    else if (route === 'risks') screen = <window.RiskLog />;
+    else if (route === 'ai') screen = <window.AISuggestions />;
+    else {
+      const labels = { dashboard: 'Dashboard', guide: 'PRINCE2 Guide', wbs: 'Work Breakdown', timeline: 'Timeline', tasks: 'Tasks', 'daily-log': 'Daily Log', issues: 'Issue Log', changes: 'Change Log', quality: 'Quality Register', lessons: 'Lessons Log', highlight: 'Highlight Reports', exceptions: 'Exception Reports' };
+      screen = <Placeholder label={labels[route] || 'Coming soon'} />;
+    }
+
+    const activeKey = route === 'detail' ? 'projects' : route;
+
+    return (
+      <div className="pk-app">
+        <window.Sidebar active={activeKey} onNavigate={navigate} />
+        <div className="pk-body">
+          <window.TopBar />
+          <div className="pk-content">{screen}</div>
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

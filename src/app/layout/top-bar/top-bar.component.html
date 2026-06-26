@@ -9,13 +9,26 @@
       <mat-icon>{{ layout.sidebarCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
     </button>
 
-    <a class="top-bar__logo" routerLink="/dashboard" aria-label="Princess home">
+    <a class="top-bar__logo" routerLink="/projects" aria-label="Princess home">
       <img src="/logo.svg" alt="Princess" height="26" />
     </a>
+
+    <!-- Project switcher button -->
+    @if (activeProject(); as p) {
+      <button class="top-bar__switcher" (click)="openSwitcher()" aria-label="Switch project">
+        <span class="top-bar__switcher-name">{{ p.name }}</span>
+        <mat-icon class="top-bar__switcher-chevron">expand_more</mat-icon>
+      </button>
+    } @else {
+      <button class="top-bar__switcher top-bar__switcher--empty" (click)="openSwitcher()" aria-label="Select project">
+        <span class="top-bar__switcher-name">Select project</span>
+        <mat-icon class="top-bar__switcher-chevron">expand_more</mat-icon>
+      </button>
+    }
   </div>
 
   <div class="top-bar__center">
-    <button class="top-bar__search" mat-button aria-label="Search (Ctrl+K)">
+    <button class="top-bar__search" mat-button (click)="openPalette()" aria-label="Search (Ctrl+K)">
       <mat-icon class="top-bar__search-icon">search</mat-icon>
       <span class="top-bar__search-label">Search…</span>
       <kbd class="top-bar__search-kbd">⌘K</kbd>
@@ -23,14 +36,38 @@
   </div>
 
   <div class="top-bar__end">
-    <app-ai-assist-button>Ask Princess</app-ai-assist-button>
+    <!-- Role selector -->
+    <div class="top-bar__role-selector" aria-label="Viewing as">
+      <span class="top-bar__role-label">Viewing as</span>
+      <div class="top-bar__role-pills" role="group">
+        @for (r of roles; track r) {
+          <button
+            class="top-bar__role-pill"
+            [class.top-bar__role-pill--active]="activeRole() === r"
+            (click)="setRole(r)"
+            [attr.aria-pressed]="activeRole() === r"
+          >{{ r.toUpperCase() }}</button>
+        }
+      </div>
+    </div>
+
+    <app-ai-assist-button
+      [solid]="shell.aiDockOpen()"
+      (click)="shell.toggleAiDock()"
+    >Ask Princess</app-ai-assist-button>
 
     <button
       mat-icon-button
       aria-label="Notifications"
       matTooltip="Notifications"
     >
-      <mat-icon aria-hidden="false" [matBadge]="'3'" matBadgeSize="small" matBadgeColor="warn" aria-label="3 notifications">notifications_none</mat-icon>
+      <mat-icon
+        aria-hidden="false"
+        [matBadge]="'3'"
+        matBadgeSize="small"
+        matBadgeColor="warn"
+        aria-label="3 notifications"
+      >notifications_none</mat-icon>
     </button>
 
     <button

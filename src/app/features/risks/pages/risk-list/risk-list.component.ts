@@ -101,6 +101,6 @@ export class RiskListComponent {
   protected navigateToRisk(riskId: number): void {
     const project = this.projectService.selectedProject();
     if (!project) return;
-    this.router.navigate(['/projects', project.id, 'risks', riskId]);
+    this.router.navigate(['/p', project.id, 'risks', riskId]);
   }
 }

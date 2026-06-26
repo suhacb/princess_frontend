@@ -1,0 +1,30 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Status & semantic" subtitle="Hand-picked status colors for chips, badges & log states" -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 20px; font-family: var(--font-display); }
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .item { display: flex; align-items: center; gap: 10px; }
+  .dot { width: 34px; height: 34px; border-radius: 50%; flex: none; }
+  .name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .chip { padding: 3px 11px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+</style></head>
+<body>
+  <div class="row">
+    <div class="item"><span class="dot" style="background:#2e7d32"></span><div><div class="name">success</div><div class="hex">#2E7D32</div></div></div>
+    <div class="item"><span class="dot" style="background:#f57c00"></span><div><div class="name">warning</div><div class="hex">#F57C00</div></div></div>
+    <div class="item"><span class="dot" style="background:#e65100"></span><div><div class="name">high</div><div class="hex">#E65100</div></div></div>
+    <div class="item"><span class="dot" style="background:#ba1a1a"></span><div><div class="name">danger / error</div><div class="hex">#BA1A1A</div></div></div>
+    <div class="item"><span class="dot" style="background:#546e7a"></span><div><div class="name">neutral</div><div class="hex">#546E7A</div></div></div>
+    <div class="item"><span class="dot" style="background:#475d92"></span><div><div class="name">info</div><div class="hex">#475D92</div></div></div>
+  </div>
+  <div class="chips">
+    <span class="chip" style="background:color-mix(in srgb,#475d92 12%,transparent);color:#475d92">Open</span>
+    <span class="chip" style="background:color-mix(in srgb,#2e7d32 12%,transparent);color:#2e7d32">Mitigated</span>
+    <span class="chip" style="background:color-mix(in srgb,#546e7a 12%,transparent);color:#546e7a">Closed</span>
+    <span class="chip" style="background:color-mix(in srgb,#ba1a1a 12%,transparent);color:#ba1a1a">Materialised</span>
+  </div>
+</body></html>

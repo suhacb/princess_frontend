@@ -1,0 +1,148 @@
+@if (project(); as p) {
+  <div class="home">
+
+    <!-- Lifecycle stepper -->
+    <app-lifecycle-stepper
+      [steps]="['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed']"
+      [activeIndex]="['pre_project','initiation','delivery','closing','closed'].indexOf(p.status)"
+    />
+
+    <!-- PM home -->
+    @if (isPm()) {
+      <div class="home__kpis">
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Stage tolerance</span>
+          <span class="home__kpi-value home__kpi-value--warn">+8d</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Open risks</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">My actions</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Reports due</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+      </div>
+
+      <div class="home__cols">
+        <div class="home__col">
+          <div class="home__card">
+            <h3 class="home__card-title">Risks needing you</h3>
+            <app-empty-state
+              icon="warning_amber"
+              title="No urgent risks"
+              message="Risks requiring your attention will appear here."
+            />
+          </div>
+        </div>
+        <div class="home__col">
+          <app-ai-suggestion-card
+            eyebrow="For you today"
+            title="2 open risks have no mitigation owner"
+          >
+            Assign the project manager as interim owner so they stay tracked.
+          </app-ai-suggestion-card>
+        </div>
+      </div>
+    }
+
+    <!-- PMO home -->
+    @if (isPmo()) {
+      <div class="home__kpis">
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Governance health</span>
+          <span class="home__kpi-value home__kpi-value--ok">Good</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Overdue reports</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Stage gates</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+        <div class="home__kpi-tile">
+          <span class="home__kpi-label">Assurance items</span>
+          <span class="home__kpi-value">—</span>
+        </div>
+      </div>
+
+      <div class="home__cols">
+        <div class="home__col">
+          <div class="home__card">
+            <h3 class="home__card-title">Assurance checklist</h3>
+            <app-empty-state
+              icon="fact_check"
+              title="Checklist loading"
+              message="Assurance items will appear here once stages are configured."
+            />
+          </div>
+        </div>
+        <div class="home__col">
+          <app-ai-suggestion-card
+            eyebrow="Assurance insight"
+            title="Stage gate review is due in 3 days"
+          >
+            Confirm that all assurance checks are complete before the gate meeting.
+          </app-ai-suggestion-card>
+        </div>
+      </div>
+    }
+
+    <!-- TM home -->
+    @if (isTm()) {
+      <div class="home__tm-package">
+        <div class="home__card">
+          <h3 class="home__card-title">My work package</h3>
+          <app-empty-state
+            icon="work_outline"
+            title="No work package assigned"
+            message="Your project manager will assign a work package to you."
+          />
+        </div>
+      </div>
+
+      <div class="home__cols">
+        <div class="home__col">
+          <div class="home__card">
+            <h3 class="home__card-title">My checklist</h3>
+            <app-empty-state
+              icon="check_circle_outline"
+              title="No items yet"
+              message="Checklist items will appear once your work package is assigned."
+            />
+          </div>
+        </div>
+        <div class="home__col">
+          <div class="home__card">
+            <h3 class="home__card-title">Raise to PM</h3>
+            <div class="home__tm-actions">
+              <button mat-stroked-button class="home__raise-btn" (click)="raiseIssue()">
+                <mat-icon>bug_report</mat-icon>
+                Raise issue
+              </button>
+              <button mat-stroked-button class="home__raise-btn" (click)="raiseRisk()">
+                <mat-icon>warning_amber</mat-icon>
+                Raise risk
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+} @else {
+  <div class="home__loading">
+    <app-skeleton width="100%" height="60px" />
+    <div class="home__loading-kpis">
+      @for (i of [1,2,3,4]; track i) {
+        <app-skeleton height="72px" />
+      }
+    </div>
+  </div>
+}

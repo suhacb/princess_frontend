@@ -1,6 +1,10 @@
 <app-loading-bar />
 
-<div class="shell" [class.shell--sidebar-collapsed]="layout.sidebarCollapsed()">
+<div
+  class="shell"
+  [class.shell--sidebar-collapsed]="layout.sidebarCollapsed()"
+  [class.shell--ai-open]="shell.aiDockOpen()"
+>
   <div class="shell__sidebar">
     <app-sidebar />
   </div>
@@ -10,9 +14,22 @@
 
     <main class="shell__content" id="main-content">
       <div class="shell__content-inner">
-        <app-breadcrumb />
         <router-outlet />
       </div>
     </main>
   </div>
+
+  @if (shell.aiDockOpen()) {
+    <div class="shell__ai-dock">
+      <app-ai-dock />
+    </div>
+  }
 </div>
+
+@if (shell.paletteOpen()) {
+  <app-command-palette />
+}
+
+@if (shell.switcherOpen()) {
+  <app-project-switcher />
+}

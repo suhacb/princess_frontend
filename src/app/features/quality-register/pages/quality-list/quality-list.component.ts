@@ -79,6 +79,6 @@ export class QualityListComponent {
   protected navigateToEntry(entryId: number): void {
     const project = this.projectService.selectedProject();
     if (!project) return;
-    this.router.navigate(['/projects', project.id, 'quality-register', entryId]);
+    this.router.navigate(['/p', project.id, 'quality', entryId]);
   }
 }

@@ -1,0 +1,26 @@
+/* ============================================================================
+   Princess / Sinecon — Elevation & shadow tokens
+   Material 3 is restrained with shadow: most surfaces use tonal containers,
+   not drop shadows. Real shadows appear only on the top bar, menus, dialogs
+   and elevated tables. These match the app's observed values.
+   ============================================================================ */
+
+:root {
+  /* level 0 — flat tonal surfaces (cards use surface-container, no shadow) */
+  --elevation-0: none;
+
+  /* level 1 — sticky top bar / elevated table (mat-elevation-z1) */
+  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  /* level 2 — menus, popovers, dropdowns */
+  --elevation-2: 0 2px 6px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  /* level 3 — dialogs, modal surfaces */
+  --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  /* level 4 — transient (drag, toast) */
+  --elevation-4: 0 12px 32px rgba(0, 0, 0, 0.20);
+
+  /* focus ring — primary at low opacity */
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 30%, transparent);
+}

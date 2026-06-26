@@ -1,0 +1,33 @@
+<div class="palette-backdrop" (click)="onBackdropClick()"></div>
+
+<div class="palette" role="dialog" aria-label="Command palette" aria-modal="true">
+  <div class="palette__search-row">
+    <mat-icon class="palette__search-icon">search</mat-icon>
+    <input
+      class="palette__input"
+      placeholder="Search items, documents, actions…"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+      autofocus
+      aria-label="Search"
+    />
+    <kbd class="palette__esc">Esc</kbd>
+  </div>
+
+  <div class="palette__results">
+    @for (group of groups; track group.label) {
+      <div class="palette__group">
+        <span class="palette__group-label">{{ group.label }}</span>
+        @for (item of group.items; track item.label) {
+          <button class="palette__item">
+            <mat-icon class="palette__item-icon">{{ item.icon }}</mat-icon>
+            <span class="palette__item-label">{{ item.label }}</span>
+            @if (item.meta) {
+              <span class="palette__item-meta">{{ item.meta }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

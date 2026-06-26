@@ -34,18 +34,89 @@ $sidebar-border: rgba(255, 255, 255, 0.06);
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 
-    &::-webkit-scrollbar {
-      width: 4px;
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
+  }
+
+  // ── Project picker ────────────────────────────────────────────────
+  &__project-picker {
+    padding: 6px 8px 4px;
+  }
+
+  &__project-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    text-align: left;
+    color: $sidebar-text;
+    transition:
+      background var(--princess-transition-speed) var(--princess-transition-easing),
+      border-color var(--princess-transition-speed) var(--princess-transition-easing);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.18);
     }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+
+    &--empty {
+      border-style: dashed;
+      color: $sidebar-text-muted;
+
+      &:hover {
+        color: $sidebar-text;
+      }
     }
   }
 
+  &__project-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: inherit;
+    }
+  }
+
+  &__project-name {
+    flex: 1;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--empty {
+      font-style: italic;
+    }
+  }
+
+  &__project-chevron {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  &__divider {
+    height: 1px;
+    margin: 8px 12px;
+    background: $sidebar-border;
+  }
+
+  // ── Nav groups ────────────────────────────────────────────────────
   &__group {
     padding: 4px 0;
   }
@@ -137,8 +208,13 @@ $sidebar-border: rgba(255, 255, 255, 0.06);
     padding: 4px 0;
   }
 
-  // Collapsed state: center icons
+  // ── Collapsed ─────────────────────────────────────────────────────
   &--collapsed {
+    .sidebar__project-btn {
+      justify-content: center;
+      padding: 8px;
+    }
+
     .sidebar__item {
       justify-content: center;
       padding: 0;
