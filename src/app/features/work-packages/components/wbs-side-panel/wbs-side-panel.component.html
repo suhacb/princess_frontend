@@ -1,0 +1,59 @@
+<div class="panel">
+
+  <div class="panel__header">
+    <div class="panel__type">
+      <mat-icon class="panel__type-icon">inventory_2</mat-icon>
+      <span class="panel__type-label">Product</span>
+    </div>
+    <button mat-icon-button class="panel__close" (click)="close.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="panel__status-row">
+    <app-wbs-status-chip [status]="selection().node.status" />
+    @if (selection().node.identifier; as id) {
+      <span class="panel__identifier">{{ id }}</span>
+    }
+  </div>
+
+  <form [formGroup]="form" class="panel__form" (ngSubmit)="save()">
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        @for (t of types; track t) {
+          <mat-option [value]="t">{{ typeLabels[t] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Purpose</mat-label>
+      <textarea matInput formControlName="purpose" rows="4" placeholder="What is this product for?"></textarea>
+    </mat-form-field>
+
+    <div class="panel__actions">
+      <button mat-flat-button type="submit" [disabled]="form.invalid || saving">
+        {{ saving ? 'Saving…' : 'Save changes' }}
+      </button>
+      @if (selection().node.status === 'draft' || selection().node.status === 'in_development') {
+        <button mat-stroked-button type="button" (click)="baseline()">
+          <mat-icon>lock</mat-icon>
+          Baseline
+        </button>
+      }
+      <button mat-button type="button" class="panel__delete-btn" (click)="confirmDelete()">
+        <mat-icon>delete_outline</mat-icon>
+        Delete
+      </button>
+    </div>
+
+  </form>
+
+</div>

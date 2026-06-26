@@ -9,65 +9,67 @@
     [activeIndex]="activeStepIndex()"
   />
 
-  <div class="plan__cols">
-    <div class="plan__col">
-      <div class="plan__card">
-        <h3 class="plan__card-title">Stage tolerances</h3>
-        @if (project(); as p) {
-          <div class="plan__tolerances">
-            <div class="plan__tolerance-row">
-              <span class="plan__tolerance-label">Time</span>
-              <div class="plan__tolerance-bar-wrap">
-                <div class="plan__tolerance-bar">
-                  <div class="plan__tolerance-fill plan__tolerance-fill--ok" style="width: 60%"></div>
-                </div>
-                <span class="plan__tolerance-range">
-                  {{ p.tolerances.time.min ?? '—' }} / {{ p.tolerances.time.max ?? '—' }} days
-                </span>
-              </div>
+  <!-- Product Breakdown Structure -->
+  <div class="plan__card plan__card--wbs">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Product breakdown structure</h3>
+    </div>
+    @if (project(); as p) {
+      <app-wbs-tree [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="account_tree"
+        title="No project selected"
+        message="Select a project to view its product breakdown structure."
+      />
+    }
+  </div>
+
+  <!-- Work Packages -->
+  <div class="plan__card plan__card--wbs">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Work packages</h3>
+    </div>
+    @if (project(); as p) {
+      <app-work-package-list [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="assignment"
+        title="No project selected"
+        message="Select a project to view its work packages."
+      />
+    }
+  </div>
+
+  <!-- Stage tolerances -->
+  @if (project(); as p) {
+    <div class="plan__card">
+      <h3 class="plan__card-title">Stage tolerances</h3>
+      <div class="plan__tolerances">
+        <div class="plan__tolerance-row">
+          <span class="plan__tolerance-label">Time</span>
+          <div class="plan__tolerance-bar-wrap">
+            <div class="plan__tolerance-bar">
+              <div class="plan__tolerance-fill plan__tolerance-fill--ok" style="width: 60%"></div>
             </div>
-            <div class="plan__tolerance-row">
-              <span class="plan__tolerance-label">Cost</span>
-              <div class="plan__tolerance-bar-wrap">
-                <div class="plan__tolerance-bar">
-                  <div class="plan__tolerance-fill plan__tolerance-fill--warn" style="width: 82%"></div>
-                </div>
-                <span class="plan__tolerance-range">
-                  {{ p.tolerances.cost.min ?? '—' }} / {{ p.tolerances.cost.max ?? '—' }} €
-                </span>
-              </div>
-            </div>
+            <span class="plan__tolerance-range">
+              {{ p.tolerances.time.min ?? '—' }} / {{ p.tolerances.time.max ?? '—' }} days
+            </span>
           </div>
-        } @else {
-          <app-empty-state
-            icon="tune"
-            title="No tolerances set"
-            message="Define tolerances in project settings to track stage health."
-          />
-        }
+        </div>
+        <div class="plan__tolerance-row">
+          <span class="plan__tolerance-label">Cost</span>
+          <div class="plan__tolerance-bar-wrap">
+            <div class="plan__tolerance-bar">
+              <div class="plan__tolerance-fill plan__tolerance-fill--warn" style="width: 82%"></div>
+            </div>
+            <span class="plan__tolerance-range">
+              {{ p.tolerances.cost.min ?? '—' }} / {{ p.tolerances.cost.max ?? '—' }} €
+            </span>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="plan__col">
-      <div class="plan__card">
-        <h3 class="plan__card-title">Work packages</h3>
-        <app-empty-state
-          icon="work_outline"
-          title="No work packages"
-          message="Work packages assigned to team managers will appear here."
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="plan__card">
-    <h3 class="plan__card-title">Stage timeline</h3>
-    <app-empty-state
-      icon="calendar_view_week"
-      title="Timeline coming soon"
-      message="A Gantt-style stage timeline will appear here."
-    />
-  </div>
-
+  }
 
 </div>

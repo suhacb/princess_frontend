@@ -1,0 +1,170 @@
+<div class="wbs" [class.wbs--panel-open]="selectedNode()">
+
+  <!-- Tree pane -->
+  <div class="wbs__pane">
+
+    <div class="wbs__toolbar">
+      <div class="wbs__toolbar-left">
+        <button mat-icon-button (click)="expandAll()" title="Expand all">
+          <mat-icon>unfold_more</mat-icon>
+        </button>
+        <button mat-icon-button (click)="collapseAll()" title="Collapse all">
+          <mat-icon>unfold_less</mat-icon>
+        </button>
+      </div>
+      <button mat-icon-button (click)="exportToClipboard()" title="Copy as indented list">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+
+    @if (loading() && products().length === 0) {
+      <div class="wbs__skeleton">
+        @for (i of [1, 2, 3]; track i) {
+          <app-skeleton height="44px" borderRadius="8px" />
+          <app-skeleton height="36px" borderRadius="8px" style="margin-left: 32px" />
+        }
+      </div>
+    } @else if (products().length === 0 && !isAddingAtRoot()) {
+      <app-empty-state
+        icon="account_tree"
+        title="No products yet"
+        message="Break the project scope into products to build your Product Breakdown Structure."
+        actionLabel="Add product"
+        (actionClick)="startAddRoot()"
+      />
+    } @else {
+
+      <div class="wbs__tree">
+
+        @for (product of products(); track product.id) {
+          <div class="wbs-node wbs-node--root" [class.wbs-node--selected]="isSelected(product.id)">
+
+            <div class="wbs-node__row" (click)="select(product)">
+              <button class="wbs-node__toggle"
+                      (click)="$event.stopPropagation(); toggle(product.id)"
+                      [disabled]="product.children.length === 0 && !isAddingChild(product.id)">
+                <mat-icon>{{ (isExpanded(product.id) && (product.children.length > 0 || isAddingChild(product.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+              </button>
+              <mat-icon class="wbs-node__icon wbs-node__icon--root">inventory_2</mat-icon>
+
+              @if (isEditing(product.id)) {
+                <input #inlineInput
+                       class="wbs-node__inline-input"
+                       [value]="inlineTitle()"
+                       (input)="inlineTitle.set($any($event.target).value)"
+                       (blur)="saveEdit(product)"
+                       (keydown)="handleEditKeydown($event, product)"
+                       (click)="$event.stopPropagation()" />
+              } @else {
+                <span class="wbs-node__title" (dblclick)="startEdit($event, product)">{{ product.title }}</span>
+              }
+
+              <app-wbs-status-chip [status]="product.status" />
+              <span class="wbs-node__type">{{ typeLabels[product.type] }}</span>
+
+              <div class="wbs-node__actions" (click)="$event.stopPropagation()">
+                <button mat-icon-button class="wbs-node__btn" title="Add sub-product" (click)="startAddChild($event, product.id)">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDelete($event, product)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Children -->
+            @if (isExpanded(product.id) || isAddingChild(product.id)) {
+              <div class="wbs-node__children">
+
+                @for (child of product.children; track child.id) {
+                  <div class="wbs-node wbs-node--child" [class.wbs-node--selected]="isSelected(child.id)">
+                    <div class="wbs-node__row" (click)="select(child)">
+                      <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--child">check_box_outline_blank</mat-icon>
+
+                      @if (isEditing(child.id)) {
+                        <input #inlineInput
+                               class="wbs-node__inline-input"
+                               [value]="inlineTitle()"
+                               (input)="inlineTitle.set($any($event.target).value)"
+                               (blur)="saveEdit(child)"
+                               (keydown)="handleEditKeydown($event, child)"
+                               (click)="$event.stopPropagation()" />
+                      } @else {
+                        <span class="wbs-node__title" (dblclick)="startEdit($event, child)">{{ child.title }}</span>
+                      }
+
+                      <app-wbs-status-chip [status]="child.status" />
+
+                      <div class="wbs-node__actions" (click)="$event.stopPropagation()">
+                        <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDelete($event, child)">
+                          <mat-icon>delete_outline</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Inline add child -->
+                @if (isAddingChild(product.id)) {
+                  <div class="wbs-node wbs-node--child wbs-node--adding">
+                    <div class="wbs-node__row">
+                      <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--child">check_box_outline_blank</mat-icon>
+                      <input #inlineInput
+                             class="wbs-node__inline-input wbs-node__inline-input--add"
+                             [value]="inlineTitle()"
+                             (input)="inlineTitle.set($any($event.target).value)"
+                             (blur)="saveNew(product.id)"
+                             (keydown)="handleAddKeydown($event, product.id)"
+                             placeholder="New sub-product…" />
+                      <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Inline add root product -->
+        @if (isAddingAtRoot()) {
+          <div class="wbs-node wbs-node--root wbs-node--adding">
+            <div class="wbs-node__row">
+              <mat-icon class="wbs-node__icon wbs-node__icon--root" style="margin-left: 28px">inventory_2</mat-icon>
+              <input #inlineInput
+                     class="wbs-node__inline-input wbs-node__inline-input--add"
+                     [value]="inlineTitle()"
+                     (input)="inlineTitle.set($any($event.target).value)"
+                     (blur)="saveNew(null)"
+                     (keydown)="handleAddKeydown($event, null)"
+                     placeholder="New product…" />
+              <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (!isAddingAtRoot()) {
+        <button class="wbs__add-btn" (click)="startAddRoot()">
+          <mat-icon>add</mat-icon>
+          Add product
+        </button>
+      }
+    }
+  </div>
+
+  <!-- Side panel -->
+  @if (selectedNode(); as sel) {
+    <app-wbs-side-panel
+      [selection]="sel"
+      [projectId]="projectId()"
+      (close)="clearSelection()"
+    />
+  }
+
+</div>
