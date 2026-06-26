@@ -108,7 +108,7 @@ export class QualityDetailComponent {
 
   protected goBack(): void {
     const project = this.project();
-    if (project) this.router.navigate(['/projects', project.id, 'quality-register']);
+    if (project) this.router.navigate(['/p', project.id, 'quality']);
   }
 
   protected save(): void {

@@ -115,7 +115,7 @@ export class ChangeDetailComponent {
 
   protected goBack(): void {
     const project = this.project();
-    if (project) this.router.navigate(['/projects', project.id, 'changes']);
+    if (project) this.router.navigate(['/p', project.id, 'changes']);
   }
 
   protected save(): void {

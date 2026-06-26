@@ -118,6 +118,6 @@ describe('QualityListComponent', () => {
     const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
     const row = fixture.nativeElement.querySelector('.quality-row');
     row?.click();
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'quality-register', 1]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 5, 'quality', 1]);
   });
 });

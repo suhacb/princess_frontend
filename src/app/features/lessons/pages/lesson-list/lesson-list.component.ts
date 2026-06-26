@@ -75,6 +75,6 @@ export class LessonListComponent {
   protected navigateToLesson(lessonId: number): void {
     const project = this.projectService.selectedProject();
     if (!project) return;
-    this.router.navigate(['/projects', project.id, 'lessons', lessonId]);
+    this.router.navigate(['/p', project.id, 'lessons', lessonId]);
   }
 }

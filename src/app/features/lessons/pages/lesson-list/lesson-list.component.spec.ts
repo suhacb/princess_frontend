@@ -121,6 +121,6 @@ describe('LessonListComponent', () => {
     const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
     const row = fixture.nativeElement.querySelector('.lesson-row');
     row?.click();
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'lessons', 1]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 5, 'lessons', 1]);
   });
 });

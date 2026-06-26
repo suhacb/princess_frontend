@@ -1,0 +1,73 @@
+<div class="plan">
+
+  <div class="plan__header">
+    <h1 class="plan__title">Plan &amp; stages</h1>
+  </div>
+
+  <app-lifecycle-stepper
+    [steps]="lifecycleSteps"
+    [activeIndex]="activeStepIndex()"
+  />
+
+  <div class="plan__cols">
+    <div class="plan__col">
+      <div class="plan__card">
+        <h3 class="plan__card-title">Stage tolerances</h3>
+        @if (project(); as p) {
+          <div class="plan__tolerances">
+            <div class="plan__tolerance-row">
+              <span class="plan__tolerance-label">Time</span>
+              <div class="plan__tolerance-bar-wrap">
+                <div class="plan__tolerance-bar">
+                  <div class="plan__tolerance-fill plan__tolerance-fill--ok" style="width: 60%"></div>
+                </div>
+                <span class="plan__tolerance-range">
+                  {{ p.tolerances.time.min ?? '—' }} / {{ p.tolerances.time.max ?? '—' }} days
+                </span>
+              </div>
+            </div>
+            <div class="plan__tolerance-row">
+              <span class="plan__tolerance-label">Cost</span>
+              <div class="plan__tolerance-bar-wrap">
+                <div class="plan__tolerance-bar">
+                  <div class="plan__tolerance-fill plan__tolerance-fill--warn" style="width: 82%"></div>
+                </div>
+                <span class="plan__tolerance-range">
+                  {{ p.tolerances.cost.min ?? '—' }} / {{ p.tolerances.cost.max ?? '—' }} €
+                </span>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <app-empty-state
+            icon="tune"
+            title="No tolerances set"
+            message="Define tolerances in project settings to track stage health."
+          />
+        }
+      </div>
+    </div>
+
+    <div class="plan__col">
+      <div class="plan__card">
+        <h3 class="plan__card-title">Work packages</h3>
+        <app-empty-state
+          icon="work_outline"
+          title="No work packages"
+          message="Work packages assigned to team managers will appear here."
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="plan__card">
+    <h3 class="plan__card-title">Stage timeline</h3>
+    <app-empty-state
+      icon="calendar_view_week"
+      title="Timeline coming soon"
+      message="A Gantt-style stage timeline will appear here."
+    />
+  </div>
+
+
+</div>

@@ -1,0 +1,72 @@
+<div class="ai-dock">
+
+  <div class="ai-dock__header">
+    <div class="ai-dock__header-left">
+      <span class="ai-dock__spark-tile">
+        <mat-icon class="ai-dock__spark-icon">auto_awesome</mat-icon>
+      </span>
+      <div>
+        <span class="ai-dock__name">Princess</span>
+        @if (shell.aiDockContext(); as ctx) {
+          <span class="ai-dock__context">{{ ctx.item?.ref ?? ctx.route }}</span>
+        }
+      </div>
+    </div>
+    <button mat-icon-button class="ai-dock__close" (click)="shell.toggleAiDock()" aria-label="Close AI dock">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="ai-dock__tabs">
+    @for (tab of tabs; track tab.key) {
+      <button
+        class="ai-dock__tab"
+        [class.ai-dock__tab--active]="shell.aiDockTab() === tab.key"
+        (click)="shell.setAiDockTab(tab.key)"
+      >{{ tab.label }}</button>
+    }
+  </div>
+
+  <div class="ai-dock__body">
+    @switch (shell.aiDockTab()) {
+      @case ('insight') {
+        <div class="ai-dock__section">
+          <p class="ai-dock__text">
+            Princess is reviewing the current context. Connect to the API to see live insights.
+          </p>
+        </div>
+      }
+      @case ('guidance') {
+        <div class="ai-dock__section">
+          <p class="ai-dock__eyebrow">PRINCE2 guidance</p>
+          <p class="ai-dock__text">Guidance steps will appear here based on the current item or screen.</p>
+        </div>
+      }
+      @case ('chat') {
+        <div class="ai-dock__section">
+          <p class="ai-dock__text">Ask Princess anything about this project.</p>
+          <div class="ai-dock__suggestions">
+            <button class="ai-dock__suggestion-chip">What are the open risks?</button>
+            <button class="ai-dock__suggestion-chip">Summarise today's changes</button>
+            <button class="ai-dock__suggestion-chip">Who owns the next action?</button>
+          </div>
+        </div>
+      }
+      @case ('proposals') {
+        <div class="ai-dock__section">
+          <p class="ai-dock__text">Actionable proposals will appear here. Nothing changes until you accept.</p>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="ai-dock__footer">
+    <div class="ai-dock__input-row">
+      <input class="ai-dock__input" placeholder="Ask Princess…" aria-label="Ask Princess" />
+      <button mat-icon-button class="ai-dock__send" aria-label="Send">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>

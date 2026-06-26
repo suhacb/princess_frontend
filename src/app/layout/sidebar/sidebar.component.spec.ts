@@ -3,6 +3,8 @@ import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { SidebarComponent } from './sidebar.component';
 import { LayoutService } from '../../core/services/layout.service';
+import { ShellStore } from '../../core/services/shell.store';
+import { ProjectService } from '../../features/projects/services/project.service';
 
 function makeLayoutService(collapsed = false) {
   return {
@@ -11,6 +13,22 @@ function makeLayoutService(collapsed = false) {
     isMobile: signal(false),
     isTablet: signal(false),
     isDesktop: signal(true),
+  };
+}
+
+function makeShellStore() {
+  return {
+    activeProjectId: signal<number | null>(null),
+    role: signal('pm'),
+    aiDockOpen: signal(false),
+    openSwitcher: vi.fn(),
+    setProject: vi.fn(),
+  };
+}
+
+function makeProjectService() {
+  return {
+    selectedProject: signal(null),
   };
 }
 
@@ -25,6 +43,8 @@ describe('SidebarComponent', () => {
       providers: [
         provideRouter([]),
         { provide: LayoutService, useValue: mockLayout },
+        { provide: ShellStore, useValue: makeShellStore() },
+        { provide: ProjectService, useValue: makeProjectService() },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(SidebarComponent);
@@ -36,10 +56,9 @@ describe('SidebarComponent', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('renders nav items for all navigation groups', async () => {
+  it('renders the project picker button', async () => {
     await setup();
-    const items = fixture.nativeElement.querySelectorAll('a.sidebar__item');
-    expect(items.length).toBeGreaterThan(0);
+    expect(fixture.nativeElement.querySelector('.sidebar__project-btn')).not.toBeNull();
   });
 
   it('renders group labels when sidebar is expanded', async () => {

@@ -96,6 +96,6 @@ export class ChangeListComponent {
   protected navigateToChange(changeId: number): void {
     const project = this.projectService.selectedProject();
     if (!project) return;
-    this.router.navigate(['/projects', project.id, 'changes', changeId]);
+    this.router.navigate(['/p', project.id, 'changes', changeId]);
   }
 }

@@ -85,7 +85,7 @@ export class LessonDetailComponent {
 
   protected goBack(): void {
     const project = this.project();
-    if (project) this.router.navigate(['/projects', project.id, 'lessons']);
+    if (project) this.router.navigate(['/p', project.id, 'lessons']);
   }
 
   protected save(): void {

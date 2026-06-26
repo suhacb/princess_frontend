@@ -76,12 +76,12 @@ describe('ChangeListComponent', () => {
 
   it('renders type badge', () => {
     const { fixture } = setup([stubChange]);
-    expect(fixture.nativeElement.querySelector('.type-badge--rfc')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-badge')).toBeTruthy();
   });
 
   it('renders off_spec type badge', () => {
     const { fixture } = setup([rejectedChange]);
-    expect(fixture.nativeElement.querySelector('.type-badge--off_spec')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-badge')).toBeTruthy();
   });
 
   it('renders status chip', () => {
@@ -120,6 +120,6 @@ describe('ChangeListComponent', () => {
     const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
     const row = fixture.nativeElement.querySelector('.change-row');
     row?.click();
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'changes', 1]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 5, 'changes', 1]);
   });
 });

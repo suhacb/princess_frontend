@@ -32,12 +32,16 @@
   }
 
   &__content-inner {
-    max-width: var(--princess-content-max-width);
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    padding: 28px 32px 64px;
+  }
+
+  &__ai-dock {
+    flex-shrink: 0;
+    width: 344px;
+    height: 100%;
+    transition: width var(--princess-transition-speed) var(--princess-transition-easing);
   }
 
   &--sidebar-collapsed {

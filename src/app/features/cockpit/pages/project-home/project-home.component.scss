@@ -1,0 +1,106 @@
+:host {
+  display: block;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  &__kpi-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 20px;
+    background: var(--mat-sys-surface-container-low);
+    border-radius: var(--radius-card);
+  }
+
+  &__kpi-label {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__kpi-value {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--mat-sys-on-surface);
+
+    &--ok   { color: var(--status-success); }
+    &--warn { color: var(--status-warning); }
+    &--danger { color: var(--status-danger); }
+  }
+
+  &__cols {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__card {
+    background: var(--mat-sys-surface-container-low);
+    border-radius: var(--radius-card);
+    padding: 20px 24px;
+  }
+
+  &__card-title {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0 0 16px;
+  }
+
+  &__tm-package {
+    .home__card {
+      min-height: 120px;
+    }
+  }
+
+  &__tm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 4px;
+  }
+
+  &__raise-btn {
+    border-radius: var(--radius-pill);
+    height: 40px;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+    justify-content: flex-start;
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__loading-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}

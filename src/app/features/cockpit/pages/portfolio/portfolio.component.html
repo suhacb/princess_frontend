@@ -1,0 +1,102 @@
+<div class="portfolio">
+
+  <div class="portfolio__header">
+    <div class="portfolio__header-left">
+      <h1 class="portfolio__title">Projects</h1>
+      @if (!loading()) {
+        <span class="portfolio__count">{{ filtered().length }}</span>
+      }
+    </div>
+    <div class="portfolio__header-actions">
+      <mat-form-field appearance="outline" class="portfolio__status-filter">
+        <mat-select [(ngModel)]="statusFilter" placeholder="All statuses">
+          <mat-option value="">All statuses</mat-option>
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button class="portfolio__new-btn" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        New project
+      </button>
+    </div>
+  </div>
+
+  <div class="portfolio__table-card">
+    @if (loading()) {
+      <div class="portfolio__skeletons">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="portfolio__skeleton-row">
+            <app-skeleton width="20px" height="20px" borderRadius="50%" />
+            <app-skeleton width="220px" />
+            <app-skeleton width="100px" />
+            <app-skeleton width="60px" />
+            <app-skeleton width="90px" />
+            <app-skeleton width="80px" />
+          </div>
+        }
+      </div>
+    } @else if (filtered().length === 0) {
+      <app-empty-state
+        icon="folder_open"
+        title="No projects found"
+        message="Create your first project to start tracking PRINCE2 delivery."
+        actionLabel="New project"
+        (action)="openCreateDialog()"
+      />
+    } @else {
+      <table class="portfolio__table">
+        <thead>
+          <tr class="portfolio__thead-row">
+            <th class="portfolio__th portfolio__th--dot"></th>
+            <th class="portfolio__th">Project</th>
+            <th class="portfolio__th">Stage</th>
+            <th class="portfolio__th portfolio__th--num">Open risks</th>
+            <th class="portfolio__th">Tolerance</th>
+            <th class="portfolio__th">Updated</th>
+            <th class="portfolio__th portfolio__th--chevron"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (project of filtered(); track project.id) {
+            <tr class="portfolio__row" (click)="openProject(project)" (keydown.enter)="openProject(project)" tabindex="0">
+              <td class="portfolio__td portfolio__td--dot">
+                <span
+                  class="portfolio__health-dot"
+                  [class.portfolio__health-dot--ok]="toleranceHealth(project) === 'ok'"
+                  [class.portfolio__health-dot--warn]="toleranceHealth(project) === 'warn'"
+                  [class.portfolio__health-dot--danger]="toleranceHealth(project) === 'exception'"
+                ></span>
+              </td>
+              <td class="portfolio__td">
+                <span class="portfolio__project-name">{{ project.name }}</span>
+                <span class="portfolio__project-meta">{{ project.reference }}</span>
+              </td>
+              <td class="portfolio__td">
+                @if (project.currentStageName) {
+                  <app-status-chip [status]="project.status" [label]="project.currentStageName" />
+                } @else {
+                  <app-status-chip [status]="project.status" />
+                }
+              </td>
+              <td class="portfolio__td portfolio__td--num">—</td>
+              <td class="portfolio__td">
+                @let health = toleranceHealth(project);
+                <app-status-chip
+                  [tone]="health === 'ok' ? 'success' : health === 'warn' ? 'warning' : 'danger'"
+                  [label]="toleranceLabel(health)"
+                />
+              </td>
+              <td class="portfolio__td portfolio__td--date">{{ project.createdAt | date:'d MMM yyyy' }}</td>
+              <td class="portfolio__td portfolio__td--chevron">
+                <mat-icon class="portfolio__chevron">chevron_right</mat-icon>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+</div>

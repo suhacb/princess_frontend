@@ -130,7 +130,7 @@ export class IssueDetailComponent {
 
   protected goBack(): void {
     const project = this.project();
-    if (project) this.router.navigate(['/projects', project.id, 'issues']);
+    if (project) this.router.navigate(['/p', project.id, 'issues']);
   }
 
   protected save(): void {
