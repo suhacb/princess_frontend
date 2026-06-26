@@ -3,21 +3,10 @@ import { Observable, catchError, map, tap } from 'rxjs';
 import { ApiService } from '../../../core/http/api.service';
 import { ApiResource } from '../../../shared/contracts/api.contracts';
 import {
-  Activity,
-  ActivityApiResource,
-  CreateActivityPayload,
-  CreateProductPayload,
   CreateWorkPackagePayload,
-  Product,
-  ProductApiResource,
-  ReorderPayload,
-  UpdateActivityPayload,
-  UpdateProductPayload,
   UpdateWorkPackagePayload,
   WorkPackage,
   WorkPackageApiResource,
-  mapActivity,
-  mapProduct,
   mapWorkPackage,
 } from '../contracts/work-package.contracts';
 
@@ -50,16 +39,14 @@ export class WorkPackageService {
     );
   }
 
-  // ─── Work Package CRUD ────────────────────────────────────────────────────
-
-  createWorkPackage(projectId: number, payload: CreateWorkPackagePayload): Observable<WorkPackage> {
+  create(projectId: number, payload: CreateWorkPackagePayload): Observable<WorkPackage> {
     return this.api.post<ApiResource<WorkPackageApiResource>>(this.base(projectId), payload).pipe(
       map(res => mapWorkPackage(res.data)),
-      tap(wp => this._workPackages.update(list => [...list, wp])),
+      tap(wp => this._workPackages.update(list => [wp, ...list])),
     );
   }
 
-  updateWorkPackage(projectId: number, wpId: number, payload: UpdateWorkPackagePayload): Observable<WorkPackage> {
+  update(projectId: number, wpId: number, payload: UpdateWorkPackagePayload): Observable<WorkPackage> {
     return this.api
       .patch<ApiResource<WorkPackageApiResource>>(`${this.base(projectId)}/${wpId}`, payload)
       .pipe(
@@ -72,192 +59,61 @@ export class WorkPackageService {
       );
   }
 
-  removeWorkPackage(projectId: number, wpId: number): Observable<void> {
+  remove(projectId: number, wpId: number): Observable<void> {
     return this.api.delete<void>(`${this.base(projectId)}/${wpId}`).pipe(
       tap(() => this._workPackages.update(list => list.filter(wp => wp.id !== wpId))),
     );
   }
 
-  reorderWorkPackages(projectId: number, payload: ReorderPayload): Observable<void> {
-    return this.api.post<void>(`${this.base(projectId)}/reorder`, payload);
-  }
-
-  reorderWorkPackagesLocal(items: WorkPackage[]): void {
-    this._workPackages.set(items);
-  }
-
-  // ─── Product CRUD ─────────────────────────────────────────────────────────
-
-  createProduct(projectId: number, wpId: number, payload: CreateProductPayload): Observable<Product> {
+  authorize(projectId: number, wpId: number): Observable<WorkPackage> {
     return this.api
-      .post<ApiResource<ProductApiResource>>(`${this.base(projectId)}/${wpId}/products`, payload)
+      .post<ApiResource<WorkPackageApiResource>>(`${this.base(projectId)}/${wpId}/authorize`, {})
       .pipe(
-        map(res => mapProduct(res.data)),
-        tap(product =>
-          this._workPackages.update(list =>
-            list.map(wp =>
-              wp.id === wpId ? { ...wp, products: [...wp.products, product] } : wp,
-            ),
-          ),
-        ),
-      );
-  }
-
-  updateProduct(projectId: number, prodId: number, payload: UpdateProductPayload): Observable<Product> {
-    return this.api
-      .patch<ApiResource<ProductApiResource>>(`/projects/${projectId}/products/${prodId}`, payload)
-      .pipe(
-        map(res => mapProduct(res.data)),
+        map(res => mapWorkPackage(res.data)),
         tap(updated =>
           this._workPackages.update(list =>
-            list.map(wp => ({
-              ...wp,
-              products: wp.products.map(p =>
-                p.id === prodId ? { ...updated, activities: p.activities } : p,
-              ),
-            })),
+            list.map(wp => (wp.id === wpId ? { ...updated, products: wp.products } : wp)),
           ),
         ),
       );
   }
 
-  removeProduct(projectId: number, wpId: number, prodId: number): Observable<void> {
-    return this.api.delete<void>(`/projects/${projectId}/products/${prodId}`).pipe(
-      tap(() =>
-        this._workPackages.update(list =>
-          list.map(wp =>
-            wp.id === wpId
-              ? { ...wp, products: wp.products.filter(p => p.id !== prodId) }
-              : wp,
-          ),
-        ),
-      ),
-    );
-  }
-
-  reorderProducts(projectId: number, wpId: number, payload: ReorderPayload): Observable<void> {
-    return this.api.post<void>(`${this.base(projectId)}/${wpId}/products/reorder`, payload);
-  }
-
-  reorderProductsLocal(wpId: number, products: Product[]): void {
-    this._workPackages.update(list =>
-      list.map(wp => (wp.id === wpId ? { ...wp, products } : wp)),
-    );
-  }
-
-  // ─── Activity CRUD ────────────────────────────────────────────────────────
-
-  createActivity(
-    projectId: number,
-    wpId: number,
-    prodId: number,
-    payload: CreateActivityPayload,
-  ): Observable<Activity> {
+  accept(projectId: number, wpId: number): Observable<WorkPackage> {
     return this.api
-      .post<ApiResource<ActivityApiResource>>(
-        `/projects/${projectId}/products/${prodId}/activities`,
-        payload,
-      )
+      .post<ApiResource<WorkPackageApiResource>>(`${this.base(projectId)}/${wpId}/accept`, {})
       .pipe(
-        map(res => mapActivity(res.data)),
-        tap(activity =>
-          this._workPackages.update(list =>
-            list.map(wp =>
-              wp.id !== wpId
-                ? wp
-                : {
-                    ...wp,
-                    products: wp.products.map(p =>
-                      p.id !== prodId ? p : { ...p, activities: [...p.activities, activity] },
-                    ),
-                  },
-            ),
-          ),
-        ),
-      );
-  }
-
-  updateActivity(
-    projectId: number,
-    wpId: number,
-    prodId: number,
-    actId: number,
-    payload: UpdateActivityPayload,
-  ): Observable<Activity> {
-    return this.api
-      .patch<ApiResource<ActivityApiResource>>(
-        `/projects/${projectId}/activities/${actId}`,
-        payload,
-      )
-      .pipe(
-        map(res => mapActivity(res.data)),
+        map(res => mapWorkPackage(res.data)),
         tap(updated =>
           this._workPackages.update(list =>
-            list.map(wp =>
-              wp.id !== wpId
-                ? wp
-                : {
-                    ...wp,
-                    products: wp.products.map(p =>
-                      p.id !== prodId
-                        ? p
-                        : { ...p, activities: p.activities.map(a => (a.id === actId ? updated : a)) },
-                    ),
-                  },
-            ),
+            list.map(wp => (wp.id === wpId ? { ...updated, products: wp.products } : wp)),
           ),
         ),
       );
   }
 
-  removeActivity(
-    projectId: number,
-    wpId: number,
-    prodId: number,
-    actId: number,
-  ): Observable<void> {
-    return this.api.delete<void>(`/projects/${projectId}/activities/${actId}`).pipe(
-      tap(() =>
-        this._workPackages.update(list =>
-          list.map(wp =>
-            wp.id !== wpId
-              ? wp
-              : {
-                  ...wp,
-                  products: wp.products.map(p =>
-                    p.id !== prodId
-                      ? p
-                      : { ...p, activities: p.activities.filter(a => a.id !== actId) },
-                  ),
-                },
+  complete(projectId: number, wpId: number): Observable<WorkPackage> {
+    return this.api
+      .post<ApiResource<WorkPackageApiResource>>(`${this.base(projectId)}/${wpId}/complete`, {})
+      .pipe(
+        map(res => mapWorkPackage(res.data)),
+        tap(updated =>
+          this._workPackages.update(list =>
+            list.map(wp => (wp.id === wpId ? { ...updated, products: wp.products } : wp)),
           ),
         ),
-      ),
-    );
+      );
   }
 
-  reorderActivities(
-    projectId: number,
-    wpId: number,
-    prodId: number,
-    payload: ReorderPayload,
-  ): Observable<void> {
-    return this.api.post<void>(
-      `/projects/${projectId}/products/${prodId}/activities/reorder`,
-      payload,
-    );
-  }
-
-  reorderActivitiesLocal(wpId: number, prodId: number, activities: Activity[]): void {
-    this._workPackages.update(list =>
-      list.map(wp =>
-        wp.id !== wpId
-          ? wp
-          : {
-              ...wp,
-              products: wp.products.map(p => (p.id !== prodId ? p : { ...p, activities })),
-            },
-      ),
-    );
+  cancel(projectId: number, wpId: number): Observable<WorkPackage> {
+    return this.api
+      .post<ApiResource<WorkPackageApiResource>>(`${this.base(projectId)}/${wpId}/cancel`, {})
+      .pipe(
+        map(res => mapWorkPackage(res.data)),
+        tap(updated =>
+          this._workPackages.update(list =>
+            list.map(wp => (wp.id === wpId ? { ...updated, products: wp.products } : wp)),
+          ),
+        ),
+      );
   }
 }

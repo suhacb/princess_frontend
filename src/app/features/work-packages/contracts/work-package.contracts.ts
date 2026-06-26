@@ -1,101 +1,111 @@
-export type WbsStatus = 'planned' | 'in_progress' | 'complete';
-export const WBS_STATUSES: WbsStatus[] = ['planned', 'in_progress', 'complete'];
-export const WBS_STATUS_LABELS: Record<WbsStatus, string> = {
-  planned: 'Planned',
-  in_progress: 'In Progress',
-  complete: 'Complete',
+// ─── Product (Product Breakdown Structure) ───────────────────────────────────
+
+export type ProductStatus = 'draft' | 'in_development' | 'baselined' | 'superseded';
+export type ProductType = 'specialist' | 'management' | 'external';
+
+export const PRODUCT_STATUSES: ProductStatus[] = ['draft', 'in_development', 'baselined', 'superseded'];
+export const PRODUCT_TYPES: ProductType[] = ['specialist', 'management', 'external'];
+
+export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
+  draft: 'Draft',
+  in_development: 'In Development',
+  baselined: 'Baselined',
+  superseded: 'Superseded',
 };
 
-export interface WbsPersonSummary {
-  id: number;
-  name: string;
-}
-
-// ─── Activity ────────────────────────────────────────────────────────────────
-
-export interface ActivityApiResource {
-  id: number;
-  product_id: number;
-  title: string;
-  description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sort_order: number;
-}
-
-export interface Activity {
-  id: number;
-  productId: number;
-  title: string;
-  description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sortOrder: number;
-}
-
-export function mapActivity(api: ActivityApiResource): Activity {
-  return {
-    id: api.id,
-    productId: api.product_id,
-    title: api.title,
-    description: api.description,
-    status: api.status,
-    owner: api.owner,
-    sortOrder: api.sort_order,
-  };
-}
-
-// ─── Product ─────────────────────────────────────────────────────────────────
+export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
+  specialist: 'Specialist',
+  management: 'Management',
+  external: 'External',
+};
 
 export interface ProductApiResource {
   id: number;
-  work_package_id: number;
+  project_id: number;
+  parent_id: number | null;
+  identifier: string | null;
   title: string;
-  description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sort_order: number;
-  acceptance_criteria_count: number;
-  activities: ActivityApiResource[];
+  purpose: string | null;
+  type: ProductType;
+  status: ProductStatus;
+  children: ProductApiResource[];
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Product {
   id: number;
-  workPackageId: number;
+  projectId: number;
+  parentId: number | null;
+  identifier: string | null;
   title: string;
-  description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sortOrder: number;
-  acceptanceCriteriaCount: number;
-  activities: Activity[];
+  purpose: string | null;
+  type: ProductType;
+  status: ProductStatus;
+  children: Product[];
 }
 
 export function mapProduct(api: ProductApiResource): Product {
   return {
     id: api.id,
-    workPackageId: api.work_package_id,
+    projectId: api.project_id,
+    parentId: api.parent_id,
+    identifier: api.identifier,
     title: api.title,
-    description: api.description,
+    purpose: api.purpose,
+    type: api.type,
     status: api.status,
-    owner: api.owner,
-    sortOrder: api.sort_order,
-    acceptanceCriteriaCount: api.acceptance_criteria_count,
-    activities: api.activities.map(mapActivity),
+    children: (api.children ?? []).map(mapProduct),
   };
 }
 
+export interface CreateProductPayload {
+  title: string;
+  type: ProductType;
+  parent_id?: number | null;
+  purpose?: string | null;
+}
+
+export interface UpdateProductPayload {
+  title?: string;
+  type?: ProductType;
+  purpose?: string | null;
+}
+
 // ─── Work Package ─────────────────────────────────────────────────────────────
+
+export type WorkPackageStatus = 'draft' | 'authorized' | 'in_progress' | 'completed' | 'cancelled';
+
+export const WP_STATUSES: WorkPackageStatus[] = ['draft', 'authorized', 'in_progress', 'completed', 'cancelled'];
+
+export const WP_STATUS_LABELS: Record<WorkPackageStatus, string> = {
+  draft: 'Draft',
+  authorized: 'Authorized',
+  in_progress: 'In Progress',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+};
+
+export interface PersonSummary {
+  id: number;
+  name: string;
+}
 
 export interface WorkPackageApiResource {
   id: number;
   project_id: number;
   title: string;
   description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sort_order: number;
+  status: WorkPackageStatus;
+  team_manager_id: number;
+  team_manager: PersonSummary | null;
+  planned_start: string;
+  planned_end: string;
+  actual_start: string | null;
+  actual_end: string | null;
   products: ProductApiResource[];
+  created_at: string;
+  updated_at: string;
 }
 
 export interface WorkPackage {
@@ -103,9 +113,13 @@ export interface WorkPackage {
   projectId: number;
   title: string;
   description: string | null;
-  status: WbsStatus;
-  owner: WbsPersonSummary | null;
-  sortOrder: number;
+  status: WorkPackageStatus;
+  teamManagerId: number;
+  teamManager: PersonSummary | null;
+  plannedStart: string;
+  plannedEnd: string;
+  actualStart: string | null;
+  actualEnd: string | null;
   products: Product[];
 }
 
@@ -116,73 +130,66 @@ export function mapWorkPackage(api: WorkPackageApiResource): WorkPackage {
     title: api.title,
     description: api.description,
     status: api.status,
-    owner: api.owner,
-    sortOrder: api.sort_order,
-    products: api.products.map(mapProduct),
+    teamManagerId: api.team_manager_id,
+    teamManager: api.team_manager ?? null,
+    plannedStart: api.planned_start,
+    plannedEnd: api.planned_end,
+    actualStart: api.actual_start,
+    actualEnd: api.actual_end,
+    products: (api.products ?? []).map(mapProduct),
   };
 }
 
-// ─── Payloads ─────────────────────────────────────────────────────────────────
-
 export interface CreateWorkPackagePayload {
   title: string;
+  team_manager_id: number;
+  planned_start: string;
+  planned_end: string;
   description?: string | null;
 }
 
 export interface UpdateWorkPackagePayload {
   title?: string;
   description?: string | null;
-  status?: WbsStatus;
+  team_manager_id?: number;
+  planned_start?: string;
+  planned_end?: string;
 }
 
-export interface CreateProductPayload {
-  title: string;
-  description?: string | null;
+// ─── Project member (used for team manager picker) ────────────────────────────
+
+export interface ProjectMemberApiResource {
+  id: number;
+  person: PersonSummary;
+  role: string;
 }
 
-export interface UpdateProductPayload {
-  title?: string;
-  description?: string | null;
-  status?: WbsStatus;
+export interface ProjectMember {
+  id: number;
+  person: PersonSummary;
+  role: string;
 }
 
-export interface CreateActivityPayload {
-  title: string;
-  description?: string | null;
+export function mapProjectMember(api: ProjectMemberApiResource): ProjectMember {
+  return { id: api.id, person: api.person, role: api.role };
 }
 
-export interface UpdateActivityPayload {
-  title?: string;
-  description?: string | null;
-  status?: WbsStatus;
+// ─── PBS export ───────────────────────────────────────────────────────────────
+
+export function exportPbsToText(products: Product[]): string {
+  function serialize(p: Product, depth: number): string[] {
+    return [
+      '  '.repeat(depth) + p.title,
+      ...p.children.flatMap(child => serialize(child, depth + 1)),
+    ];
+  }
+  return products.flatMap(p => serialize(p, 0)).join('\n');
 }
 
-export interface ReorderPayload {
-  items: { id: number; sort_order: number }[];
-}
+// ─── PBS selection ────────────────────────────────────────────────────────────
 
-// ─── Export ──────────────────────────────────────────────────────────────────
-
-export function exportWbsToText(packages: WorkPackage[]): string {
-  return packages
-    .flatMap(wp => [
-      wp.title,
-      ...wp.products.flatMap(prod => [
-        `  ${prod.title}`,
-        ...prod.activities.map(act => `    ${act.title}`),
-      ]),
-    ])
-    .join('\n');
-}
-
-// ─── Selection ───────────────────────────────────────────────────────────────
-
-export type WbsNodeType = 'wp' | 'prod' | 'act';
-
-export interface WbsSelection {
-  type: WbsNodeType;
-  wpId: number;
-  prodId?: number;
-  actId?: number;
-  node: WorkPackage | Product | Activity;
+export interface PbsSelection {
+  productId: number;
+  parentId: number | null;
+  node: Product;
 }

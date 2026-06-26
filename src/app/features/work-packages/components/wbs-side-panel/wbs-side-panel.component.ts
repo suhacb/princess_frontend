@@ -11,24 +11,14 @@ import {
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
-  WBS_STATUSES,
-  WBS_STATUS_LABELS,
-  WbsSelection,
-  WbsStatus,
+  PRODUCT_STATUS_LABELS,
+  PRODUCT_TYPES,
+  PRODUCT_TYPE_LABELS,
+  PbsSelection,
+  ProductType,
 } from '../../contracts/work-package.contracts';
-import { WorkPackageService } from '../../services/work-package.service';
-
-const TYPE_LABELS: Record<string, string> = {
-  wp: 'Work Package',
-  prod: 'Product',
-  act: 'Activity',
-};
-
-const TYPE_ICONS: Record<string, string> = {
-  wp: 'folder_open',
-  prod: 'inventory_2',
-  act: 'task_alt',
-};
+import { ProductService } from '../../services/product.service';
+import { WbsStatusChipComponent } from '../wbs-status-chip/wbs-status-chip.component';
 
 @Component({
   selector: 'app-wbs-side-panel',
@@ -39,94 +29,80 @@ const TYPE_ICONS: Record<string, string> = {
     MatIconModule,
     MatInputModule,
     MatSelectModule,
+    WbsStatusChipComponent,
   ],
   templateUrl: './wbs-side-panel.component.html',
   styleUrl: './wbs-side-panel.component.scss',
 })
 export class WbsSidePanelComponent implements OnInit {
-  readonly selection = input.required<WbsSelection>();
+  readonly selection = input.required<PbsSelection>();
   readonly projectId = input.required<number>();
   readonly close = output<void>();
 
-  private readonly wpService = inject(WorkPackageService);
+  private readonly productService = inject(ProductService);
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly statuses = WBS_STATUSES;
-  protected readonly statusLabels = WBS_STATUS_LABELS;
-  protected readonly typeLabels = TYPE_LABELS;
-  protected readonly typeIcons = TYPE_ICONS;
+  protected readonly types = PRODUCT_TYPES;
+  protected readonly typeLabels = PRODUCT_TYPE_LABELS;
+  protected readonly statusLabels = PRODUCT_STATUS_LABELS;
 
   protected readonly form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
-    description: [''],
-    status: ['' as WbsStatus, Validators.required],
+    type: ['' as ProductType, Validators.required],
+    purpose: [''],
   });
 
   protected saving = false;
 
   constructor() {
     effect(() => {
-      const sel = this.selection();
-      this.form.patchValue({
-        title: sel.node.title,
-        description: sel.node.description ?? '',
-        status: sel.node.status,
-      }, { emitEvent: false });
+      const node = this.selection().node;
+      this.form.patchValue(
+        { title: node.title, type: node.type, purpose: node.purpose ?? '' },
+        { emitEvent: false },
+      );
     });
   }
 
   ngOnInit(): void {
-    const sel = this.selection();
-    this.form.patchValue({
-      title: sel.node.title,
-      description: sel.node.description ?? '',
-      status: sel.node.status,
-    }, { emitEvent: false });
+    const node = this.selection().node;
+    this.form.patchValue(
+      { title: node.title, type: node.type, purpose: node.purpose ?? '' },
+      { emitEvent: false },
+    );
   }
 
   protected save(): void {
     if (this.form.invalid || this.saving) return;
     this.saving = true;
-    const { title, description, status } = this.form.value;
-    const payload = {
-      title: title!,
-      description: description?.trim() || null,
-      status: status as WbsStatus,
-    };
-    const sel = this.selection();
-    const projectId = this.projectId();
+    const { title, type, purpose } = this.form.value;
+    this.productService
+      .update(this.projectId(), this.selection().productId, {
+        title: title!,
+        type: type as ProductType,
+        purpose: purpose?.trim() || null,
+      })
+      .subscribe({ next: () => (this.saving = false), error: () => (this.saving = false) });
+  }
 
-    let obs$: import('rxjs').Observable<unknown>;
-    if (sel.type === 'wp') {
-      obs$ = this.wpService.updateWorkPackage(projectId, sel.wpId, payload);
-    } else if (sel.type === 'prod') {
-      obs$ = this.wpService.updateProduct(projectId, sel.prodId!, payload);
-    } else {
-      obs$ = this.wpService.updateActivity(projectId, sel.wpId, sel.prodId!, sel.actId!, payload);
-    }
-
-    obs$.subscribe({ next: () => (this.saving = false), error: () => (this.saving = false) });
+  protected baseline(): void {
+    this.productService
+      .baseline(this.projectId(), this.selection().productId)
+      .subscribe();
   }
 
   protected confirmDelete(): void {
-    const sel = this.selection();
-    const label = TYPE_LABELS[sel.type];
-    const hasChildren =
-      sel.type === 'wp'
-        ? (sel.node as import('../../contracts/work-package.contracts').WorkPackage).products.length > 0
-        : sel.type === 'prod'
-          ? (sel.node as import('../../contracts/work-package.contracts').Product).activities.length > 0
-          : false;
-
+    const node = this.selection().node;
     this.dialog
       .open(ConfirmDialogComponent, {
         panelClass: 'princess-dialog',
         data: {
-          title: `Delete ${label}`,
-          message: hasChildren
-            ? `Delete "${sel.node.title}"? All nested items inside it will also be removed.`
-            : `Delete "${sel.node.title}"?`,
+          title: 'Delete product',
+          message:
+            node.children.length > 0
+              ? `Delete "${node.title}"? All nested sub-products will also be removed.`
+              : `Delete "${node.title}"?`,
           confirmLabel: 'Delete',
           confirmColor: 'warn',
         } satisfies ConfirmDialogData,
@@ -134,16 +110,9 @@ export class WbsSidePanelComponent implements OnInit {
       .afterClosed()
       .subscribe(confirmed => {
         if (!confirmed) return;
-        const pid = this.projectId();
-        let obs$: import('rxjs').Observable<void>;
-        if (sel.type === 'wp') {
-          obs$ = this.wpService.removeWorkPackage(pid, sel.wpId);
-        } else if (sel.type === 'prod') {
-          obs$ = this.wpService.removeProduct(pid, sel.wpId, sel.prodId!);
-        } else {
-          obs$ = this.wpService.removeActivity(pid, sel.wpId, sel.prodId!, sel.actId!);
-        }
-        obs$.subscribe({ next: () => this.close.emit() });
+        this.productService
+          .remove(this.projectId(), this.selection().productId)
+          .subscribe({ next: () => this.close.emit() });
       });
   }
 }

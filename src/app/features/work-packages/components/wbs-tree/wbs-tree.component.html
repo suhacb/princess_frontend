@@ -17,200 +17,107 @@
       </button>
     </div>
 
-    @if (loading() && workPackages().length === 0) {
+    @if (loading() && products().length === 0) {
       <div class="wbs__skeleton">
         @for (i of [1, 2, 3]; track i) {
           <app-skeleton height="44px" borderRadius="8px" />
           <app-skeleton height="36px" borderRadius="8px" style="margin-left: 32px" />
-          <app-skeleton height="36px" borderRadius="8px" style="margin-left: 32px" />
         }
       </div>
-    } @else if (workPackages().length === 0 && !isAddingAtRoot()) {
+    } @else if (products().length === 0 && !isAddingAtRoot()) {
       <app-empty-state
         icon="account_tree"
-        title="No work packages yet"
-        message="Break down the project into work packages, products, and activities."
-        actionLabel="Add work package"
-        (actionClick)="startAddWorkPackage()"
+        title="No products yet"
+        message="Break the project scope into products to build your Product Breakdown Structure."
+        actionLabel="Add product"
+        (actionClick)="startAddRoot()"
       />
     } @else {
 
-      <div class="wbs__tree"
-           cdkDropList
-           [cdkDropListData]="workPackages()"
-           (cdkDropListDropped)="dropWorkPackage($event)">
+      <div class="wbs__tree">
 
-        @for (wp of workPackages(); track wp.id) {
-          <div cdkDrag class="wbs-node wbs-node--wp" [class.wbs-node--selected]="isWpSelected(wp.id)">
+        @for (product of products(); track product.id) {
+          <div class="wbs-node wbs-node--root" [class.wbs-node--selected]="isSelected(product.id)">
 
-            <div class="wbs-node__row" (click)="selectWp(wp)">
-              <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
-                <mat-icon>drag_indicator</mat-icon>
-              </button>
+            <div class="wbs-node__row" (click)="select(product)">
               <button class="wbs-node__toggle"
-                      (click)="$event.stopPropagation(); toggleWp(wp.id)"
-                      [disabled]="wp.products.length === 0 && !isAddingProduct(wp.id)">
-                <mat-icon>{{ (isWpExpanded(wp.id) && (wp.products.length > 0 || isAddingProduct(wp.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                      (click)="$event.stopPropagation(); toggle(product.id)"
+                      [disabled]="product.children.length === 0 && !isAddingChild(product.id)">
+                <mat-icon>{{ (isExpanded(product.id) && (product.children.length > 0 || isAddingChild(product.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
               </button>
-              <mat-icon class="wbs-node__icon wbs-node__icon--wp">folder_open</mat-icon>
+              <mat-icon class="wbs-node__icon wbs-node__icon--root">inventory_2</mat-icon>
 
-              @if (isEditingNode('wp', wp.id)) {
+              @if (isEditing(product.id)) {
                 <input #inlineInput
                        class="wbs-node__inline-input"
                        [value]="inlineTitle()"
                        (input)="inlineTitle.set($any($event.target).value)"
-                       (blur)="saveEdit('wp', wp)"
-                       (keydown)="handleEditKeydown($event, 'wp', wp)"
+                       (blur)="saveEdit(product)"
+                       (keydown)="handleEditKeydown($event, product)"
                        (click)="$event.stopPropagation()" />
               } @else {
-                <span class="wbs-node__title" (dblclick)="startEdit($event, 'wp', wp)">{{ wp.title }}</span>
+                <span class="wbs-node__title" (dblclick)="startEdit($event, product)">{{ product.title }}</span>
               }
 
-              <app-wbs-status-chip [status]="wp.status" />
-              <span class="wbs-node__count">{{ wp.products.length }} product{{ wp.products.length !== 1 ? 's' : '' }}</span>
+              <app-wbs-status-chip [status]="product.status" />
+              <span class="wbs-node__type">{{ typeLabels[product.type] }}</span>
 
               <div class="wbs-node__actions" (click)="$event.stopPropagation()">
-                <button mat-icon-button class="wbs-node__btn" title="Add product" (click)="startAddProduct($event, wp.id)">
+                <button mat-icon-button class="wbs-node__btn" title="Add sub-product" (click)="startAddChild($event, product.id)">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteWp($event, wp)">
+                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDelete($event, product)">
                   <mat-icon>delete_outline</mat-icon>
                 </button>
               </div>
             </div>
 
-            <!-- CDK ghost placeholder -->
-            <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
+            <!-- Children -->
+            @if (isExpanded(product.id) || isAddingChild(product.id)) {
+              <div class="wbs-node__children">
 
-            <!-- Products -->
-            @if (isWpExpanded(wp.id) || isAddingProduct(wp.id)) {
-              <div class="wbs-node__children"
-                   cdkDropList
-                   [cdkDropListData]="wp.products"
-                   (cdkDropListDropped)="dropProduct($event, wp.id)">
+                @for (child of product.children; track child.id) {
+                  <div class="wbs-node wbs-node--child" [class.wbs-node--selected]="isSelected(child.id)">
+                    <div class="wbs-node__row" (click)="select(child)">
+                      <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--child">check_box_outline_blank</mat-icon>
 
-                @for (prod of wp.products; track prod.id) {
-                  <div cdkDrag class="wbs-node wbs-node--prod" [class.wbs-node--selected]="isProdSelected(wp.id, prod.id)">
-
-                    <div class="wbs-node__row" (click)="selectProd(wp, prod)">
-                      <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
-                        <mat-icon>drag_indicator</mat-icon>
-                      </button>
-                      <button class="wbs-node__toggle"
-                              (click)="$event.stopPropagation(); toggleProd(prod.id)"
-                              [disabled]="prod.activities.length === 0 && !isAddingActivity(prod.id)">
-                        <mat-icon>{{ (isProdExpanded(prod.id) && (prod.activities.length > 0 || isAddingActivity(prod.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
-                      </button>
-                      <mat-icon class="wbs-node__icon wbs-node__icon--prod">inventory_2</mat-icon>
-
-                      @if (isEditingNode('prod', prod.id)) {
+                      @if (isEditing(child.id)) {
                         <input #inlineInput
                                class="wbs-node__inline-input"
                                [value]="inlineTitle()"
                                (input)="inlineTitle.set($any($event.target).value)"
-                               (blur)="saveEdit('prod', prod, wp.id)"
-                               (keydown)="handleEditKeydown($event, 'prod', prod, wp.id)"
+                               (blur)="saveEdit(child)"
+                               (keydown)="handleEditKeydown($event, child)"
                                (click)="$event.stopPropagation()" />
                       } @else {
-                        <span class="wbs-node__title" (dblclick)="startEdit($event, 'prod', prod, wp.id)">{{ prod.title }}</span>
+                        <span class="wbs-node__title" (dblclick)="startEdit($event, child)">{{ child.title }}</span>
                       }
 
-                      <app-wbs-status-chip [status]="prod.status" />
-                      @if (prod.acceptanceCriteriaCount > 0) {
-                        <span class="wbs-node__ac">{{ prod.acceptanceCriteriaCount }} AC</span>
-                      }
+                      <app-wbs-status-chip [status]="child.status" />
 
                       <div class="wbs-node__actions" (click)="$event.stopPropagation()">
-                        <button mat-icon-button class="wbs-node__btn" title="Add activity" (click)="startAddActivity($event, wp.id, prod.id)">
-                          <mat-icon>add</mat-icon>
-                        </button>
-                        <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteProd($event, wp, prod)">
+                        <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDelete($event, child)">
                           <mat-icon>delete_outline</mat-icon>
                         </button>
                       </div>
                     </div>
-
-                    <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
-
-                    <!-- Activities -->
-                    @if (isProdExpanded(prod.id) || isAddingActivity(prod.id)) {
-                      <div class="wbs-node__children"
-                           cdkDropList
-                           [cdkDropListData]="prod.activities"
-                           (cdkDropListDropped)="dropActivity($event, wp.id, prod.id)">
-
-                        @for (act of prod.activities; track act.id) {
-                          <div cdkDrag class="wbs-node wbs-node--act" [class.wbs-node--selected]="isActSelected(wp.id, prod.id, act.id)">
-
-                            <div class="wbs-node__row" (click)="selectAct(wp, prod, act)">
-                              <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
-                                <mat-icon>drag_indicator</mat-icon>
-                              </button>
-                              <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
-                              <mat-icon class="wbs-node__icon wbs-node__icon--act">task_alt</mat-icon>
-
-                              @if (isEditingNode('act', act.id)) {
-                                <input #inlineInput
-                                       class="wbs-node__inline-input"
-                                       [value]="inlineTitle()"
-                                       (input)="inlineTitle.set($any($event.target).value)"
-                                       (blur)="saveEdit('act', act, wp.id, prod.id)"
-                                       (keydown)="handleEditKeydown($event, 'act', act, wp.id, prod.id)"
-                                       (click)="$event.stopPropagation()" />
-                              } @else {
-                                <span class="wbs-node__title" (dblclick)="startEdit($event, 'act', act, wp.id, prod.id)">{{ act.title }}</span>
-                              }
-
-                              <app-wbs-status-chip [status]="act.status" />
-
-                              <div class="wbs-node__actions" (click)="$event.stopPropagation()">
-                                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteAct($event, wp, prod, act)">
-                                  <mat-icon>delete_outline</mat-icon>
-                                </button>
-                              </div>
-                            </div>
-
-                            <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
-                          </div>
-                        }
-
-                        <!-- Inline add activity -->
-                        @if (isAddingActivity(prod.id)) {
-                          <div class="wbs-node wbs-node--act wbs-node--adding">
-                            <div class="wbs-node__row">
-                              <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
-                              <mat-icon class="wbs-node__icon wbs-node__icon--act">task_alt</mat-icon>
-                              <input #inlineInput
-                                     class="wbs-node__inline-input wbs-node__inline-input--add"
-                                     [value]="inlineTitle()"
-                                     (input)="inlineTitle.set($any($event.target).value)"
-                                     (blur)="saveNewActivity(wp.id, prod.id)"
-                                     (keydown)="handleAddKeydown($event, 'act', wp.id, prod.id)"
-                                     placeholder="New activity…" />
-                              <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
-                                <mat-icon>close</mat-icon>
-                              </button>
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    }
                   </div>
                 }
 
-                <!-- Inline add product -->
-                @if (isAddingProduct(wp.id)) {
-                  <div class="wbs-node wbs-node--prod wbs-node--adding">
+                <!-- Inline add child -->
+                @if (isAddingChild(product.id)) {
+                  <div class="wbs-node wbs-node--child wbs-node--adding">
                     <div class="wbs-node__row">
                       <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
-                      <mat-icon class="wbs-node__icon wbs-node__icon--prod">inventory_2</mat-icon>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--child">check_box_outline_blank</mat-icon>
                       <input #inlineInput
                              class="wbs-node__inline-input wbs-node__inline-input--add"
                              [value]="inlineTitle()"
                              (input)="inlineTitle.set($any($event.target).value)"
-                             (blur)="saveNewProduct(wp.id)"
-                             (keydown)="handleAddKeydown($event, 'prod', wp.id)"
-                             placeholder="New product…" />
+                             (blur)="saveNew(product.id)"
+                             (keydown)="handleAddKeydown($event, product.id)"
+                             placeholder="New sub-product…" />
                       <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
                         <mat-icon>close</mat-icon>
                       </button>
@@ -222,18 +129,18 @@
           </div>
         }
 
-        <!-- Inline add work package -->
+        <!-- Inline add root product -->
         @if (isAddingAtRoot()) {
-          <div class="wbs-node wbs-node--wp wbs-node--adding">
+          <div class="wbs-node wbs-node--root wbs-node--adding">
             <div class="wbs-node__row">
-              <mat-icon class="wbs-node__icon wbs-node__icon--wp" style="margin-left: 32px">folder_open</mat-icon>
+              <mat-icon class="wbs-node__icon wbs-node__icon--root" style="margin-left: 28px">inventory_2</mat-icon>
               <input #inlineInput
                      class="wbs-node__inline-input wbs-node__inline-input--add"
                      [value]="inlineTitle()"
                      (input)="inlineTitle.set($any($event.target).value)"
-                     (blur)="saveNewWorkPackage()"
-                     (keydown)="handleAddKeydown($event, 'wp')"
-                     placeholder="New work package…" />
+                     (blur)="saveNew(null)"
+                     (keydown)="handleAddKeydown($event, null)"
+                     placeholder="New product…" />
               <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
                 <mat-icon>close</mat-icon>
               </button>
@@ -243,9 +150,9 @@
       </div>
 
       @if (!isAddingAtRoot()) {
-        <button class="wbs__add-wp-btn" (click)="startAddWorkPackage()">
+        <button class="wbs__add-btn" (click)="startAddRoot()">
           <mat-icon>add</mat-icon>
-          Add work package
+          Add product
         </button>
       }
     }

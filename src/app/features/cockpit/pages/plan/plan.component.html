@@ -9,10 +9,10 @@
     [activeIndex]="activeStepIndex()"
   />
 
-  <!-- Work Breakdown Structure -->
+  <!-- Product Breakdown Structure -->
   <div class="plan__card plan__card--wbs">
     <div class="plan__card-header">
-      <h3 class="plan__card-title">Work breakdown structure</h3>
+      <h3 class="plan__card-title">Product breakdown structure</h3>
     </div>
     @if (project(); as p) {
       <app-wbs-tree [projectId]="p.id" />
@@ -20,7 +20,23 @@
       <app-empty-state
         icon="account_tree"
         title="No project selected"
-        message="Select a project to view its work breakdown structure."
+        message="Select a project to view its product breakdown structure."
+      />
+    }
+  </div>
+
+  <!-- Work Packages -->
+  <div class="plan__card plan__card--wbs">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Work packages</h3>
+    </div>
+    @if (project(); as p) {
+      <app-work-package-list [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="assignment"
+        title="No project selected"
+        message="Select a project to view its work packages."
       />
     }
   </div>
