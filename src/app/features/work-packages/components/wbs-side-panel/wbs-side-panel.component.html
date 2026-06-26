@@ -1,0 +1,64 @@
+<div class="panel">
+
+  <div class="panel__header">
+    <div class="panel__type">
+      <mat-icon class="panel__type-icon">{{ typeIcons[selection().type] }}</mat-icon>
+      <span class="panel__type-label">{{ typeLabels[selection().type] }}</span>
+    </div>
+    <button mat-icon-button class="panel__close" (click)="close.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="panel__form" (ngSubmit)="save()">
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (s of statuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="panel__field">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4" placeholder="Notes, context, acceptance criteria…"></textarea>
+    </mat-form-field>
+
+    @if (selection().type === 'prod') {
+      <div class="panel__meta-row">
+        <mat-icon class="panel__meta-icon">checklist</mat-icon>
+        <span class="panel__meta-label">Acceptance criteria</span>
+        <span class="panel__meta-value">
+          {{ $any(selection().node).acceptanceCriteriaCount ?? 0 }}
+        </span>
+      </div>
+    }
+
+    @if (selection().node.owner; as owner) {
+      <div class="panel__meta-row">
+        <mat-icon class="panel__meta-icon">person_outline</mat-icon>
+        <span class="panel__meta-label">Owner</span>
+        <span class="panel__meta-value">{{ owner.name }}</span>
+      </div>
+    }
+
+    <div class="panel__actions">
+      <button mat-flat-button type="submit" [disabled]="form.invalid || saving">
+        {{ saving ? 'Saving…' : 'Save changes' }}
+      </button>
+      <button mat-button type="button" class="panel__delete-btn" (click)="confirmDelete()">
+        <mat-icon>delete_outline</mat-icon>
+        Delete
+      </button>
+    </div>
+
+  </form>
+
+</div>

@@ -20,23 +20,20 @@
     margin: 0;
   }
 
-  &__cols {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 16px;
-    align-items: start;
-  }
-
-  &__col {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
   &__card {
     background: var(--mat-sys-surface-container-low);
     border-radius: var(--radius-card);
     padding: 20px 24px;
+
+    &--wbs {
+      padding: 0;
+      overflow: hidden;
+    }
+  }
+
+  &__card-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
   }
 
   &__card-title {
@@ -46,13 +43,14 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--mat-sys-on-surface-variant);
-    margin: 0 0 16px;
+    margin: 0;
   }
 
   &__tolerances {
     display: flex;
     flex-direction: column;
     gap: 14px;
+    margin-top: 16px;
   }
 
   &__tolerance-row {

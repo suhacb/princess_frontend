@@ -1,0 +1,263 @@
+<div class="wbs" [class.wbs--panel-open]="selectedNode()">
+
+  <!-- Tree pane -->
+  <div class="wbs__pane">
+
+    <div class="wbs__toolbar">
+      <div class="wbs__toolbar-left">
+        <button mat-icon-button (click)="expandAll()" title="Expand all">
+          <mat-icon>unfold_more</mat-icon>
+        </button>
+        <button mat-icon-button (click)="collapseAll()" title="Collapse all">
+          <mat-icon>unfold_less</mat-icon>
+        </button>
+      </div>
+      <button mat-icon-button (click)="exportToClipboard()" title="Copy as indented list">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+
+    @if (loading() && workPackages().length === 0) {
+      <div class="wbs__skeleton">
+        @for (i of [1, 2, 3]; track i) {
+          <app-skeleton height="44px" borderRadius="8px" />
+          <app-skeleton height="36px" borderRadius="8px" style="margin-left: 32px" />
+          <app-skeleton height="36px" borderRadius="8px" style="margin-left: 32px" />
+        }
+      </div>
+    } @else if (workPackages().length === 0 && !isAddingAtRoot()) {
+      <app-empty-state
+        icon="account_tree"
+        title="No work packages yet"
+        message="Break down the project into work packages, products, and activities."
+        actionLabel="Add work package"
+        (actionClick)="startAddWorkPackage()"
+      />
+    } @else {
+
+      <div class="wbs__tree"
+           cdkDropList
+           [cdkDropListData]="workPackages()"
+           (cdkDropListDropped)="dropWorkPackage($event)">
+
+        @for (wp of workPackages(); track wp.id) {
+          <div cdkDrag class="wbs-node wbs-node--wp" [class.wbs-node--selected]="isWpSelected(wp.id)">
+
+            <div class="wbs-node__row" (click)="selectWp(wp)">
+              <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
+                <mat-icon>drag_indicator</mat-icon>
+              </button>
+              <button class="wbs-node__toggle"
+                      (click)="$event.stopPropagation(); toggleWp(wp.id)"
+                      [disabled]="wp.products.length === 0 && !isAddingProduct(wp.id)">
+                <mat-icon>{{ (isWpExpanded(wp.id) && (wp.products.length > 0 || isAddingProduct(wp.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+              </button>
+              <mat-icon class="wbs-node__icon wbs-node__icon--wp">folder_open</mat-icon>
+
+              @if (isEditingNode('wp', wp.id)) {
+                <input #inlineInput
+                       class="wbs-node__inline-input"
+                       [value]="inlineTitle()"
+                       (input)="inlineTitle.set($any($event.target).value)"
+                       (blur)="saveEdit('wp', wp)"
+                       (keydown)="handleEditKeydown($event, 'wp', wp)"
+                       (click)="$event.stopPropagation()" />
+              } @else {
+                <span class="wbs-node__title" (dblclick)="startEdit($event, 'wp', wp)">{{ wp.title }}</span>
+              }
+
+              <app-wbs-status-chip [status]="wp.status" />
+              <span class="wbs-node__count">{{ wp.products.length }} product{{ wp.products.length !== 1 ? 's' : '' }}</span>
+
+              <div class="wbs-node__actions" (click)="$event.stopPropagation()">
+                <button mat-icon-button class="wbs-node__btn" title="Add product" (click)="startAddProduct($event, wp.id)">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteWp($event, wp)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- CDK ghost placeholder -->
+            <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
+
+            <!-- Products -->
+            @if (isWpExpanded(wp.id) || isAddingProduct(wp.id)) {
+              <div class="wbs-node__children"
+                   cdkDropList
+                   [cdkDropListData]="wp.products"
+                   (cdkDropListDropped)="dropProduct($event, wp.id)">
+
+                @for (prod of wp.products; track prod.id) {
+                  <div cdkDrag class="wbs-node wbs-node--prod" [class.wbs-node--selected]="isProdSelected(wp.id, prod.id)">
+
+                    <div class="wbs-node__row" (click)="selectProd(wp, prod)">
+                      <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
+                        <mat-icon>drag_indicator</mat-icon>
+                      </button>
+                      <button class="wbs-node__toggle"
+                              (click)="$event.stopPropagation(); toggleProd(prod.id)"
+                              [disabled]="prod.activities.length === 0 && !isAddingActivity(prod.id)">
+                        <mat-icon>{{ (isProdExpanded(prod.id) && (prod.activities.length > 0 || isAddingActivity(prod.id))) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                      </button>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--prod">inventory_2</mat-icon>
+
+                      @if (isEditingNode('prod', prod.id)) {
+                        <input #inlineInput
+                               class="wbs-node__inline-input"
+                               [value]="inlineTitle()"
+                               (input)="inlineTitle.set($any($event.target).value)"
+                               (blur)="saveEdit('prod', prod, wp.id)"
+                               (keydown)="handleEditKeydown($event, 'prod', prod, wp.id)"
+                               (click)="$event.stopPropagation()" />
+                      } @else {
+                        <span class="wbs-node__title" (dblclick)="startEdit($event, 'prod', prod, wp.id)">{{ prod.title }}</span>
+                      }
+
+                      <app-wbs-status-chip [status]="prod.status" />
+                      @if (prod.acceptanceCriteriaCount > 0) {
+                        <span class="wbs-node__ac">{{ prod.acceptanceCriteriaCount }} AC</span>
+                      }
+
+                      <div class="wbs-node__actions" (click)="$event.stopPropagation()">
+                        <button mat-icon-button class="wbs-node__btn" title="Add activity" (click)="startAddActivity($event, wp.id, prod.id)">
+                          <mat-icon>add</mat-icon>
+                        </button>
+                        <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteProd($event, wp, prod)">
+                          <mat-icon>delete_outline</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
+
+                    <!-- Activities -->
+                    @if (isProdExpanded(prod.id) || isAddingActivity(prod.id)) {
+                      <div class="wbs-node__children"
+                           cdkDropList
+                           [cdkDropListData]="prod.activities"
+                           (cdkDropListDropped)="dropActivity($event, wp.id, prod.id)">
+
+                        @for (act of prod.activities; track act.id) {
+                          <div cdkDrag class="wbs-node wbs-node--act" [class.wbs-node--selected]="isActSelected(wp.id, prod.id, act.id)">
+
+                            <div class="wbs-node__row" (click)="selectAct(wp, prod, act)">
+                              <button class="wbs-node__drag" cdkDragHandle (click)="$event.stopPropagation()">
+                                <mat-icon>drag_indicator</mat-icon>
+                              </button>
+                              <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                              <mat-icon class="wbs-node__icon wbs-node__icon--act">task_alt</mat-icon>
+
+                              @if (isEditingNode('act', act.id)) {
+                                <input #inlineInput
+                                       class="wbs-node__inline-input"
+                                       [value]="inlineTitle()"
+                                       (input)="inlineTitle.set($any($event.target).value)"
+                                       (blur)="saveEdit('act', act, wp.id, prod.id)"
+                                       (keydown)="handleEditKeydown($event, 'act', act, wp.id, prod.id)"
+                                       (click)="$event.stopPropagation()" />
+                              } @else {
+                                <span class="wbs-node__title" (dblclick)="startEdit($event, 'act', act, wp.id, prod.id)">{{ act.title }}</span>
+                              }
+
+                              <app-wbs-status-chip [status]="act.status" />
+
+                              <div class="wbs-node__actions" (click)="$event.stopPropagation()">
+                                <button mat-icon-button class="wbs-node__btn wbs-node__btn--danger" title="Delete" (click)="confirmDeleteAct($event, wp, prod, act)">
+                                  <mat-icon>delete_outline</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+
+                            <div class="wbs-node__placeholder" *cdkDragPlaceholder></div>
+                          </div>
+                        }
+
+                        <!-- Inline add activity -->
+                        @if (isAddingActivity(prod.id)) {
+                          <div class="wbs-node wbs-node--act wbs-node--adding">
+                            <div class="wbs-node__row">
+                              <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                              <mat-icon class="wbs-node__icon wbs-node__icon--act">task_alt</mat-icon>
+                              <input #inlineInput
+                                     class="wbs-node__inline-input wbs-node__inline-input--add"
+                                     [value]="inlineTitle()"
+                                     (input)="inlineTitle.set($any($event.target).value)"
+                                     (blur)="saveNewActivity(wp.id, prod.id)"
+                                     (keydown)="handleAddKeydown($event, 'act', wp.id, prod.id)"
+                                     placeholder="New activity…" />
+                              <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Inline add product -->
+                @if (isAddingProduct(wp.id)) {
+                  <div class="wbs-node wbs-node--prod wbs-node--adding">
+                    <div class="wbs-node__row">
+                      <div class="wbs-node__toggle wbs-node__toggle--leaf"></div>
+                      <mat-icon class="wbs-node__icon wbs-node__icon--prod">inventory_2</mat-icon>
+                      <input #inlineInput
+                             class="wbs-node__inline-input wbs-node__inline-input--add"
+                             [value]="inlineTitle()"
+                             (input)="inlineTitle.set($any($event.target).value)"
+                             (blur)="saveNewProduct(wp.id)"
+                             (keydown)="handleAddKeydown($event, 'prod', wp.id)"
+                             placeholder="New product…" />
+                      <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Inline add work package -->
+        @if (isAddingAtRoot()) {
+          <div class="wbs-node wbs-node--wp wbs-node--adding">
+            <div class="wbs-node__row">
+              <mat-icon class="wbs-node__icon wbs-node__icon--wp" style="margin-left: 32px">folder_open</mat-icon>
+              <input #inlineInput
+                     class="wbs-node__inline-input wbs-node__inline-input--add"
+                     [value]="inlineTitle()"
+                     (input)="inlineTitle.set($any($event.target).value)"
+                     (blur)="saveNewWorkPackage()"
+                     (keydown)="handleAddKeydown($event, 'wp')"
+                     placeholder="New work package…" />
+              <button mat-icon-button class="wbs-node__btn" (click)="cancelInline()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (!isAddingAtRoot()) {
+        <button class="wbs__add-wp-btn" (click)="startAddWorkPackage()">
+          <mat-icon>add</mat-icon>
+          Add work package
+        </button>
+      }
+    }
+  </div>
+
+  <!-- Side panel -->
+  @if (selectedNode(); as sel) {
+    <app-wbs-side-panel
+      [selection]="sel"
+      [projectId]="projectId()"
+      (close)="clearSelection()"
+    />
+  }
+
+</div>
