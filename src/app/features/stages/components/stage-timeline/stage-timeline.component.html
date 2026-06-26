@@ -1,0 +1,147 @@
+<div class="tl">
+
+  <!-- Toolbar -->
+  <div class="tl__toolbar">
+    <div class="tl__zoom">
+      <button mat-button [class.tl__zoom-btn--active]="zoom() === 'week'" (click)="zoom.set('week')">Week</button>
+      <button mat-button [class.tl__zoom-btn--active]="zoom() === 'month'" (click)="zoom.set('month')">Month</button>
+      <button mat-button [class.tl__zoom-btn--active]="zoom() === 'quarter'" (click)="zoom.set('quarter')">Quarter</button>
+    </div>
+    @if (todayVisible()) {
+      <span class="tl__today-label">
+        <span class="tl__today-dot"></span>
+        Today: {{ todayIso }}
+      </span>
+    }
+  </div>
+
+  @if (loading() && rows().length === 0) {
+    <div class="tl__skeleton">
+      @for (i of [1,2,3,4,5]; track i) {
+        <app-skeleton height="36px" borderRadius="4px" />
+      }
+    </div>
+  } @else if (rows().length === 0) {
+    <app-empty-state
+      icon="timeline"
+      title="No stage data yet"
+      message="Create stages with planned dates to see the timeline."
+    />
+  } @else {
+
+    <!-- Gantt canvas -->
+    <div class="tl__canvas-wrap">
+      <div class="tl__canvas">
+
+        <!-- Header: date labels column -->
+        <div class="tl__header-labels"></div>
+        <div class="tl__header-track">
+          @for (tick of headerTicks(); track tick.left) {
+            <span class="tl__tick-label" [style.left.%]="tick.left">{{ tick.label }}</span>
+          }
+          @for (tick of headerTicks(); track tick.left) {
+            <div class="tl__tick-line" [style.left.%]="tick.left"></div>
+          }
+        </div>
+
+        <!-- Rows -->
+        @for (row of rows(); track row.id + row.type) {
+          <div class="tl__row-label"
+               [class.tl__row-label--stage]="row.type === 'stage'"
+               [class.tl__row-label--wp]="row.type === 'wp'">
+            @if (row.type === 'stage') {
+              <mat-icon class="tl__row-icon">layers</mat-icon>
+            } @else {
+              <mat-icon class="tl__row-icon">assignment</mat-icon>
+            }
+            <span class="tl__row-name">{{ row.label }}</span>
+          </div>
+
+          <div class="tl__row-track"
+               [class.tl__row-track--stage]="row.type === 'stage'"
+               [matTooltip]="tooltipText(row)"
+               matTooltipClass="tl-tooltip">
+
+            <!-- Today marker -->
+            @if (todayVisible()) {
+              <div class="tl__today-line" [style.left.%]="todayPct()"></div>
+            }
+
+            <!-- Tick grid lines -->
+            @for (tick of headerTicks(); track tick.left) {
+              <div class="tl__grid-line" [style.left.%]="tick.left"></div>
+            }
+
+            <!-- Planned bar -->
+            @if (plannedBar(row); as bar) {
+              <div class="tl-bar tl-bar--planned"
+                   [style.left.%]="bar.left"
+                   [style.width.%]="bar.width">
+              </div>
+            }
+
+            <!-- Actual bar -->
+            @if (actualBar(row); as bar) {
+              <div class="tl-bar"
+                   [class]="actualBarClass(row)"
+                   [style.left.%]="bar.left"
+                   [style.width.%]="bar.width">
+                @if (row.toleranceBreached) {
+                  <mat-icon class="tl-bar__breach-icon">warning</mat-icon>
+                }
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <!-- Variance summary table -->
+    @if (wpRows().length > 0) {
+      <div class="tl__variance">
+        <h4 class="tl__variance-title">Time variance — work packages</h4>
+        <table class="tl__variance-table">
+          <thead>
+            <tr>
+              <th>Work Package</th>
+              <th>Planned days</th>
+              <th>Actual days</th>
+              <th>Variance</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of wpRows(); track row.id) {
+              <tr [class.tl__variance-row--breach]="row.toleranceBreached">
+                <td>{{ row.label }}</td>
+                <td>{{ plannedDays(row) ?? '—' }}</td>
+                <td>{{ actualDays(row) ?? '—' }}</td>
+                <td class="tl__variance-cell"
+                    [class.tl__variance-cell--over]="(row.timeVarianceDays ?? 0) > 0"
+                    [class.tl__variance-cell--under]="(row.timeVarianceDays ?? 0) < 0">
+                  @if (row.timeVarianceDays !== null) {
+                    {{ row.timeVarianceDays > 0 ? '+' : '' }}{{ row.timeVarianceDays }}d
+                  } @else {
+                    —
+                  }
+                </td>
+                <td>
+                  @if (row.toleranceBreached) {
+                    <span class="tl__breach-badge">Breach</span>
+                  } @else if (row.timeVarianceDays !== null) {
+                    <span class="tl__ok-badge">Within tolerance</span>
+                  } @else {
+                    <span class="tl__na-badge">In progress</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  }
+
+</div>
