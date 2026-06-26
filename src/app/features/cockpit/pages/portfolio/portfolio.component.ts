@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../projects/services/project.service';
 import { ShellStore } from '../../../../core/services/shell.store';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
-import { AISuggestionCardComponent } from '../../../../shared/components/ai-suggestion-card/ai-suggestion-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import {
@@ -31,7 +30,6 @@ type ToleranceHealth = 'ok' | 'warn' | 'exception';
     MatSelectModule,
     MatDialogModule,
     StatusChipComponent,
-    AISuggestionCardComponent,
     EmptyStateComponent,
     SkeletonComponent,
   ],
@@ -49,8 +47,6 @@ export class PortfolioComponent implements OnInit {
   protected readonly statusFilter = signal<ProjectStatus | ''>('');
   protected readonly statuses = PROJECT_STATUSES;
   protected readonly statusLabels = PROJECT_STATUS_LABELS;
-
-  protected readonly showAiCard = signal(true);
 
   protected readonly filtered = computed(() => {
     const q = this.searchQuery().toLowerCase();

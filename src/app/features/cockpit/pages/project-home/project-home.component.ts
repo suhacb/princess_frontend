@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ShellStore } from '../../../../core/services/shell.store';
 import { ProjectService } from '../../../projects/services/project.service';
-import { AISuggestionCardComponent } from '../../../../shared/components/ai-suggestion-card/ai-suggestion-card.component';
 import { LifecycleStepperComponent } from '../../../../shared/components/lifecycle-stepper/lifecycle-stepper.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
@@ -14,7 +13,6 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
   imports: [
     MatIconModule,
     MatButtonModule,
-    AISuggestionCardComponent,
     LifecycleStepperComponent,
     EmptyStateComponent,
     SkeletonComponent,

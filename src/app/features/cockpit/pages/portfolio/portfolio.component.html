@@ -23,17 +23,6 @@
     </div>
   </div>
 
-  @if (showAiCard()) {
-    <app-ai-suggestion-card
-      eyebrow="Portfolio insight"
-      title="2 projects are approaching stage gate deadlines"
-      (accepted)="showAiCard.set(false)"
-      (dismissed)="showAiCard.set(false)"
-    >
-      Review the stage plans and confirm tolerance levels are within bounds before the gate review.
-    </app-ai-suggestion-card>
-  }
-
   <div class="portfolio__table-card">
     @if (loading()) {
       <div class="portfolio__skeletons">

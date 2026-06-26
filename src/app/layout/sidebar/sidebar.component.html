@@ -72,6 +72,8 @@
       <div class="sidebar__group">
         @if (!collapsed()) {
           <span class="sidebar__group-label">Portfolio</span>
+        } @else {
+          <div class="sidebar__group-divider"></div>
         }
         @for (item of portfolioItems; track item.route) {
           <a

@@ -3,7 +3,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ProjectService } from '../../../projects/services/project.service';
 import { LifecycleStepperComponent } from '../../../../shared/components/lifecycle-stepper/lifecycle-stepper.component';
-import { AISuggestionCardComponent } from '../../../../shared/components/ai-suggestion-card/ai-suggestion-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 const LIFECYCLE_STEPS = ['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed'];
@@ -13,7 +12,7 @@ const STATUS_INDEX: Record<string, number> = {
 
 @Component({
   selector: 'app-plan',
-  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, AISuggestionCardComponent, EmptyStateComponent],
+  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.scss',
 })

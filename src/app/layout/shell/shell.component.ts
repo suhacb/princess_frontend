@@ -5,7 +5,6 @@ import { ShellStore } from '../../core/services/shell.store';
 import { TopBarComponent } from '../top-bar/top-bar.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
-import { AiDockComponent } from '../ai-dock/ai-dock.component';
 import { CommandPaletteComponent } from '../command-palette/command-palette.component';
 import { ProjectSwitcherComponent } from '../project-switcher/project-switcher.component';
 
@@ -16,7 +15,6 @@ import { ProjectSwitcherComponent } from '../project-switcher/project-switcher.c
     TopBarComponent,
     SidebarComponent,
     LoadingBarComponent,
-    AiDockComponent,
     CommandPaletteComponent,
     ProjectSwitcherComponent,
   ],

@@ -16,7 +16,6 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
-import { AIAssistButtonComponent } from '../../shared/components/ai-assist-button/ai-assist-button.component';
 import { environment } from '../../../environments/environment';
 import { ProjectService } from '../../features/projects/services/project.service';
 
@@ -39,7 +38,6 @@ const ROLE_LABELS: Record<AppRole, string> = {
     MatBadgeModule,
     MatTooltipModule,
     AvatarComponent,
-    AIAssistButtonComponent,
   ],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.scss',

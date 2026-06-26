@@ -66,7 +66,7 @@ describe('IssueListComponent', () => {
 
   it('renders type badge', () => {
     const { fixture } = setup([stubIssue]);
-    expect(fixture.nativeElement.querySelector('.type-badge--problem')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-badge')).toBeTruthy();
   });
 
   it('renders status chip', () => {
@@ -105,6 +105,6 @@ describe('IssueListComponent', () => {
     const navigateSpy = vi.spyOn(comp.router ?? comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
     const row = fixture.nativeElement.querySelector('.issue-row');
     row?.click();
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'issues', 1]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 5, 'issues', 1]);
   });
 });

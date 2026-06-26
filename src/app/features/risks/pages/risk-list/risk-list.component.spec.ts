@@ -156,6 +156,6 @@ describe('RiskListComponent', () => {
     const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
     const row = fixture.nativeElement.querySelector('.risk-row');
     row?.click();
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects', 5, 'risks', 1]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 5, 'risks', 1]);
   });
 });
