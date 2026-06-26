@@ -1,0 +1,300 @@
+@use 'sass:math';
+
+:host { display: block; }
+
+// ─── Layout constants ──────────────────────────────────────────────────────────
+$label-w: 200px;
+$row-h: 40px;
+$header-h: 28px;
+$bar-h: 12px;
+$bar-gap: 4px;
+
+.tl {
+  padding: 16px 20px;
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  &__zoom {
+    display: flex;
+    gap: 4px;
+    background: var(--mat-sys-surface-container);
+    border-radius: 8px;
+    padding: 2px;
+  }
+
+  &__zoom-btn--active {
+    background: var(--mat-sys-surface-container-high) !important;
+    font-weight: 600;
+  }
+
+  &__today-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__today-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mat-sys-tertiary, var(--mat-sys-primary));
+  }
+
+  &__skeleton { display: flex; flex-direction: column; gap: 6px; }
+
+  // ─── Canvas ─────────────────────────────────────────────────────────────────
+
+  &__canvas-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 8px;
+    background: var(--mat-sys-surface);
+  }
+
+  &__canvas {
+    display: grid;
+    grid-template-columns: $label-w 1fr;
+    min-width: 600px;
+  }
+
+  // Header row
+  &__header-labels {
+    height: $header-h;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface-container-low);
+  }
+
+  &__header-track {
+    position: relative;
+    height: $header-h;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface-container-low);
+    overflow: hidden;
+  }
+
+  &__tick-label {
+    position: absolute;
+    top: 6px;
+    transform: translateX(4px);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  &__tick-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--mat-sys-outline-variant);
+    opacity: 0.5;
+  }
+
+  // Row cells
+  &__row-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    height: $row-h;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface);
+    overflow: hidden;
+
+    &--stage {
+      background: var(--mat-sys-surface-container-low);
+      font-weight: 600;
+    }
+
+    &--wp {
+      padding-left: 24px;
+    }
+  }
+
+  &__row-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--mat-sys-on-surface-variant);
+    flex-shrink: 0;
+  }
+
+  &__row-name {
+    font-size: 0.8125rem;
+    color: var(--mat-sys-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__row-track {
+    position: relative;
+    height: $row-h;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    overflow: hidden;
+    cursor: default;
+
+    &--stage { background: var(--mat-sys-surface-container-low); }
+  }
+
+  &__today-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--mat-sys-tertiary, var(--mat-sys-primary));
+    opacity: 0.8;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  &__grid-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--mat-sys-outline-variant);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  // ─── Variance table ──────────────────────────────────────────────────────────
+
+  &__variance {
+    margin-top: 20px;
+  }
+
+  &__variance-title {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0 0 10px;
+  }
+
+  &__variance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--mat-sys-on-surface-variant);
+      background: var(--mat-sys-surface-container-low);
+      font-size: 0.75rem;
+    }
+  }
+
+  &__variance-row--breach td {
+    background: color-mix(in srgb, var(--status-danger) 6%, transparent);
+  }
+
+  &__variance-cell {
+    font-weight: 600;
+    &--over  { color: var(--status-danger); }
+    &--under { color: var(--status-success); }
+  }
+}
+
+// ─── Bars ──────────────────────────────────────────────────────────────────────
+
+.tl-bar {
+  position: absolute;
+  top: calc(50% - #{math.div($bar-h, 2)});
+  height: $bar-h;
+  border-radius: 3px;
+  transition: opacity 150ms;
+
+  &--planned {
+    background: color-mix(in srgb, var(--mat-sys-primary) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-primary) 50%, transparent);
+    top: calc(50% - #{$bar-h + math.div($bar-gap, 2)});
+  }
+
+  &--actual {
+    top: calc(50% + #{math.div($bar-gap, 2)});
+  }
+
+  &--progress {
+    background: var(--status-success);
+    opacity: 0.85;
+  }
+
+  &--done {
+    background: var(--status-success);
+  }
+
+  &--breach {
+    background: var(--status-danger);
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
+    overflow: hidden;
+  }
+
+  &__breach-icon {
+    font-size: 10px;
+    width: 10px;
+    height: 10px;
+    color: white;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Badges ────────────────────────────────────────────────────────────────────
+
+.tl__breach-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--status-danger) 15%, transparent);
+  color: var(--status-danger);
+}
+
+.tl__ok-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--status-success) 15%, transparent);
+  color: var(--status-success);
+}
+
+.tl__na-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--status-neutral) 15%, transparent);
+  color: var(--status-neutral);
+}
+
+// ─── Tooltip override ─────────────────────────────────────────────────────────
+
+::ng-deep .tl-tooltip {
+  white-space: pre-line !important;
+  font-size: 0.75rem !important;
+  max-width: 260px !important;
+}

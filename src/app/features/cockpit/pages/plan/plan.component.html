@@ -41,6 +41,22 @@
     }
   </div>
 
+  <!-- Stage Timeline -->
+  <div class="plan__card plan__card--timeline">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Stage timeline</h3>
+    </div>
+    @if (project(); as p) {
+      <app-stage-timeline [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="timeline"
+        title="No project selected"
+        message="Select a project to view its stage timeline."
+      />
+    }
+  </div>
+
   <!-- Stage tolerances -->
   @if (project(); as p) {
     <div class="plan__card">

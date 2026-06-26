@@ -7,6 +7,7 @@ import { LifecycleStepperComponent } from '../../../../shared/components/lifecyc
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { WbsTreeComponent } from '../../../work-packages/components/wbs-tree/wbs-tree.component';
 import { WorkPackageListComponent } from '../../../work-packages/components/work-package-list/work-package-list.component';
+import { StageTimelineComponent } from '../../../stages/components/stage-timeline/stage-timeline.component';
 
 const LIFECYCLE_STEPS = ['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed'];
 const STATUS_INDEX: Record<string, number> = {
@@ -15,7 +16,7 @@ const STATUS_INDEX: Record<string, number> = {
 
 @Component({
   selector: 'app-plan',
-  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent],
+  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent, StageTimelineComponent],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.scss',
 })
