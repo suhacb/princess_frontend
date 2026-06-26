@@ -41,6 +41,22 @@
     }
   </div>
 
+  <!-- Tasks -->
+  <div class="plan__card plan__card--tasks">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Tasks</h3>
+    </div>
+    @if (project(); as p) {
+      <app-task-panel [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="task_alt"
+        title="No project selected"
+        message="Select a project to manage its tasks."
+      />
+    }
+  </div>
+
   <!-- Stage Timeline -->
   <div class="plan__card plan__card--timeline">
     <div class="plan__card-header">

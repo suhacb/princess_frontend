@@ -1,0 +1,92 @@
+<div class="tl">
+
+  <!-- Filters toolbar -->
+  <div class="tl__filters">
+    <mat-form-field appearance="outline" class="tl__filter-field">
+      <mat-label>Status</mat-label>
+      <mat-select [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+        <mat-option [value]="null">All</mat-option>
+        @for (s of statuses.slice(1); track s) {
+          <mat-option [value]="s">{{ statusLabels[s!] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="tl__filter-field">
+      <mat-label>Priority</mat-label>
+      <mat-select [ngModel]="filterPriority()" (ngModelChange)="filterPriority.set($event)">
+        <mat-option [value]="null">All</mat-option>
+        @for (p of priorities.slice(1); track p) {
+          <mat-option [value]="p">{{ priorityLabels[p!] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="tl__filter-field">
+      <mat-label>Assignee</mat-label>
+      <input matInput [ngModel]="filterAssignee()" (ngModelChange)="filterAssignee.set($event)" placeholder="Filter by name" />
+    </mat-form-field>
+
+    @if (hasFilters()) {
+      <button mat-icon-button (click)="clearFilters()" matTooltip="Clear filters">
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+    }
+
+    <span class="tl__spacer"></span>
+
+    <button mat-flat-button color="primary" (click)="createClicked.emit()">
+      <mat-icon>add</mat-icon> New task
+    </button>
+  </div>
+
+  <!-- List body -->
+  @if (loading()) {
+    <div class="tl__skeleton">
+      @for (i of [1,2,3,4]; track i) { <app-skeleton height="52px" borderRadius="6px" /> }
+    </div>
+  } @else if (filtered().length === 0) {
+    <app-empty-state
+      icon="task_alt"
+      title="No tasks"
+      message="No tasks match the current filters."
+    />
+  } @else {
+    <ul class="tl__list">
+      @for (task of filtered(); track task.id) {
+        <li class="tl__item"
+            [class.tl__item--overdue]="isOverdue(task)"
+            [class.tl__item--due-soon]="isDueThisWeek(task)"
+            (click)="taskSelected.emit(task)"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="taskSelected.emit(task)">
+
+          <div class="tl__item-main">
+            <span class="tl__item-title">{{ task.title }}</span>
+            @if (isOverdue(task)) {
+              <mat-icon class="tl__item-warn" matTooltip="Overdue">warning</mat-icon>
+            } @else if (isDueThisWeek(task)) {
+              <mat-icon class="tl__item-soon" matTooltip="Due this week">schedule</mat-icon>
+            }
+          </div>
+
+          <div class="tl__item-meta">
+            <app-task-status-chip [status]="task.status" />
+            <app-task-priority-chip [priority]="task.priority" />
+            @if (task.assigneeName) {
+              <span class="tl__item-assignee">{{ task.assigneeName }}</span>
+            }
+            @if (task.dueDate) {
+              <span class="tl__item-due" [class.tl__item-due--over]="isOverdue(task)">
+                {{ task.dueDate }}
+              </span>
+            }
+          </div>
+
+        </li>
+      }
+    </ul>
+  }
+
+</div>

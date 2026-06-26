@@ -1,0 +1,53 @@
+<div class="tp" [class.tp--drawer-open]="drawerOpen()">
+
+  <!-- Main area -->
+  <div class="tp__main">
+
+    <!-- View toggle -->
+    <div class="tp__view-toggle">
+      <button mat-icon-button
+              [class.tp__toggle-btn--active]="view() === 'list'"
+              (click)="view.set('list')"
+              aria-label="List view">
+        <mat-icon>view_list</mat-icon>
+      </button>
+      <button mat-icon-button
+              [class.tp__toggle-btn--active]="view() === 'board'"
+              (click)="view.set('board')"
+              aria-label="Board view">
+        <mat-icon>view_kanban</mat-icon>
+      </button>
+    </div>
+
+    @if (view() === 'list') {
+      <app-task-list
+        [tasks]="tasks()"
+        [loading]="loading()"
+        (taskSelected)="openEdit($event)"
+        (createClicked)="openCreate()"
+      />
+    } @else {
+      <app-task-board
+        [projectId]="projectId()"
+        [tasks]="tasks()"
+        [loading]="loading()"
+        (taskSelected)="openEdit($event)"
+        (createClicked)="openCreate()"
+      />
+    }
+
+  </div>
+
+  <!-- Slide-in drawer -->
+  @if (drawerOpen()) {
+    <aside class="tp__drawer">
+      <app-task-drawer
+        [projectId]="projectId()"
+        [task]="drawerTask()"
+        (saved)="onSaved()"
+        (closed)="closeDrawer()"
+      />
+    </aside>
+  }
+
+</div>
