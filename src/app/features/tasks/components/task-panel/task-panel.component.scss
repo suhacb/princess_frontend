@@ -1,0 +1,56 @@
+:host { display: block; }
+
+$drawer-w: 380px;
+
+.tp {
+  position: relative;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  transition: gap 220ms ease;
+
+  &--drawer-open { gap: 0; }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+    transition: margin-right 220ms ease;
+  }
+
+  &--drawer-open &__main {
+    margin-right: 0;
+  }
+
+  &__view-toggle {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+    background: var(--mat-sys-surface-container);
+    border-radius: 8px;
+    padding: 2px;
+    width: fit-content;
+  }
+
+  &__toggle-btn--active {
+    background: var(--mat-sys-surface-container-high) !important;
+  }
+
+  // ─── Drawer ────────────────────────────────────────────────────────────────────
+
+  &__drawer {
+    width: $drawer-w;
+    flex-shrink: 0;
+    border-left: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface-container-lowest);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
+    animation: slide-in 220ms ease;
+  }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(#{$drawer-w}); opacity: 0; }
+  to   { transform: translateX(0);            opacity: 1; }
+}

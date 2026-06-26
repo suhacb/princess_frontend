@@ -1,0 +1,120 @@
+<div class="tdr">
+
+  <!-- Header -->
+  <div class="tdr__header">
+    <h3 class="tdr__title">{{ title() }}</h3>
+    <button mat-icon-button (click)="closed.emit()" aria-label="Close drawer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="submit()" class="tdr__form" autocomplete="off">
+
+    <mat-form-field appearance="outline" class="tdr__field tdr__field--full">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Task title" />
+    </mat-form-field>
+
+    <div class="tdr__row">
+      <mat-form-field appearance="outline" class="tdr__field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="tdr__field">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          @for (p of priorities; track p) {
+            <mat-option [value]="p">{{ priorityLabels[p] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="tdr__field">
+      <mat-label>Due date</mat-label>
+      <input matInput type="date" formControlName="due_date" />
+    </mat-form-field>
+
+    @if (loadingMeta()) {
+      <app-skeleton height="40px" borderRadius="4px" />
+    } @else {
+      <mat-form-field appearance="outline" class="tdr__field">
+        <mat-label>Assignee</mat-label>
+        <mat-select formControlName="assignee_id">
+          <mat-option [value]="null">— Unassigned —</mat-option>
+          @for (m of members(); track m.id) {
+            <mat-option [value]="m.id">{{ m.person.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="tdr__field">
+        <mat-label>Stage</mat-label>
+        <mat-select formControlName="stage_id">
+          <mat-option [value]="null">— None —</mat-option>
+          @for (s of stages(); track s.id) {
+            <mat-option [value]="s.id">{{ s.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="tdr__field">
+        <mat-label>Work Package</mat-label>
+        <mat-select formControlName="work_package_id">
+          <mat-option [value]="null">— None —</mat-option>
+          @for (w of wps(); track w.id) {
+            <mat-option [value]="w.id">{{ w.title }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline" class="tdr__field tdr__field--full">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Optional description"></textarea>
+    </mat-form-field>
+
+    <div class="tdr__actions">
+      <button mat-button type="button" (click)="closed.emit()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Saving…' : (isEdit() ? 'Update' : 'Create') }}
+      </button>
+    </div>
+
+  </form>
+
+  <!-- Audit trail (edit mode only) -->
+  @if (isEdit()) {
+    <div class="tdr__history">
+      <h4 class="tdr__history-title">Audit trail</h4>
+      @if (historyLoading()) {
+        <div class="tdr__skeleton">
+          @for (i of [1,2,3]; track i) { <app-skeleton height="28px" borderRadius="4px" /> }
+        </div>
+      } @else if (history().length === 0) {
+        <p class="tdr__history-empty">No changes recorded yet.</p>
+      } @else {
+        <ul class="tdr__history-list">
+          @for (entry of history(); track entry.id) {
+            <li class="tdr__history-item">
+              <span class="tdr__history-user">{{ entry.user ?? 'System' }}</span>
+              changed <strong>{{ entry.field }}</strong>
+              @if (entry.oldValue !== null) {
+                from <em>{{ entry.oldValue }}</em>
+              }
+              to <em>{{ entry.newValue }}</em>
+              <span class="tdr__history-time">{{ entry.createdAt | slice:0:10 }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+
+</div>

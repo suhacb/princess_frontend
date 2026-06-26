@@ -1,0 +1,73 @@
+<div class="tb">
+
+  <div class="tb__toolbar">
+    <span class="tb__spacer"></span>
+    <button mat-flat-button color="primary" (click)="createClicked.emit()">
+      <mat-icon>add</mat-icon> New task
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="tb__skeleton">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="tb__col-skeleton">
+          <app-skeleton height="32px" borderRadius="6px" />
+          @for (j of [1,2]; track j) { <app-skeleton height="72px" borderRadius="6px" /> }
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="tb__board" cdkDropListGroup>
+      @for (col of columns(); track col.status) {
+        <div class="tb__col tb__col--{{ col.status }}">
+          <div class="tb__col-header">
+            <span class="tb__col-title">{{ col.label }}</span>
+            <span class="tb__col-count">{{ col.tasks.length }}</span>
+          </div>
+
+          <div class="tb__col-body"
+               cdkDropList
+               [cdkDropListData]="col.tasks"
+               [id]="colId(col.status)"
+               [cdkDropListConnectedTo]="columnIds"
+               (cdkDropListDropped)="dropped($event, col.status)">
+
+            @if (col.tasks.length === 0) {
+              <div class="tb__col-empty">Drop tasks here</div>
+            }
+
+            @for (task of col.tasks; track task.id) {
+              <div class="tb__card"
+                   [class.tb__card--overdue]="isOverdue(task)"
+                   [class.tb__card--due-soon]="isDueThisWeek(task)"
+                   cdkDrag
+                   [cdkDragData]="task"
+                   (click)="taskSelected.emit(task)">
+
+                <div class="tb__card-title">{{ task.title }}</div>
+
+                <div class="tb__card-meta">
+                  <app-task-priority-chip [priority]="task.priority" />
+                  @if (task.assigneeName) {
+                    <span class="tb__card-assignee">{{ task.assigneeName }}</span>
+                  }
+                  @if (task.dueDate) {
+                    <span class="tb__card-due"
+                          [class.tb__card-due--over]="isOverdue(task)"
+                          [matTooltip]="isOverdue(task) ? 'Overdue' : (isDueThisWeek(task) ? 'Due this week' : '')">
+                      {{ task.dueDate }}
+                    </span>
+                  }
+                </div>
+
+                <!-- Drag placeholder -->
+                <div *cdkDragPlaceholder class="tb__card-placeholder"></div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>
