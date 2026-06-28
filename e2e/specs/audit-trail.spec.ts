@@ -42,16 +42,12 @@ async function getTestProjectId(page: Page): Promise<number> {
 test.describe('audit-trail API — project_manager', () => {
   test.use({ storageState: roleStateFile('project_manager') });
 
-  let projectId: number;
-
-  test.beforeEach(async ({ page }) => {
-    await resetDb(page);
-    await page.goto('http://localhost:10100');
-    projectId = await getTestProjectId(page);
-  });
+  test.beforeEach(async () => { await resetDb(); });
 
   test('GET /api/projects/:id/audit-trail returns 200 with paginated envelope', async ({ page }) => {
-    const { status, body } = await api(page, 'GET', `/api/projects/${projectId}/audit-trail`);
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const { status, body } = await api(page, 'GET', `/api/projects/${id}/audit-trail`);
     expect(status).toBe(200);
 
     const typed = body as { data: unknown[]; meta: Record<string, number> };
@@ -67,11 +63,13 @@ test.describe('audit-trail API — project_manager', () => {
   });
 
   test('each audit entry has the expected shape', async ({ page }) => {
-    const { status, body } = await api(page, 'GET', `/api/projects/${projectId}/audit-trail`);
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const { status, body } = await api(page, 'GET', `/api/projects/${id}/audit-trail`);
     expect(status).toBe(200);
 
     const typed = body as { data: Array<Record<string, unknown>> };
-    if (typed.data.length === 0) return; // seed may have no events — skip shape check
+    if (typed.data.length === 0) return;
 
     const entry = typed.data[0];
     expect(entry).toHaveProperty('id');
@@ -81,13 +79,14 @@ test.describe('audit-trail API — project_manager', () => {
     expect(entry).toHaveProperty('event');
     expect(entry).toHaveProperty('occurred_at');
     expect(entry).toHaveProperty('changes');
-    // causer may be null for system events
     expect('causer' in entry).toBe(true);
   });
 
   test('entity_type filter returns only entries of that type', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
     const { status, body } = await api(
-      page, 'GET', `/api/projects/${projectId}/audit-trail?entity_type=project`,
+      page, 'GET', `/api/projects/${id}/audit-trail?entity_type=project`,
     );
     expect(status).toBe(200);
 
@@ -98,16 +97,20 @@ test.describe('audit-trail API — project_manager', () => {
   });
 
   test('from/to date filters return 200', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
     const { status } = await api(
       page, 'GET',
-      `/api/projects/${projectId}/audit-trail?from=2026-01-01&to=2026-12-31`,
+      `/api/projects/${id}/audit-trail?from=2026-01-01&to=2026-12-31`,
     );
     expect(status).toBe(200);
   });
 
   test('page param returns correct current_page in meta', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
     const { status, body } = await api(
-      page, 'GET', `/api/projects/${projectId}/audit-trail?page=1`,
+      page, 'GET', `/api/projects/${id}/audit-trail?page=1`,
     );
     expect(status).toBe(200);
     const typed = body as { meta: { current_page: number } };
@@ -115,10 +118,11 @@ test.describe('audit-trail API — project_manager', () => {
   });
 
   test('invalid entity_type filter is ignored or returns 422', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
     const { status } = await api(
-      page, 'GET', `/api/projects/${projectId}/audit-trail?entity_type=nonexistent_type`,
+      page, 'GET', `/api/projects/${id}/audit-trail?entity_type=nonexistent_type`,
     );
-    // Backend may return 200 with empty data or 422 — either is acceptable
     expect([200, 422]).toContain(status);
   });
 });
@@ -128,14 +132,12 @@ test.describe('audit-trail API — project_manager', () => {
 test.describe('audit-trail API — project_assurance', () => {
   test.use({ storageState: roleStateFile('project_assurance') });
 
-  test.beforeEach(async ({ page }) => {
-    await resetDb(page);
-    await page.goto('http://localhost:10100');
-  });
+  test.beforeEach(async () => { await resetDb(); });
 
   test('GET audit-trail returns 200 for project_assurance', async ({ page }) => {
-    const projectId = await getTestProjectId(page);
-    const { status } = await api(page, 'GET', `/api/projects/${projectId}/audit-trail`);
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const { status } = await api(page, 'GET', `/api/projects/${id}/audit-trail`);
     expect(status).toBe(200);
   });
 });
@@ -145,14 +147,12 @@ test.describe('audit-trail API — project_assurance', () => {
 test.describe('audit-trail API — observer', () => {
   test.use({ storageState: roleStateFile('observer') });
 
-  test.beforeEach(async ({ page }) => {
-    await resetDb(page);
-    await page.goto('http://localhost:10100');
-  });
+  test.beforeEach(async () => { await resetDb(); });
 
   test('GET audit-trail returns 200 for observer (project member with projects:read)', async ({ page }) => {
-    const projectId = await getTestProjectId(page);
-    const { status } = await api(page, 'GET', `/api/projects/${projectId}/audit-trail`);
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const { status } = await api(page, 'GET', `/api/projects/${id}/audit-trail`);
     expect(status).toBe(200);
   });
 });
@@ -162,13 +162,12 @@ test.describe('audit-trail API — observer', () => {
 test.describe('audit-trail API — non_member', () => {
   test.use({ storageState: roleStateFile('non_member') });
 
-  test.beforeEach(async ({ page }) => {
-    await resetDb(page);
-    await page.goto('http://localhost:10100');
-  });
+  test.beforeEach(async () => { await resetDb(); });
 
   test('GET audit-trail returns 403 for non_member', async ({ page }) => {
-    const { status } = await api(page, 'GET', '/api/projects/1/audit-trail');
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const { status } = await api(page, 'GET', `/api/projects/${id}/audit-trail`);
     expect(status).toBe(403);
   });
 });
