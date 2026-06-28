@@ -25,7 +25,8 @@
     border-radius: var(--radius-card);
     padding: 20px 24px;
 
-    &--wbs {
+    &--wbs,
+    &--meetings {
       padding: 0;
       overflow: hidden;
     }

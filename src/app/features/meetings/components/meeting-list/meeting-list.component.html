@@ -1,0 +1,58 @@
+<div class="ml">
+  <div class="ml__toolbar">
+    <input
+      class="ml__search"
+      type="text"
+      placeholder="Search meetings…"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+      aria-label="Search meetings"
+    />
+    <button mat-icon-button (click)="createClicked.emit()" matTooltip="New meeting" aria-label="New meeting">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="ml__skeletons">
+      @for (i of [1,2,3,4]; track i) {
+        <app-skeleton height="52px" borderRadius="0" />
+      }
+    </div>
+  } @else if (!filtered().length) {
+    <app-empty-state
+      icon="event_note"
+      title="No meetings"
+      message="No meetings found. Create one to get started."
+    />
+  } @else {
+    <ul class="ml__list" role="list">
+      @for (m of filtered(); track m.id) {
+        <li
+          class="ml__item"
+          [class.ml__item--active]="selectedMeetingId() === m.id"
+          (click)="meetingSelected.emit(m)"
+          role="button"
+          [attr.aria-current]="selectedMeetingId() === m.id ? 'true' : null"
+        >
+          <div class="ml__item-title">{{ m.title }}</div>
+          <div class="ml__item-meta">
+            <span class="ml__item-date">{{ m.dateTime | date:'dd MMM yyyy' }}</span>
+            <span class="ml__item-badges">
+              @if (m.actionItemsOpen > 0) {
+                <span class="ml__badge ml__badge--open" [matTooltip]="m.actionItemsOpen + ' open action items'">
+                  {{ m.actionItemsOpen }}
+                </span>
+              }
+              @if (m.actionItemsClosed > 0) {
+                <span class="ml__badge ml__badge--closed" [matTooltip]="m.actionItemsClosed + ' closed action items'">
+                  {{ m.actionItemsClosed }}
+                </span>
+              }
+            </span>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>

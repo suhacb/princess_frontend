@@ -9,6 +9,7 @@ import { WbsTreeComponent } from '../../../work-packages/components/wbs-tree/wbs
 import { WorkPackageListComponent } from '../../../work-packages/components/work-package-list/work-package-list.component';
 import { StageTimelineComponent } from '../../../stages/components/stage-timeline/stage-timeline.component';
 import { TaskPanelComponent } from '../../../tasks/components/task-panel/task-panel.component';
+import { MeetingPanelComponent } from '../../../meetings/components/meeting-panel/meeting-panel.component';
 
 const LIFECYCLE_STEPS = ['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed'];
 const STATUS_INDEX: Record<string, number> = {
@@ -17,7 +18,7 @@ const STATUS_INDEX: Record<string, number> = {
 
 @Component({
   selector: 'app-plan',
-  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent, StageTimelineComponent, TaskPanelComponent],
+  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent, StageTimelineComponent, TaskPanelComponent, MeetingPanelComponent],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.scss',
 })

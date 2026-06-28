@@ -1,0 +1,180 @@
+@if (loading()) {
+  <div class="md__skeletons">
+    @for (i of [1,2,3,4,5,6,7,8]; track i) {
+      <app-skeleton height="28px" borderRadius="4px" />
+    }
+  </div>
+} @else if (!meeting()) {
+  <app-empty-state icon="event_note" title="Meeting not found" message="This meeting could not be loaded." />
+} @else {
+
+  <div class="md" [class.md--saving]="saving()">
+
+    <!-- Header -->
+    <div class="md__header">
+      <div class="md__header-info">
+        <h2 class="md__title">{{ meeting()!.title }}</h2>
+        <span class="md__date">{{ meeting()!.dateTime | date:'EEEE, dd MMMM yyyy — HH:mm' }}</span>
+      </div>
+    </div>
+
+    <!-- Attendees -->
+    @if (meeting()!.attendees.length) {
+      <section class="md__section">
+        <h4 class="md__section-title">
+          <mat-icon class="md__section-icon">group</mat-icon>
+          Attendees
+        </h4>
+        <div class="md__attendees">
+          @for (a of meeting()!.attendees; track a.id) {
+            <span class="md__attendee">{{ a.name }}</span>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Agenda -->
+    @if (meeting()!.agenda) {
+      <section class="md__section">
+        <h4 class="md__section-title">
+          <mat-icon class="md__section-icon">list_alt</mat-icon>
+          Agenda
+        </h4>
+        <p class="md__body-text">{{ meeting()!.agenda }}</p>
+      </section>
+    }
+
+    <!-- Minutes -->
+    <section class="md__section">
+      <div class="md__section-header">
+        <h4 class="md__section-title">
+          <mat-icon class="md__section-icon">description</mat-icon>
+          Minutes
+        </h4>
+        @if (!editingMinutes()) {
+          <button mat-icon-button (click)="startEditMinutes()" matTooltip="Edit minutes" aria-label="Edit minutes">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+      </div>
+
+      @if (editingMinutes()) {
+        <form [formGroup]="minutesForm" (ngSubmit)="saveMinutes()" class="md__minutes-form">
+          <mat-form-field appearance="outline" class="md__minutes-field">
+            <mat-label>Meeting minutes</mat-label>
+            <textarea matInput formControlName="minutes_body" rows="8" placeholder="Enter meeting minutes…"></textarea>
+          </mat-form-field>
+          <div class="md__form-actions">
+            <button mat-button type="button" (click)="cancelEditMinutes()">Cancel</button>
+            <button mat-flat-button type="submit" [disabled]="saving()">Save</button>
+          </div>
+        </form>
+      } @else if (meeting()!.minutesBody) {
+        <p class="md__body-text md__body-text--pre">{{ meeting()!.minutesBody }}</p>
+      } @else {
+        <p class="md__empty-hint">No minutes recorded. Click the edit button to add minutes.</p>
+      }
+    </section>
+
+    <!-- Action items -->
+    <section class="md__section">
+      <div class="md__section-header">
+        <h4 class="md__section-title">
+          <mat-icon class="md__section-icon">checklist</mat-icon>
+          Action items
+          <span class="md__ai-counts">
+            @if (meeting()!.actionItemsOpen > 0) {
+              <span class="md__ai-badge md__ai-badge--open">{{ meeting()!.actionItemsOpen }} open</span>
+            }
+            @if (meeting()!.actionItemsClosed > 0) {
+              <span class="md__ai-badge md__ai-badge--closed">{{ meeting()!.actionItemsClosed }} closed</span>
+            }
+          </span>
+        </h4>
+        @if (!addingItem()) {
+          <button mat-icon-button (click)="startAddItem()" matTooltip="Add action item" aria-label="Add action item">
+            <mat-icon>add</mat-icon>
+          </button>
+        }
+      </div>
+
+      @if (addingItem()) {
+        <form [formGroup]="actionItemForm" (ngSubmit)="submitItem()" class="md__ai-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="2"></textarea>
+          </mat-form-field>
+          <div class="md__ai-form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Owner</mat-label>
+              <mat-select formControlName="owner_id">
+                @for (m of members(); track m.id) {
+                  <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Due date</mat-label>
+              <input matInput formControlName="due_date" type="date" />
+            </mat-form-field>
+          </div>
+          <div class="md__ai-form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                @for (s of actionItemStatuses; track s) {
+                  <mat-option [value]="s">{{ s | titlecase }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="md__form-actions">
+            <button mat-button type="button" (click)="cancelItem()">Cancel</button>
+            <button mat-flat-button type="submit" [disabled]="actionItemForm.invalid || savingItem()">
+              {{ editingItemId() ? 'Update' : 'Add' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (meeting()!.actionItems.length) {
+        <ul class="md__ai-list" role="list">
+          @for (item of meeting()!.actionItems; track item.id) {
+            <li class="md__ai-item" [class.md__ai-item--closed]="item.status === 'closed'">
+              <button
+                class="md__ai-toggle"
+                type="button"
+                [attr.aria-label]="item.status === 'open' ? 'Mark closed' : 'Reopen'"
+                [matTooltip]="item.status === 'open' ? 'Mark closed' : 'Reopen'"
+                (click)="toggleItemStatus(item)"
+              >
+                <mat-icon>{{ item.status === 'closed' ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+              </button>
+              <div class="md__ai-content">
+                <span class="md__ai-desc">{{ item.description }}</span>
+                @if (item.ownerName || item.dueDate) {
+                  <span class="md__ai-meta">
+                    @if (item.ownerName) { {{ item.ownerName }} }
+                    @if (item.ownerName && item.dueDate) { · }
+                    @if (item.dueDate) { {{ item.dueDate | date:'dd MMM' }} }
+                  </span>
+                }
+              </div>
+              <div class="md__ai-actions">
+                <button mat-icon-button (click)="startEditItem(item)" matTooltip="Edit" aria-label="Edit action item">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeItem(item)" matTooltip="Remove" aria-label="Remove action item">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else if (!addingItem()) {
+        <p class="md__empty-hint">No action items yet.</p>
+      }
+    </section>
+
+  </div>
+}
