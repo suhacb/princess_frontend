@@ -73,6 +73,22 @@
     }
   </div>
 
+  <!-- Audit trail -->
+  <div class="plan__card plan__card--audit-trail">
+    <div class="plan__card-header">
+      <h3 class="plan__card-title">Audit trail</h3>
+    </div>
+    @if (project(); as p) {
+      <app-audit-trail-feed [projectId]="p.id" />
+    } @else {
+      <app-empty-state
+        icon="history"
+        title="No project selected"
+        message="Select a project to view its audit trail."
+      />
+    }
+  </div>
+
   <!-- Stage Timeline -->
   <div class="plan__card plan__card--timeline">
     <div class="plan__card-header">

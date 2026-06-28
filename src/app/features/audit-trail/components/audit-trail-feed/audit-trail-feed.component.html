@@ -1,0 +1,114 @@
+<div class="atf">
+
+  <!-- Filter bar -->
+  <div class="atf__filters">
+    <select
+      class="atf__type-select"
+      (change)="onEntityTypeChange($event)"
+      aria-label="Filter by entity type"
+    >
+      <option value="" [selected]="!entityTypeFilter()">All types</option>
+      @for (t of entityTypes; track t) {
+        <option [value]="t" [selected]="entityTypeFilter() === t">{{ entityLabels[t] }}</option>
+      }
+    </select>
+
+    <input
+      class="atf__date-input"
+      type="date"
+      [value]="fromFilter() ?? ''"
+      (change)="onFromChange($event)"
+      aria-label="From date"
+    />
+
+    <input
+      class="atf__date-input"
+      type="date"
+      [value]="toFilter() ?? ''"
+      (change)="onToChange($event)"
+      aria-label="To date"
+    />
+
+    @if (entityTypeFilter() || fromFilter() || toFilter()) {
+      <button
+        mat-icon-button
+        (click)="clearFilters()"
+        matTooltip="Clear filters"
+        aria-label="Clear filters"
+      >
+        <mat-icon>filter_list_off</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Loading skeleton -->
+  @if (loading() && !entries().length) {
+    <div class="atf__skeletons">
+      @for (i of [1,2,3,4,5]; track i) {
+        <app-skeleton height="52px" borderRadius="4px" />
+      }
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !entries().length) {
+    <app-empty-state
+      icon="history"
+      title="No audit events"
+      message="No events have been recorded yet for this project."
+    />
+  }
+
+  <!-- Feed -->
+  @if (entries().length) {
+    <div class="atf__feed" role="list">
+      @for (entry of entries(); track entry.id) {
+        <div class="atf__entry" role="listitem">
+          <div class="atf__entry-row">
+            <span class="atf__event-chip atf__event-chip--{{ entry.event }}">{{ entry.event }}</span>
+            <span class="atf__entity-label">{{ entityLabels[entry.entityType] }}</span>
+            <span class="atf__entity-title">{{ entry.entityTitle }}</span>
+            <span class="atf__causer">by {{ entry.causerName ?? 'system' }}</span>
+            <span class="atf__time">{{ entry.occurredAt | date:'dd MMM yyyy, HH:mm' }}</span>
+          </div>
+
+          @if (entry.event === 'updated' && entry.changes.length) {
+            <details class="atf__changes">
+              <summary class="atf__changes-summary">
+                {{ entry.changes.length }} change{{ entry.changes.length > 1 ? 's' : '' }}
+              </summary>
+              <table class="atf__changes-table">
+                @for (c of entry.changes; track c.field) {
+                  <tr>
+                    <td class="atf__change-field">{{ c.field }}</td>
+                    <td class="atf__change-old">{{ c.oldValue ?? '—' }}</td>
+                    <td class="atf__change-arrow">→</td>
+                    <td class="atf__change-new">{{ c.newValue ?? '—' }}</td>
+                  </tr>
+                }
+              </table>
+            </details>
+          }
+        </div>
+      }
+    </div>
+
+    @if (canLoadMore()) {
+      <div class="atf__load-more">
+        <button
+          mat-stroked-button
+          (click)="onLoadMore()"
+          [disabled]="loading()"
+          aria-label="Load more audit events"
+        >
+          @if (loading()) { Loading… } @else { Load more }
+        </button>
+      </div>
+    }
+
+    @if (meta(); as m) {
+      <div class="atf__total">{{ m.total }} event{{ m.total !== 1 ? 's' : '' }}</div>
+    }
+  }
+
+</div>
