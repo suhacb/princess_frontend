@@ -1,0 +1,21 @@
+.mp {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100%;
+  min-height: 400px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mp__sidebar {
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mp__content {
+  overflow-y: auto;
+  background: var(--mat-sys-surface);
+}

@@ -1,0 +1,37 @@
+<div class="mp">
+
+  <!-- Left: meeting list -->
+  <div class="mp__sidebar">
+    <app-meeting-list
+      [meetings]="meetings()"
+      [loading]="loading()"
+      [selectedMeetingId]="selectedMeeting()?.id ?? null"
+      (meetingSelected)="selectMeeting($event)"
+      (createClicked)="openCreate()"
+    />
+  </div>
+
+  <!-- Right: detail or form -->
+  <div class="mp__content">
+    @if (showForm()) {
+      <app-meeting-form
+        [projectId]="projectId()"
+        [meeting]="editingMeeting()"
+        (saved)="onFormSaved($event)"
+        (cancelled)="onFormCancelled()"
+      />
+    } @else if (selectedMeeting(); as m) {
+      <app-meeting-detail
+        [projectId]="projectId()"
+        [meetingId]="m.id"
+      />
+    } @else {
+      <app-empty-state
+        icon="event_note"
+        title="Select a meeting"
+        message="Choose a meeting from the list, or create a new one."
+      />
+    }
+  </div>
+
+</div>

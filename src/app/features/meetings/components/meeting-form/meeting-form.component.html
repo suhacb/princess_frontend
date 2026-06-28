@@ -1,0 +1,32 @@
+<div class="mf">
+  <div class="mf__header">
+    <h3 class="mf__title">{{ title() }}</h3>
+    <button mat-icon-button (click)="cancelled.emit()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="mf__form">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Meeting title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date &amp; time</mat-label>
+      <input matInput formControlName="date_time" type="datetime-local" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Agenda (optional)</mat-label>
+      <textarea matInput formControlName="agenda" rows="4" placeholder="Meeting agenda…"></textarea>
+    </mat-form-field>
+
+    <div class="mf__actions">
+      <button mat-button type="button" (click)="cancelled.emit()">Cancel</button>
+      <button mat-flat-button type="submit" [disabled]="form.invalid || saving()">
+        {{ isEdit() ? 'Save' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</div>
