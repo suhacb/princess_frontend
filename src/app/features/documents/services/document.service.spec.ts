@@ -262,6 +262,25 @@ describe('DocumentService', () => {
     });
   });
 
+  describe('loadEditorConfig()', () => {
+    it('calls GET /:id/editor-config and returns data', () => {
+      const config = {
+        document: { fileType: 'docx', key: 'key1', title: 'Brief', url: 'https://s3/file' },
+        documentType: 'word',
+        editorConfig: { callbackUrl: 'https://api/callback', user: { id: 'u1', name: 'Alice' }, lang: 'en' },
+        token: 'jwt-token',
+      };
+      apiMock.get.mockReturnValue(of({ data: config }));
+
+      let result: unknown;
+      service.loadEditorConfig(3, 1).subscribe(c => (result = c));
+
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/1/editor-config');
+      expect((result as typeof config).token).toBe('jwt-token');
+      expect((result as typeof config).documentType).toBe('word');
+    });
+  });
+
   describe('download()', () => {
     it('calls HttpClient.get with blob responseType', () => {
       const blobSubject = new Subject<Blob>();
