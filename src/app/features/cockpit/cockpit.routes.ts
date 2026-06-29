@@ -82,9 +82,14 @@ export const cockpitRoutes: Routes = [
       {
         path: 'documents',
         loadComponent: () =>
-          import('./pages/placeholder/placeholder.component').then(m => m.PlaceholderComponent),
-        title: 'Documents',
-        data: { icon: 'folder_open', label: 'Document library', message: 'Document linking coming soon.' },
+          import('../documents/pages/documents-page/documents-page.component').then(m => m.DocumentsPageComponent),
+        title: 'Document Library',
+      },
+      {
+        path: 'documents/:docId',
+        loadComponent: () =>
+          import('../documents/pages/documents-page/documents-page.component').then(m => m.DocumentsPageComponent),
+        title: 'Document Library',
       },
       {
         path: 'reports/highlight',

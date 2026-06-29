@@ -1,0 +1,115 @@
+<div class="page-layout" [class.detail-open]="selectedDocId()">
+  <div class="list-pane">
+    <div class="page-header">
+      <h2 class="page-title">Document Library</h2>
+      <div class="header-actions">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Search</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)" placeholder="Search by title" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Category</mat-label>
+          <mat-select [value]="categoryFilter()" (valueChange)="categoryFilter.set($event)">
+            <mat-option value="all">All categories</mat-option>
+            @for (cat of categories; track cat) {
+              <mat-option [value]="cat">{{ categoryLabels[cat] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Status</mat-label>
+          <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+            <mat-option value="all">All statuses</mat-option>
+            @for (s of statuses; track s) {
+              <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field type-filter">
+          <mat-label>Type</mat-label>
+          <mat-select [value]="typeFilter()" (valueChange)="typeFilter.set($event)">
+            <mat-option value="all">All types</mat-option>
+            @for (cat of categories; track cat) {
+              <mat-optgroup [label]="categoryLabels[cat]">
+                @for (t of typesByCategory[cat]; track t.key) {
+                  <mat-option [value]="t.key">{{ t.label }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon> New document
+        </button>
+      </div>
+    </div>
+
+    @if (loading() && filteredDocuments().length === 0) {
+      <div class="skeleton-rows">
+        @for (n of [1,2,3,4,5,6]; track n) {
+          <app-skeleton height="52px" borderRadius="0" />
+        }
+      </div>
+    } @else if (filteredDocuments().length === 0) {
+      <app-empty-state
+        message="No documents found"
+        hint="Create a document to start building your project's document library."
+      />
+    } @else {
+      <div class="doc-table">
+        <div class="doc-table-header">
+          <span class="col-type">Type</span>
+          <span class="col-title">Title</span>
+          <span class="col-status">Status</span>
+          <span class="col-version">Version</span>
+          <span class="col-owner">Owner</span>
+          <span class="col-updated">Updated</span>
+        </div>
+        @for (doc of filteredDocuments(); track doc.id) {
+          <div
+            class="doc-row"
+            [class.doc-row--selected]="doc.id === selectedDocId()"
+            (click)="selectDocument(doc)"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="selectDocument(doc)"
+            (keydown.space)="selectDocument(doc)"
+          >
+            <span class="col-type cat-{{ doc.category }}">{{ doc.categoryLabel }}</span>
+            <span class="col-title">{{ doc.title }}</span>
+            <span class="col-status">
+              <app-document-status-chip [status]="doc.status" />
+            </span>
+            <span class="col-version">
+              @if (doc.currentVersion) {
+                v{{ doc.currentVersion.versionNumber }} · {{ formatFileSize(doc.currentVersion.fileSize) }}
+              } @else {
+                —
+              }
+            </span>
+            <span class="col-owner">{{ doc.owner?.name ?? '—' }}</span>
+            <span class="col-updated">{{ doc.updatedAt | date: 'dd MMM yyyy' }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (selectedDocId(); as docId) {
+    <div class="detail-pane">
+      <div class="detail-pane-header">
+        <button mat-icon-button (click)="closeDetail()" aria-label="Close detail">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      @if (project(); as p) {
+        <app-document-detail [docId]="docId" [projectId]="p.id" (documentDeleted)="closeDetail()" />
+      }
+    </div>
+  }
+</div>
