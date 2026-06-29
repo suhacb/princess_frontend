@@ -204,6 +204,64 @@ describe('DocumentService', () => {
     });
   });
 
+  describe('listVersions()', () => {
+    it('returns mapped versions array', () => {
+      const v2: DocumentVersionApiResource = {
+        ...stubVersionApi,
+        id: 13,
+        version_number: 2,
+        file_name: 'brief_v2.docx',
+      };
+      apiMock.get.mockReturnValue(of({ data: [v2, stubVersionApi] }));
+
+      let result: unknown;
+      service.listVersions(3, 1).subscribe(v => (result = v));
+
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/1/versions');
+      expect((result as unknown[]).length).toBe(2);
+      expect((result as Array<{ id: number }>)[0].id).toBe(13);
+    });
+  });
+
+  describe('revertVersion()', () => {
+    it('calls POST .../versions/:id/revert and updates selectedDocument', () => {
+      apiMock.get.mockReturnValue(of({ data: stubApi }));
+      service.load(3, 1).subscribe();
+
+      const reverted: DocumentVersionApiResource = {
+        ...stubVersionApi,
+        id: 14,
+        version_number: 2,
+        file_name: 'brief_reverted.docx',
+      };
+      apiMock.post.mockReturnValue(of({ data: reverted }));
+      service.revertVersion(3, 1, 12).subscribe();
+
+      expect(apiMock.post).toHaveBeenCalledWith(
+        '/projects/3/documents/1/versions/12/revert',
+        {},
+      );
+      expect(service.selectedDocument()?.currentVersion?.id).toBe(14);
+      expect(service.selectedDocument()?.versionCount).toBe(2);
+    });
+
+    it('updates document in list after revert', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
+      service.list(3).subscribe();
+
+      const reverted: DocumentVersionApiResource = {
+        ...stubVersionApi,
+        id: 15,
+        version_number: 2,
+      };
+      apiMock.post.mockReturnValue(of({ data: reverted }));
+      service.revertVersion(3, 1, 12).subscribe();
+
+      expect(service.documents()[0].versionCount).toBe(2);
+      expect(service.documents()[0].currentVersion?.id).toBe(15);
+    });
+  });
+
   describe('download()', () => {
     it('calls HttpClient.get with blob responseType', () => {
       const blobSubject = new Subject<Blob>();

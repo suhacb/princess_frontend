@@ -270,6 +270,93 @@ test.describe('documents API — project_manager', () => {
   });
 });
 
+  test('GET /versions returns all versions for a document', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const token = await getAccessToken(page);
+
+    const { body: created } = await api(page, 'POST', `/api/projects/${id}/documents`, {
+      title: 'Version History Test',
+      type: 'project_brief',
+    });
+    const docId = (created as { data: { id: number } }).data.id;
+
+    await page.request.fetch(`${BACKEND}/api/projects/${id}/documents/${docId}/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      multipart: {
+        file: { name: 'v1.txt', mimeType: 'text/plain', buffer: Buffer.from('version 1') },
+        comment: 'First version',
+      },
+    });
+    await page.request.fetch(`${BACKEND}/api/projects/${id}/documents/${docId}/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      multipart: {
+        file: { name: 'v2.txt', mimeType: 'text/plain', buffer: Buffer.from('version 2') },
+        comment: 'Second version',
+      },
+    });
+
+    const { status, body } = await api(page, 'GET', `/api/projects/${id}/documents/${docId}/versions`);
+    expect(status).toBe(200);
+
+    const typed = body as { data: Array<Record<string, unknown>> };
+    expect(Array.isArray(typed.data)).toBe(true);
+    expect(typed.data.length).toBeGreaterThanOrEqual(2);
+    expect(typed.data[0]).toHaveProperty('id');
+    expect(typed.data[0]).toHaveProperty('version_number');
+    expect(typed.data[0]).toHaveProperty('file_name');
+    expect(typed.data[0]).toHaveProperty('file_size');
+    expect(typed.data[0]).toHaveProperty('uploaded_by');
+    expect(typed.data[0]).toHaveProperty('uploaded_at');
+  });
+
+  test('POST /versions/:id/revert creates a new version as copy', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const token = await getAccessToken(page);
+
+    const { body: created } = await api(page, 'POST', `/api/projects/${id}/documents`, {
+      title: 'Revert Test',
+      type: 'stage_plan',
+    });
+    const docId = (created as { data: { id: number } }).data.id;
+
+    const uploadRes = await page.request.fetch(
+      `${BACKEND}/api/projects/${id}/documents/${docId}/upload`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        multipart: {
+          file: { name: 'v1.txt', mimeType: 'text/plain', buffer: Buffer.from('original') },
+        },
+      },
+    );
+    const uploadBody = await uploadRes.json() as { data: { id: number } };
+    const versionId = uploadBody.data.id;
+
+    await page.request.fetch(`${BACKEND}/api/projects/${id}/documents/${docId}/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      multipart: {
+        file: { name: 'v2.txt', mimeType: 'text/plain', buffer: Buffer.from('second') },
+      },
+    });
+
+    const { status, body } = await api(
+      page,
+      'POST',
+      `/api/projects/${id}/documents/${docId}/versions/${versionId}/revert`,
+    );
+    expect([200, 201]).toContain(status);
+
+    const typed = body as { data: Record<string, unknown> };
+    expect(typed.data).toHaveProperty('id');
+    expect(typed.data).toHaveProperty('version_number');
+    expect(Number(typed.data['version_number'])).toBeGreaterThan(1);
+  });
+
 // ─── observer (read-only) ────────────────────────────────────────────────────
 
 test.describe('documents API — observer', () => {

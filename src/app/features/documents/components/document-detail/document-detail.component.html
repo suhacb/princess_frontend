@@ -79,6 +79,13 @@
   <mat-divider />
 
   <div class="section">
+    <h4 class="section-title">Version history</h4>
+    <app-document-version-list [projectId]="projectId()" [docId]="docId()" />
+  </div>
+
+  <mat-divider />
+
+  <div class="section">
     <h4 class="section-title">Lifecycle</h4>
     <div class="transition-actions">
       @for (status of availableTransitions(); track status) {

@@ -13,6 +13,7 @@ import { DocumentStatusChipComponent } from '../document-status-chip/document-st
 import { DocumentTypeSelectComponent } from '../document-type-select/document-type-select.component';
 import { UploadVersionDialogComponent, UploadVersionResult } from '../upload-version-dialog/upload-version-dialog.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { DocumentVersionListComponent } from '../document-version-list/document-version-list.component';
 import {
   DocumentType,
   DocumentStatus,
@@ -38,6 +39,7 @@ import {
     DocumentStatusChipComponent,
     DocumentTypeSelectComponent,
     SkeletonComponent,
+    DocumentVersionListComponent,
   ],
   templateUrl: './document-detail.component.html',
   styleUrl: './document-detail.component.scss',

@@ -46,6 +46,8 @@ function setup(doc: Document | null = stubDoc) {
     remove: vi.fn().mockReturnValue(of(undefined)),
     uploadVersion: vi.fn().mockReturnValue(of({})),
     download: vi.fn(),
+    listVersions: vi.fn().mockReturnValue(of([])),
+    revertVersion: vi.fn().mockReturnValue(of({})),
   };
   const dialog = { open: vi.fn().mockReturnValue({ afterClosed: () => of(undefined) }) };
 
