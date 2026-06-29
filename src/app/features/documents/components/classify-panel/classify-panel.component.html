@@ -1,0 +1,45 @@
+<div class="classify-panel">
+  <div class="classify-panel__fields">
+    <app-document-type-select
+      [ngModel]="selectedType()"
+      (ngModelChange)="onTypeChange($event)"
+      label="Document type"
+    />
+
+    <mat-form-field appearance="outline" class="classify-panel__tags-field">
+      <mat-label>Tags</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Document tags">
+        @for (tag of tags(); track tag) {
+          <mat-chip-row (removed)="removeTag(tag)">
+            {{ tag }}
+            <button matChipRemove aria-label="Remove tag {{ tag }}">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        placeholder="Add tag…"
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+        (matChipInputTokenEnd)="addTag($event)"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="classify-panel__actions">
+    <button mat-button class="classify-panel__skip-btn" (click)="skip()">
+      Skip
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      class="classify-panel__accept-btn"
+      [disabled]="!selectedType()"
+      (click)="accept()"
+    >
+      <mat-icon>check_circle</mat-icon>
+      Accept
+    </button>
+  </div>
+</div>

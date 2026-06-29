@@ -1,0 +1,115 @@
+<div class="queue-page">
+  <div class="queue-header">
+    <div class="queue-header__title-row">
+      <h2 class="queue-header__title">Classification Review Queue</h2>
+      @if (queue().length > 0) {
+        <span class="queue-header__badge">{{ queue().length }}</span>
+      }
+    </div>
+    <p class="queue-header__hint">
+      Documents awaiting manual classification before confirmation.
+    </p>
+  </div>
+
+  @if (someSelected() || allSelected()) {
+    <div class="bulk-toolbar">
+      <span class="bulk-toolbar__count">{{ selectedIds().size }} selected</span>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="bulkSaving()"
+        (click)="bulkConfirm()"
+      >
+        <mat-icon>check_circle</mat-icon>
+        Confirm selected
+      </button>
+      <button mat-button (click)="clearSelection()">
+        Clear selection
+      </button>
+    </div>
+  }
+
+  @if (loading() && queue().length === 0) {
+    <div class="skeleton-rows">
+      @for (n of [1,2,3,4,5]; track n) {
+        <app-skeleton height="60px" borderRadius="0" />
+      }
+    </div>
+  } @else if (queue().length === 0) {
+    <app-empty-state
+      message="Review queue is empty"
+      hint="All documents have been classified. New uploads will appear here when they reach in-review status."
+    />
+  } @else {
+    <div class="queue-table">
+      <div class="queue-table__header">
+        <span class="col-check">
+          <mat-checkbox
+            [checked]="allSelected()"
+            [indeterminate]="someSelected()"
+            (change)="toggleSelectAll()"
+            aria-label="Select all"
+          />
+        </span>
+        <span class="col-title">Title</span>
+        <span class="col-type">Type</span>
+        <span class="col-uploaded-by">Uploaded by</span>
+        <span class="col-uploaded-at">Uploaded</span>
+        <span class="col-tags">Tags</span>
+        <span class="col-actions"></span>
+      </div>
+
+      @for (doc of queue(); track doc.id) {
+        <div class="queue-item" [class.queue-item--expanded]="expandedDocId() === doc.id">
+          <div class="queue-item__row">
+            <span class="col-check">
+              <mat-checkbox
+                [checked]="selectedIds().has(doc.id)"
+                (change)="toggleSelect(doc)"
+                [attr.aria-label]="'Select ' + doc.title"
+              />
+            </span>
+            <span class="col-title">{{ doc.title }}</span>
+            <span class="col-type">
+              <span class="type-badge cat-{{ doc.category }}">{{ doc.typeLabel }}</span>
+            </span>
+            <span class="col-uploaded-by">
+              {{ doc.currentVersion?.uploadedBy?.name ?? doc.owner?.name ?? '—' }}
+            </span>
+            <span class="col-uploaded-at">
+              {{ (doc.currentVersion?.uploadedAt ?? doc.createdAt) | date: 'dd MMM yyyy' }}
+            </span>
+            <span class="col-tags">
+              @if (doc.tags.length > 0) {
+                @for (tag of doc.tags; track tag) {
+                  <span class="tag-chip">{{ tag }}</span>
+                }
+              } @else {
+                <span class="no-tags">—</span>
+              }
+            </span>
+            <span class="col-actions">
+              <button
+                mat-stroked-button
+                class="classify-btn"
+                [class.classify-btn--active]="expandedDocId() === doc.id"
+                (click)="toggleExpanded(doc)"
+              >
+                <mat-icon>{{ expandedDocId() === doc.id ? 'expand_less' : 'rate_review' }}</mat-icon>
+                {{ expandedDocId() === doc.id ? 'Close' : 'Classify' }}
+              </button>
+            </span>
+          </div>
+
+          @if (expandedDocId() === doc.id) {
+            <app-classify-panel
+              [document]="doc"
+              (accepted)="onAccepted(doc, $event)"
+              (skipped)="onSkipped(doc)"
+            />
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

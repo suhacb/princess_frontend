@@ -86,6 +86,12 @@ export const cockpitRoutes: Routes = [
         title: 'Document Library',
       },
       {
+        path: 'documents/review-queue',
+        loadComponent: () =>
+          import('../documents/pages/classification-queue-page/classification-queue-page.component').then(m => m.ClassificationQueuePageComponent),
+        title: 'Classification Review Queue',
+      },
+      {
         path: 'documents/:docId',
         loadComponent: () =>
           import('../documents/pages/documents-page/documents-page.component').then(m => m.DocumentsPageComponent),
