@@ -116,4 +116,29 @@ describe('ClassifyPanelComponent', () => {
     comp.skip();
     expect(skipped).toBe(true);
   });
+
+  it('Accept button is disabled when selectedType is null', () => {
+    const { fixture, comp } = setup({ ...stubDoc, type: 'project_brief' });
+    (comp as unknown as { onTypeChange: (t: null) => void }).onTypeChange(null);
+    fixture.detectChanges();
+    const buttons = fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
+    const acceptBtn = [...buttons].find(b => b.textContent?.toLowerCase().includes('accept'));
+    expect(acceptBtn?.disabled).toBe(true);
+  });
+
+  it('onTypeChange updates selectedType', () => {
+    const { comp } = setup();
+    (comp as unknown as { onTypeChange: (t: string) => void }).onTypeChange('risk_register');
+    expect(comp.selectedType()).toBe('risk_register');
+  });
+
+  it('accept() omits type from payload when selectedType is null', () => {
+    const { fixture, comp } = setup();
+    (comp as unknown as { onTypeChange: (t: null) => void }).onTypeChange(null);
+    let emitted: ClassifyDocumentPayload | undefined;
+    fixture.componentInstance.accepted.subscribe((p: ClassifyDocumentPayload) => (emitted = p));
+    comp.accept();
+    expect(emitted?.type).toBeUndefined();
+    expect(emitted?.tags).toBeDefined();
+  });
 });

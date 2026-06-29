@@ -348,6 +348,17 @@ describe('DocumentService', () => {
       expect(service.reviewQueue()).toHaveLength(0);
       expect(service.reviewQueueCount()).toBe(0);
     });
+
+    it('does not call update and does not remove from queue when classify fails', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+
+      apiMock.patch.mockReturnValue(throwError(() => new Error('classify failed')));
+      service.acceptClassification(3, 1, { tags: ['qa'] }).subscribe({ error: () => {} });
+
+      expect(apiMock.put).not.toHaveBeenCalled();
+      expect(service.reviewQueue()).toHaveLength(1);
+    });
   });
 
   describe('confirmQueueItem()', () => {

@@ -270,4 +270,75 @@ describe('ClassificationQueuePageComponent', () => {
     expect(comp.someSelected()).toBe(true);
     expect(comp.allSelected()).toBe(false);
   });
+
+  it('shows skeleton when loading is true and queue is empty', () => {
+    const queueSignal = signal<Document[]>([]);
+    const loadingSignal = signal(true);
+    const documentService = {
+      reviewQueue: queueSignal.asReadonly(),
+      reviewQueueLoading: loadingSignal.asReadonly(),
+      reviewQueueCount: signal(0),
+      listReviewQueue: vi.fn().mockReturnValue(of([])),
+      acceptClassification: vi.fn(),
+      confirmQueueItem: vi.fn(),
+      update: vi.fn(),
+    };
+    const projectService = {
+      selectedProject: signal({ id: 3, name: 'Test' } as never).asReadonly(),
+    };
+    TestBed.configureTestingModule({
+      imports: [ClassificationQueuePageComponent, BrowserAnimationsModule],
+      providers: [
+        { provide: DocumentService, useValue: documentService },
+        { provide: ProjectService, useValue: projectService },
+      ],
+    });
+    const fixture = TestBed.createComponent(ClassificationQueuePageComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-skeleton')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-empty-state')).toBeFalsy();
+  });
+
+  it('renders the type label in the type badge', () => {
+    const { fixture } = setup([stubDoc]);
+    expect(fixture.nativeElement.querySelector('.type-badge')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Project Brief');
+  });
+
+  it('onAccepted collapses the panel after success', () => {
+    const { fixture } = setup([stubDoc]);
+    const comp = fixture.componentInstance as unknown as {
+      toggleExpanded: (d: Document) => void;
+      onAccepted: (d: Document, p: object) => void;
+      expandedDocId: () => number | null;
+    };
+    comp.toggleExpanded(stubDoc);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-classify-panel')).toBeTruthy();
+    comp.onAccepted(stubDoc, { tags: ['qa'] });
+    fixture.detectChanges();
+    expect(comp.expandedDocId()).toBeNull();
+  });
+
+  it('bulkConfirm does nothing when selection is empty', () => {
+    const { fixture, documentService } = setup([stubDoc]);
+    const comp = fixture.componentInstance as unknown as { bulkConfirm: () => void };
+    comp.bulkConfirm();
+    expect(documentService.confirmQueueItem).not.toHaveBeenCalled();
+  });
+
+  it('falls back to owner name when currentVersion is null', () => {
+    const docNoVersion: Document = { ...stubDoc, currentVersion: null };
+    const { fixture } = setup([docNoVersion]);
+    expect(fixture.nativeElement.textContent).toContain('Alice');
+  });
+
+  it('Classify button shows Close label when row is expanded', () => {
+    const { fixture } = setup([stubDoc]);
+    const comp = fixture.componentInstance as unknown as { toggleExpanded: (d: Document) => void };
+    comp.toggleExpanded(stubDoc);
+    fixture.detectChanges();
+    const classifyBtn = fixture.nativeElement.querySelector('.classify-btn') as HTMLButtonElement;
+    expect(classifyBtn.textContent?.toLowerCase()).toContain('close');
+  });
 });
