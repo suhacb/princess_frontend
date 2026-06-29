@@ -1,0 +1,53 @@
+@if (loading()) {
+  <div class="vl-skeleton">
+    @for (n of [1, 2, 3]; track n) {
+      <app-skeleton height="48px" />
+    }
+  </div>
+} @else if (error()) {
+  <p class="error-msg">{{ error() }}</p>
+} @else if (versions().length === 0) {
+  <p class="no-versions">No version history yet.</p>
+} @else {
+  <div class="version-rows">
+    @for (v of versions(); track v.id) {
+      <div class="version-row" [class.is-current]="isCurrentVersion(v)">
+        <div class="version-badge" [class.badge-current]="isCurrentVersion(v)">
+          v{{ v.versionNumber }}
+        </div>
+
+        <div class="version-info">
+          <span class="vr-filename">{{ v.fileName }}</span>
+          <span class="vr-meta">
+            {{ formatFileSize(v.fileSize) }}
+            @if (v.comment) { · {{ v.comment }} }
+          </span>
+          <span class="vr-uploader">
+            {{ v.uploadedBy.name }} ·
+            <span [matTooltip]="v.uploadedAt | date: 'dd MMM yyyy, HH:mm'">
+              {{ relativeTime(v.uploadedAt) }}
+            </span>
+          </span>
+        </div>
+
+        <div class="version-actions">
+          <button
+            mat-icon-button
+            [matTooltip]="'Download v' + v.versionNumber"
+            (click)="downloadVersion(v)"
+          >
+            <mat-icon>download</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            [matTooltip]="revertTooltip(v)"
+            [disabled]="!canRevert(v) || reverting()"
+            (click)="openRevertDialog(v)"
+          >
+            <mat-icon>history</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

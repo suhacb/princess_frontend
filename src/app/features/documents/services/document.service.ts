@@ -163,6 +163,40 @@ export class DocumentService {
       );
   }
 
+  listVersions(projectId: number, docId: number): Observable<DocumentVersion[]> {
+    return this.api
+      .get<{ data: DocumentVersionApiResource[] }>(`${this.base(projectId)}/${docId}/versions`)
+      .pipe(map(res => res.data.map(mapDocumentVersion)));
+  }
+
+  revertVersion(projectId: number, docId: number, versionId: number): Observable<DocumentVersion> {
+    return this.api
+      .post<ApiResource<DocumentVersionApiResource>>(
+        `${this.base(projectId)}/${docId}/versions/${versionId}/revert`,
+        {},
+      )
+      .pipe(
+        map(res => mapDocumentVersion(res.data)),
+        tap(newVersion => {
+          const selected = this._selectedDocument();
+          if (selected?.id === docId) {
+            this._selectedDocument.set({
+              ...selected,
+              currentVersion: newVersion,
+              versionCount: selected.versionCount + 1,
+            });
+          }
+          this._documents.update(list =>
+            list.map(d =>
+              d.id === docId
+                ? { ...d, currentVersion: newVersion, versionCount: d.versionCount + 1 }
+                : d,
+            ),
+          );
+        }),
+      );
+  }
+
   download(projectId: number, docId: number, versionId?: number): void {
     const params: Record<string, string> = {};
     if (versionId) params['version'] = String(versionId);
