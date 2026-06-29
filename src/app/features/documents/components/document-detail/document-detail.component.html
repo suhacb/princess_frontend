@@ -1,0 +1,110 @@
+@if (loading() && !doc()) {
+  <div class="skeleton-wrap">
+    @for (n of [1,2,3,4]; track n) {
+      <app-skeleton height="40px" />
+    }
+  </div>
+} @else if (loadError()) {
+  <p class="error-msg">{{ loadError() }}</p>
+} @else if (doc(); as d) {
+  <div class="detail-header">
+    <div class="detail-title-row">
+      <h3 class="detail-title">{{ d.title }}</h3>
+      <app-document-status-chip [status]="d.status" />
+    </div>
+    <span class="detail-meta">{{ d.categoryLabel }} · {{ d.typeLabel }}</span>
+  </div>
+
+  <mat-divider />
+
+  <form [formGroup]="form" class="edit-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <app-document-type-select formControlName="type" label="Type" />
+
+    @if (saveError()) {
+      <p class="error-msg">{{ saveError() }}</p>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="form.pristine || form.invalid"
+      (click)="save()"
+    >Save changes</button>
+  </form>
+
+  <mat-divider />
+
+  <div class="section">
+    <h4 class="section-title">Current version</h4>
+    @if (d.currentVersion; as v) {
+      <div class="version-info">
+        <div class="version-file">
+          <mat-icon class="file-icon">description</mat-icon>
+          <div class="version-file-details">
+            <span class="file-name">{{ v.fileName }}</span>
+            <span class="file-meta">v{{ v.versionNumber }} · {{ formatFileSize(v.fileSize) }} · {{ v.uploadedAt | date: 'dd MMM yyyy' }}</span>
+          </div>
+        </div>
+        <div class="version-actions">
+          <button mat-stroked-button (click)="download()">
+            <mat-icon>download</mat-icon> Download
+          </button>
+        </div>
+      </div>
+      <span class="uploaded-by">Uploaded by {{ v.uploadedBy.name }}</span>
+      @if (v.comment) {
+        <p class="version-comment">{{ v.comment }}</p>
+      }
+    } @else {
+      <p class="no-version">No file uploaded yet.</p>
+    }
+
+    <button mat-stroked-button class="upload-btn" (click)="openUploadDialog()" [disabled]="uploading()">
+      <mat-icon>upload</mat-icon>
+      {{ uploading() ? 'Uploading…' : 'Upload new version' }}
+    </button>
+    <span class="version-count">{{ d.versionCount }} version{{ d.versionCount === 1 ? '' : 's' }} total</span>
+  </div>
+
+  <mat-divider />
+
+  <div class="section">
+    <h4 class="section-title">Lifecycle</h4>
+    <div class="transition-actions">
+      @for (status of availableTransitions(); track status) {
+        <button mat-stroked-button (click)="transitionStatus(status)">
+          {{ statusTransitionLabel(status) }}
+        </button>
+      }
+      @if (availableTransitions().length === 0) {
+        <span class="terminal-status">No further transitions available.</span>
+      }
+    </div>
+  </div>
+
+  @if (actionError()) {
+    <p class="error-msg">{{ actionError() }}</p>
+  }
+
+  <mat-divider />
+
+  <div class="section meta-section">
+    <div class="meta-row">
+      <span class="meta-label">Owner</span>
+      <span class="meta-value">{{ d.owner?.name ?? '—' }}</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Created</span>
+      <span class="meta-value">{{ d.createdAt | date: 'dd MMM yyyy' }}</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Updated</span>
+      <span class="meta-value">{{ d.updatedAt | date: 'dd MMM yyyy' }}</span>
+    </div>
+  </div>
+}

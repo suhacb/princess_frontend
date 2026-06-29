@@ -1,0 +1,174 @@
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, catchError, map, tap } from 'rxjs';
+import { ApiService } from '../../../core/http/api.service';
+import { ApiResource, PaginatedApiResource } from '../../../shared/contracts/api.contracts';
+import { environment } from '../../../../environments/environment';
+import {
+  Document,
+  DocumentApiResource,
+  DocumentFilters,
+  DocumentVersion,
+  DocumentVersionApiResource,
+  CreateDocumentPayload,
+  UpdateDocumentPayload,
+  mapDocument,
+  mapDocumentVersion,
+} from '../contracts/document.contracts';
+
+@Injectable({ providedIn: 'root' })
+export class DocumentService {
+  private readonly api = inject(ApiService);
+  private readonly http = inject(HttpClient);
+
+  private readonly _documents = signal<Document[]>([]);
+  private readonly _loading = signal(false);
+  private readonly _selectedDocument = signal<Document | null>(null);
+  private readonly _uploading = signal(false);
+
+  readonly documents = this._documents.asReadonly();
+  readonly loading = this._loading.asReadonly();
+  readonly selectedDocument = this._selectedDocument.asReadonly();
+  readonly uploading = this._uploading.asReadonly();
+
+  private base(projectId: number): string {
+    return `/projects/${projectId}/documents`;
+  }
+
+  list(projectId: number, filters: DocumentFilters = {}): Observable<Document[]> {
+    this._loading.set(true);
+    const params: Record<string, string> = {};
+    if (filters.type) params['type'] = filters.type;
+    if (filters.status) params['status'] = filters.status;
+    if (filters.search) params['search'] = filters.search;
+
+    return this.api
+      .get<PaginatedApiResource<DocumentApiResource>>(this.base(projectId), params)
+      .pipe(
+        map(res => res.data.map(mapDocument)),
+        tap(docs => {
+          this._documents.set(docs);
+          this._loading.set(false);
+        }),
+        catchError(err => {
+          this._loading.set(false);
+          throw err;
+        }),
+      );
+  }
+
+  load(projectId: number, docId: number): Observable<Document> {
+    this._loading.set(true);
+    this._selectedDocument.set(null);
+    return this.api
+      .get<ApiResource<DocumentApiResource>>(`${this.base(projectId)}/${docId}`)
+      .pipe(
+        map(res => mapDocument(res.data)),
+        tap(doc => {
+          this._selectedDocument.set(doc);
+          this._loading.set(false);
+        }),
+        catchError(err => {
+          this._loading.set(false);
+          throw err;
+        }),
+      );
+  }
+
+  create(projectId: number, payload: CreateDocumentPayload): Observable<Document> {
+    return this.api
+      .post<ApiResource<DocumentApiResource>>(this.base(projectId), payload)
+      .pipe(
+        map(res => mapDocument(res.data)),
+        tap(doc => this._documents.update(list => [doc, ...list])),
+      );
+  }
+
+  update(projectId: number, docId: number, payload: UpdateDocumentPayload): Observable<Document> {
+    return this.api
+      .put<ApiResource<DocumentApiResource>>(`${this.base(projectId)}/${docId}`, payload)
+      .pipe(
+        map(res => mapDocument(res.data)),
+        tap(updated => this.syncUpdated(docId, updated)),
+      );
+  }
+
+  remove(projectId: number, docId: number): Observable<void> {
+    return this.api.delete<void>(`${this.base(projectId)}/${docId}`).pipe(
+      tap(() => {
+        this._documents.update(list => list.filter(d => d.id !== docId));
+        if (this._selectedDocument()?.id === docId) this._selectedDocument.set(null);
+      }),
+    );
+  }
+
+  uploadVersion(
+    projectId: number,
+    docId: number,
+    file: File,
+    comment?: string,
+  ): Observable<DocumentVersion> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    if (comment) form.append('comment', comment);
+
+    this._uploading.set(true);
+    return this.api
+      .post<ApiResource<DocumentVersionApiResource>>(
+        `${this.base(projectId)}/${docId}/upload`,
+        form,
+      )
+      .pipe(
+        map(res => mapDocumentVersion(res.data)),
+        tap(version => {
+          this._uploading.set(false);
+          const selected = this._selectedDocument();
+          if (selected?.id === docId) {
+            this._selectedDocument.set({
+              ...selected,
+              currentVersion: version,
+              versionCount: selected.versionCount + 1,
+            });
+          }
+          this._documents.update(list =>
+            list.map(d =>
+              d.id === docId
+                ? { ...d, currentVersion: version, versionCount: d.versionCount + 1 }
+                : d,
+            ),
+          );
+        }),
+        catchError(err => {
+          this._uploading.set(false);
+          throw err;
+        }),
+      );
+  }
+
+  download(projectId: number, docId: number, versionId?: number): void {
+    const params: Record<string, string> = {};
+    if (versionId) params['version'] = String(versionId);
+
+    this.http
+      .get(`${environment.apiUrl}${this.base(projectId)}/${docId}/download`, {
+        responseType: 'blob',
+        params,
+      })
+      .subscribe({
+        next: blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          const doc = this._selectedDocument();
+          a.download = doc?.currentVersion?.fileName ?? 'document';
+          a.click();
+          URL.revokeObjectURL(url);
+        },
+      });
+  }
+
+  private syncUpdated(docId: number, updated: Document): void {
+    this._documents.update(list => list.map(d => (d.id === docId ? updated : d)));
+    if (this._selectedDocument()?.id === docId) this._selectedDocument.set(updated);
+  }
+}
