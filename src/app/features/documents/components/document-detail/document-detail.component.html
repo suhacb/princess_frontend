@@ -54,6 +54,14 @@
           <button mat-stroked-button (click)="download()">
             <mat-icon>download</mat-icon> Download
           </button>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="!isEditable()"
+            (click)="openEditor()"
+          >
+            <mat-icon>edit_document</mat-icon> Edit
+          </button>
         </div>
       </div>
       <span class="uploaded-by">Uploaded by {{ v.uploadedBy.name }}</span>

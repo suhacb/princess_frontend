@@ -10,6 +10,7 @@ import {
   DocumentFilters,
   DocumentVersion,
   DocumentVersionApiResource,
+  EditorConfigApiResource,
   CreateDocumentPayload,
   UpdateDocumentPayload,
   ClassifyDocumentPayload,
@@ -195,6 +196,12 @@ export class DocumentService {
           );
         }),
       );
+  }
+
+  loadEditorConfig(projectId: number, docId: number): Observable<EditorConfigApiResource> {
+    return this.api
+      .get<ApiResource<EditorConfigApiResource>>(`${this.base(projectId)}/${docId}/editor-config`)
+      .pipe(map(res => res.data));
   }
 
   download(projectId: number, docId: number, versionId?: number): void {

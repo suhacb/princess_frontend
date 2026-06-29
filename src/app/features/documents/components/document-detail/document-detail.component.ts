@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output, computed, effect, inject, input, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +20,7 @@ import {
   DocumentStatus,
   DOCUMENT_STATUS_LABELS,
   DOCUMENT_STATUS_TRANSITIONS,
+  ONLYOFFICE_EDITABLE_MIME_TYPES,
   UpdateDocumentPayload,
   ClassifyDocumentPayload,
   formatFileSize,
@@ -53,6 +55,7 @@ export class DocumentDetailComponent {
   private readonly documentService = inject(DocumentService);
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   protected readonly doc = this.documentService.selectedDocument;
   protected readonly loading = this.documentService.loading;
@@ -69,6 +72,13 @@ export class DocumentDetailComponent {
   protected readonly availableTransitions = computed<DocumentStatus[]>(() => {
     const d = this.doc();
     return d ? DOCUMENT_STATUS_TRANSITIONS[d.status] : [];
+  });
+
+  protected readonly isEditable = computed(() => {
+    const d = this.doc();
+    if (!d || !d.currentVersion) return false;
+    if (d.status === 'confirmed' || d.status === 'superseded') return false;
+    return ONLYOFFICE_EDITABLE_MIME_TYPES.has(d.currentVersion.mimeType);
   });
 
   protected readonly form = this.fb.group({
@@ -164,6 +174,13 @@ export class DocumentDetailComponent {
           error: () => this.actionError.set('Upload failed. Please try again.'),
         });
       });
+  }
+
+  protected openEditor(): void {
+    const d = this.doc();
+    const projectId = this.projectId();
+    if (!d || !projectId) return;
+    this.router.navigate(['/p', projectId, 'documents', d.id, 'edit']);
   }
 
   protected download(): void {

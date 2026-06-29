@@ -92,6 +92,12 @@ export const cockpitRoutes: Routes = [
         title: 'Document Library',
       },
       {
+        path: 'documents/:docId/edit',
+        loadComponent: () =>
+          import('../documents/pages/document-editor-page/document-editor-page.component').then(m => m.DocumentEditorPageComponent),
+        title: 'Document Editor',
+      },
+      {
         path: 'reports/highlight',
         loadComponent: () =>
           import('./pages/placeholder/placeholder.component').then(m => m.PlaceholderComponent),

@@ -1,0 +1,23 @@
+<div class="editor-page">
+  <div class="editor-toolbar">
+    <button mat-icon-button (click)="goBack()" aria-label="Back to document">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="toolbar-title">Document Editor</span>
+  </div>
+
+  @if (loading()) {
+    <div class="editor-loading">
+      <mat-spinner diameter="48" />
+      <p>Loading editor…</p>
+    </div>
+  } @else if (error()) {
+    <div class="editor-error">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error() }}</p>
+      <button mat-stroked-button (click)="goBack()">Go back</button>
+    </div>
+  }
+
+  <div id="onlyoffice-editor" class="editor-frame" [class.editor-hidden]="loading() || !!error()"></div>
+</div>

@@ -252,6 +252,37 @@ export function mapDocument(api: DocumentApiResource): Document {
   };
 }
 
+export interface EditorConfigApiResource {
+  document: {
+    fileType: string;
+    key: string;
+    title: string;
+    url: string;
+  };
+  documentType: string;
+  editorConfig: {
+    callbackUrl: string;
+    user: { id: string; name: string };
+    lang: string;
+  };
+  token: string;
+}
+
+export const ONLYOFFICE_EDITABLE_MIME_TYPES = new Set([
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+  'application/vnd.oasis.opendocument.text',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+  'application/vnd.oasis.opendocument.spreadsheet',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.oasis.opendocument.presentation',
+  'text/plain',
+  'application/rtf',
+  'text/csv',
+]);
+
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

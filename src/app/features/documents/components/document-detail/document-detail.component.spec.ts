@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { DocumentDetailComponent } from './document-detail.component';
@@ -50,12 +51,14 @@ function setup(doc: Document | null = stubDoc) {
     revertVersion: vi.fn().mockReturnValue(of({})),
   };
   const dialog = { open: vi.fn().mockReturnValue({ afterClosed: () => of(undefined) }) };
+  const router = { navigate: vi.fn() };
 
   TestBed.configureTestingModule({
     imports: [DocumentDetailComponent, BrowserAnimationsModule],
     providers: [
       { provide: DocumentService, useValue: documentService },
       { provide: MatDialog, useValue: dialog },
+      { provide: Router, useValue: router },
     ],
   });
 
@@ -63,7 +66,7 @@ function setup(doc: Document | null = stubDoc) {
   fixture.componentRef.setInput('docId', 1);
   fixture.componentRef.setInput('projectId', 3);
   fixture.detectChanges();
-  return { fixture, documentService, dialog };
+  return { fixture, documentService, dialog, router };
 }
 
 describe('DocumentDetailComponent', () => {
@@ -223,5 +226,49 @@ describe('DocumentDetailComponent', () => {
     const { fixture } = setup({ ...stubDoc, tags: ['phase1', 'risk'] });
     expect(fixture.nativeElement.textContent).toContain('phase1');
     expect(fixture.nativeElement.textContent).toContain('risk');
+  });
+
+  describe('Edit button', () => {
+    it('isEditable() is true for draft doc with editable MIME type', () => {
+      const { fixture } = setup();
+      expect((fixture.componentInstance as any).isEditable()).toBe(true);
+    });
+
+    it('isEditable() is false for confirmed doc', () => {
+      const { fixture } = setup({ ...stubDoc, status: 'confirmed' });
+      expect((fixture.componentInstance as any).isEditable()).toBe(false);
+    });
+
+    it('isEditable() is false for superseded doc', () => {
+      const { fixture } = setup({ ...stubDoc, status: 'superseded' });
+      expect((fixture.componentInstance as any).isEditable()).toBe(false);
+    });
+
+    it('isEditable() is false when currentVersion is null', () => {
+      const { fixture } = setup({ ...stubDoc, currentVersion: null });
+      expect((fixture.componentInstance as any).isEditable()).toBe(false);
+    });
+
+    it('isEditable() is false for non-editable MIME type (PDF)', () => {
+      const { fixture } = setup({
+        ...stubDoc,
+        currentVersion: { ...stubDoc.currentVersion!, mimeType: 'application/pdf' },
+      });
+      expect((fixture.componentInstance as any).isEditable()).toBe(false);
+    });
+
+    it('edit button is rendered in current-version section', () => {
+      const { fixture } = setup();
+      const btn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+        .find((b: any) => b.textContent?.includes('Edit')) as HTMLButtonElement | undefined;
+      expect(btn).toBeTruthy();
+    });
+
+    it('openEditor() navigates to editor route', () => {
+      const { fixture, router } = setup();
+      const comp = fixture.componentInstance as any;
+      comp.openEditor();
+      expect(router.navigate).toHaveBeenCalledWith(['/p', 3, 'documents', 1, 'edit']);
+    });
   });
 });
