@@ -29,6 +29,7 @@ const stubDocApi: DocumentApiResource = {
   category: 'initiation',
   category_label: 'Initiation',
   status: 'draft',
+  tags: ['important', 'phase1'],
   owner: { id: 5, name: 'Alice Smith' },
   current_version: stubVersionApi,
   version_count: 3,
@@ -68,6 +69,7 @@ describe('mapDocument()', () => {
     expect(d.category).toBe('initiation');
     expect(d.categoryLabel).toBe('Initiation');
     expect(d.status).toBe('draft');
+    expect(d.tags).toEqual(['important', 'phase1']);
     expect(d.owner).toEqual({ id: 5, name: 'Alice Smith' });
     expect(d.versionCount).toBe(3);
     expect(d.createdAt).toBeInstanceOf(Date);
@@ -85,6 +87,11 @@ describe('mapDocument()', () => {
     const d = mapDocument({ ...stubDocApi, current_version: null, owner: null });
     expect(d.currentVersion).toBeNull();
     expect(d.owner).toBeNull();
+  });
+
+  it('defaults tags to empty array when api returns undefined', () => {
+    const d = mapDocument({ ...stubDocApi, tags: undefined as unknown as string[] });
+    expect(d.tags).toEqual([]);
   });
 });
 
@@ -116,8 +123,20 @@ describe('DOCUMENT_TYPE_LABELS', () => {
     expect(DOCUMENT_TYPE_LABELS['risk_register']).toBe('Risk Register');
   });
 
-  it('contains all 25 types', () => {
-    expect(Object.keys(DOCUMENT_TYPE_LABELS)).toHaveLength(25);
+  it('contains label for general', () => {
+    expect(DOCUMENT_TYPE_LABELS['general']).toBe('General');
+  });
+
+  it('contains label for lessons_report', () => {
+    expect(DOCUMENT_TYPE_LABELS['lessons_report']).toBe('Lessons Report');
+  });
+
+  it('contains label for traceability_matrix', () => {
+    expect(DOCUMENT_TYPE_LABELS['traceability_matrix']).toBe('Traceability Matrix');
+  });
+
+  it('contains all 28 types', () => {
+    expect(Object.keys(DOCUMENT_TYPE_LABELS)).toHaveLength(28);
   });
 });
 

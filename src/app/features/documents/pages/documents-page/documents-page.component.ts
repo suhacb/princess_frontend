@@ -16,6 +16,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import {
   Document,
+  DocumentCategory,
   DocumentFilters,
   DocumentStatus,
   DocumentType,
@@ -63,6 +64,7 @@ export class DocumentsPageComponent {
   protected readonly categoryLabels = DOCUMENT_CATEGORY_LABELS;
   protected readonly typesByCategory = DOCUMENT_TYPE_BY_CATEGORY;
 
+  protected readonly categoryFilter = signal<DocumentCategory | 'all'>('all');
   protected readonly statusFilter = signal<DocumentStatus | 'all'>('all');
   protected readonly typeFilter = signal<DocumentType | 'all'>('all');
   protected readonly searchQuery = signal('');
@@ -70,11 +72,13 @@ export class DocumentsPageComponent {
   protected readonly selectedDocId = signal<number | null>(null);
 
   protected readonly filteredDocuments = computed<Document[]>(() => {
+    const category = this.categoryFilter();
     const status = this.statusFilter();
     const type = this.typeFilter();
     const search = this.searchQuery().trim().toLowerCase();
     let docs = this.documentService.documents();
 
+    if (category !== 'all') docs = docs.filter(d => d.category === category);
     if (status !== 'all') docs = docs.filter(d => d.status === status);
     if (type !== 'all') docs = docs.filter(d => d.type === type);
     if (search) docs = docs.filter(d => d.title.toLowerCase().includes(search));

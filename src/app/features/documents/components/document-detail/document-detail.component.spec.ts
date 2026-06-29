@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { DocumentDetailComponent } from './document-detail.component';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../contracts/document.contracts';
@@ -16,6 +16,7 @@ const stubDoc: Document = {
   category: 'initiation',
   categoryLabel: 'Initiation',
   status: 'draft',
+  tags: ['phase1'],
   owner: { id: 5, name: 'Alice' },
   currentVersion: {
     id: 12,
@@ -41,6 +42,7 @@ function setup(doc: Document | null = stubDoc) {
     uploading: signal(false).asReadonly(),
     load: vi.fn().mockReturnValue(of(doc)),
     update: vi.fn().mockReturnValue(of(doc)),
+    classify: vi.fn().mockReturnValue(of(doc)),
     remove: vi.fn().mockReturnValue(of(undefined)),
     uploadVersion: vi.fn().mockReturnValue(of({})),
     download: vi.fn(),
@@ -132,5 +134,92 @@ describe('DocumentDetailComponent', () => {
       .find((b: any) => b.textContent?.includes('Upload new version')) as HTMLButtonElement | undefined;
     btn?.click();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('upload button is disabled when document is confirmed', () => {
+    const { fixture } = setup({ ...stubDoc, status: 'confirmed' });
+    const btn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+      .find((b: any) => b.textContent?.includes('Upload new version')) as HTMLButtonElement | undefined;
+    expect(btn?.disabled).toBe(true);
+  });
+
+  it('save() calls documentService.update with form values', () => {
+    const { fixture, documentService } = setup();
+    const comp = fixture.componentInstance as any;
+    comp.form.patchValue({ title: 'New Title' });
+    comp.form.markAsDirty();
+    comp.save();
+    expect(documentService.update).toHaveBeenCalledWith(3, 1, expect.objectContaining({ title: 'New Title' }));
+  });
+
+  it('save() sets saveError on failure', () => {
+    const { fixture, documentService } = setup();
+    documentService.update.mockReturnValue(throwError(() => new Error('fail')));
+    const comp = fixture.componentInstance as any;
+    comp.form.patchValue({ title: 'Bad' });
+    comp.save();
+    fixture.detectChanges();
+    expect(comp.saveError()).toBe('Save failed. Please try again.');
+    expect(fixture.nativeElement.textContent).toContain('Save failed');
+  });
+
+  it('transitionStatus() calls documentService.update with the target status', () => {
+    const { fixture, documentService } = setup();
+    const comp = fixture.componentInstance as any;
+    comp.transitionStatus('in_review');
+    expect(documentService.update).toHaveBeenCalledWith(3, 1, { status: 'in_review' });
+  });
+
+  it('transitionStatus() sets actionError on failure', () => {
+    const { fixture, documentService } = setup();
+    documentService.update.mockReturnValue(throwError(() => new Error('fail')));
+    const comp = fixture.componentInstance as any;
+    comp.transitionStatus('in_review');
+    fixture.detectChanges();
+    expect(comp.actionError()).toBe('Status update failed. Please try again.');
+  });
+
+  it('deleteDocument() calls documentService.remove and emits documentDeleted', () => {
+    const { fixture, documentService } = setup();
+    const emitted = vi.fn();
+    fixture.componentInstance.documentDeleted.subscribe(emitted);
+    const comp = fixture.componentInstance as any;
+    comp.deleteDocument();
+    expect(documentService.remove).toHaveBeenCalledWith(3, 1);
+    expect(emitted).toHaveBeenCalled();
+  });
+
+  it('deleteDocument() sets actionError on failure', () => {
+    const { fixture, documentService } = setup();
+    documentService.remove.mockReturnValue(throwError(() => new Error('fail')));
+    const comp = fixture.componentInstance as any;
+    comp.deleteDocument();
+    fixture.detectChanges();
+    expect(comp.actionError()).toBe('Delete failed. Please try again.');
+  });
+
+  it('classify() calls documentService.classify with parsed tags', () => {
+    const { fixture, documentService } = setup();
+    const comp = fixture.componentInstance as any;
+    comp.classifyForm.patchValue({ tags: 'qa, urgent, phase2' });
+    comp.classify();
+    expect(documentService.classify).toHaveBeenCalledWith(3, 1, { tags: ['qa', 'urgent', 'phase2'] });
+  });
+
+  it('classify() sets classifyError on failure', () => {
+    const { fixture, documentService } = setup();
+    documentService.classify.mockReturnValue(throwError(() => new Error('fail')));
+    const comp = fixture.componentInstance as any;
+    comp.classifyForm.patchValue({ tags: 'qa' });
+    comp.classify();
+    fixture.detectChanges();
+    expect(comp.classifyError()).toBe('Classification failed. Please try again.');
+    expect(fixture.nativeElement.textContent).toContain('Classification failed');
+  });
+
+  it('renders existing tags', () => {
+    const { fixture } = setup({ ...stubDoc, tags: ['phase1', 'risk'] });
+    expect(fixture.nativeElement.textContent).toContain('phase1');
+    expect(fixture.nativeElement.textContent).toContain('risk');
   });
 });

@@ -64,7 +64,12 @@
       <p class="no-version">No file uploaded yet.</p>
     }
 
-    <button mat-stroked-button class="upload-btn" (click)="openUploadDialog()" [disabled]="uploading()">
+    <button
+      mat-stroked-button
+      class="upload-btn"
+      (click)="openUploadDialog()"
+      [disabled]="uploading() || d.status === 'confirmed'"
+    >
       <mat-icon>upload</mat-icon>
       {{ uploading() ? 'Uploading…' : 'Upload new version' }}
     </button>
@@ -88,8 +93,35 @@
   </div>
 
   @if (actionError()) {
-    <p class="error-msg">{{ actionError() }}</p>
+    <p class="error-msg action-error">{{ actionError() }}</p>
   }
+
+  <mat-divider />
+
+  <div class="section">
+    <h4 class="section-title">Classification</h4>
+    <form [formGroup]="classifyForm">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tags (comma-separated)</mat-label>
+        <input matInput formControlName="tags" placeholder="e.g. urgent, phase1, qa" />
+      </mat-form-field>
+      @if (classifyError()) {
+        <p class="error-msg">{{ classifyError() }}</p>
+      }
+      <button
+        mat-stroked-button
+        [disabled]="classifyForm.pristine"
+        (click)="classify()"
+      >Apply classification</button>
+    </form>
+    @if (d.tags.length > 0) {
+      <div class="tags-list">
+        @for (tag of d.tags; track tag) {
+          <span class="tag-chip">{{ tag }}</span>
+        }
+      </div>
+    }
+  </div>
 
   <mat-divider />
 
@@ -105,6 +137,11 @@
     <div class="meta-row">
       <span class="meta-label">Updated</span>
       <span class="meta-value">{{ d.updatedAt | date: 'dd MMM yyyy' }}</span>
+    </div>
+    <div class="meta-row meta-delete">
+      <button mat-stroked-button color="warn" class="delete-btn" (click)="deleteDocument()">
+        <mat-icon>delete</mat-icon> Delete document
+      </button>
     </div>
   </div>
 }

@@ -18,6 +18,7 @@ const stubDoc: Document = {
   category: 'initiation',
   categoryLabel: 'Initiation',
   status: 'draft',
+  tags: [],
   owner: { id: 5, name: 'Alice' },
   currentVersion: {
     id: 12,
@@ -35,7 +36,16 @@ const stubDoc: Document = {
   updatedAt: new Date('2026-06-28T10:00:00Z'),
 };
 
-const confirmedDoc: Document = { ...stubDoc, id: 2, title: 'Project Plan', type: 'project_plan', typeLabel: 'Project Plan', category: 'planning', categoryLabel: 'Planning', status: 'confirmed' };
+const confirmedDoc: Document = {
+  ...stubDoc,
+  id: 2,
+  title: 'Project Plan',
+  type: 'project_plan',
+  typeLabel: 'Project Plan',
+  category: 'planning',
+  categoryLabel: 'Planning',
+  status: 'confirmed',
+};
 
 function setup(docs: Document[] = [], docId: string | null = null) {
   const docsSignal = signal(docs);
@@ -49,6 +59,7 @@ function setup(docs: Document[] = [], docId: string | null = null) {
     create: vi.fn().mockReturnValue(of(stubDoc)),
     load: vi.fn().mockReturnValue(of(stubDoc)),
     update: vi.fn().mockReturnValue(of(stubDoc)),
+    classify: vi.fn().mockReturnValue(of(stubDoc)),
     remove: vi.fn().mockReturnValue(of(undefined)),
     uploadVersion: vi.fn().mockReturnValue(of({})),
     download: vi.fn(),
@@ -114,6 +125,16 @@ describe('DocumentsPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Alice');
   });
 
+  it('filters by category', () => {
+    const { fixture } = setup([stubDoc, confirmedDoc]);
+    const comp = fixture.componentInstance as any;
+    comp.categoryFilter.set('planning');
+    fixture.detectChanges();
+    const rows = fixture.nativeElement.querySelectorAll('.doc-row');
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain('Project Plan');
+  });
+
   it('filters by status', () => {
     const { fixture } = setup([stubDoc, confirmedDoc]);
     const comp = fixture.componentInstance as any;
@@ -161,5 +182,23 @@ describe('DocumentsPageComponent', () => {
     const row = fixture.nativeElement.querySelector('.doc-row');
     row?.click();
     expect(navigateSpy).toHaveBeenCalledWith(['/p', 3, 'documents', 1]);
+  });
+
+  it('closeDetail() navigates to the documents list route', () => {
+    const { fixture } = setup([stubDoc], '1');
+    const comp = fixture.componentInstance as any;
+    const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
+    comp.closeDetail();
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 3, 'documents']);
+  });
+
+  it('openCreateDialog() opens CreateDocumentDialogComponent', () => {
+    const { fixture } = setup([stubDoc]);
+    const comp = fixture.componentInstance as any;
+    const openSpy = vi.spyOn(comp['dialog'], 'open').mockReturnValue({
+      afterClosed: () => of(undefined),
+    });
+    comp.openCreateDialog();
+    expect(openSpy).toHaveBeenCalled();
   });
 });

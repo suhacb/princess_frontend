@@ -1,95 +1,113 @@
 export type DocumentCategory =
   | 'initiation'
   | 'planning'
-  | 'control'
-  | 'delivery'
-  | 'closure'
-  | 'governance';
+  | 'reporting'
+  | 'register'
+  | 'qa'
+  | 'meeting'
+  | 'general';
 
 export type DocumentType =
-  | 'project_mandate'
+  // initiation
   | 'project_brief'
   | 'project_initiation_document'
-  | 'benefits_management_approach'
+  | 'project_product_description'
+  // planning
   | 'project_plan'
   | 'stage_plan'
   | 'team_plan'
   | 'exception_plan'
-  | 'product_description'
   | 'work_package'
+  // reporting
   | 'highlight_report'
   | 'checkpoint_report'
-  | 'exception_report'
-  | 'issue_register'
-  | 'risk_register'
-  | 'change_log'
-  | 'quality_register'
-  | 'product_status_account'
-  | 'daily_log'
-  | 'lessons_log'
   | 'end_stage_report'
   | 'end_project_report'
-  | 'lessons_learned_report'
-  | 'communication_management_approach'
-  | 'change_control_approach';
+  | 'exception_report'
+  | 'lessons_report'
+  // register
+  | 'risk_register'
+  | 'issue_register'
+  | 'quality_register'
+  | 'change_log'
+  | 'lessons_log'
+  | 'daily_log'
+  // qa
+  | 'requirements_specification'
+  | 'test_specification'
+  | 'test_session_plan'
+  | 'test_execution_report'
+  | 'traceability_matrix'
+  // meeting
+  | 'meeting_agenda'
+  | 'meeting_minutes'
+  // general
+  | 'general';
 
 export type DocumentStatus = 'draft' | 'in_review' | 'confirmed' | 'superseded';
 
 export const DOCUMENT_CATEGORY_LABELS: Record<DocumentCategory, string> = {
   initiation: 'Initiation',
-  planning: 'Planning',
-  control: 'Control',
-  delivery: 'Delivery',
-  closure: 'Closure',
-  governance: 'Governance',
+  planning:   'Planning',
+  reporting:  'Reporting',
+  register:   'Register',
+  qa:         'QA',
+  meeting:    'Meeting',
+  general:    'General',
 };
 
 export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
   'initiation',
   'planning',
-  'control',
-  'delivery',
-  'closure',
-  'governance',
+  'reporting',
+  'register',
+  'qa',
+  'meeting',
+  'general',
 ];
 
 export const DOCUMENT_TYPE_BY_CATEGORY: Record<DocumentCategory, { key: DocumentType; label: string }[]> = {
   initiation: [
-    { key: 'project_mandate', label: 'Project Mandate' },
-    { key: 'project_brief', label: 'Project Brief' },
-    { key: 'project_initiation_document', label: 'Project Initiation Document' },
-    { key: 'benefits_management_approach', label: 'Benefits Management Approach' },
+    { key: 'project_brief',                  label: 'Project Brief' },
+    { key: 'project_initiation_document',    label: 'Project Initiation Document' },
+    { key: 'project_product_description',    label: 'Project Product Description' },
   ],
   planning: [
-    { key: 'project_plan', label: 'Project Plan' },
-    { key: 'stage_plan', label: 'Stage Plan' },
-    { key: 'team_plan', label: 'Team Plan' },
+    { key: 'project_plan',   label: 'Project Plan' },
+    { key: 'stage_plan',     label: 'Stage Plan' },
+    { key: 'team_plan',      label: 'Team Plan' },
     { key: 'exception_plan', label: 'Exception Plan' },
-    { key: 'product_description', label: 'Product Description' },
-    { key: 'work_package', label: 'Work Package' },
+    { key: 'work_package',   label: 'Work Package' },
   ],
-  control: [
-    { key: 'highlight_report', label: 'Highlight Report' },
-    { key: 'checkpoint_report', label: 'Checkpoint Report' },
-    { key: 'exception_report', label: 'Exception Report' },
-    { key: 'issue_register', label: 'Issue Register' },
-    { key: 'risk_register', label: 'Risk Register' },
-    { key: 'change_log', label: 'Change Log' },
+  reporting: [
+    { key: 'highlight_report',    label: 'Highlight Report' },
+    { key: 'checkpoint_report',   label: 'Checkpoint Report' },
+    { key: 'end_stage_report',    label: 'End Stage Report' },
+    { key: 'end_project_report',  label: 'End Project Report' },
+    { key: 'exception_report',    label: 'Exception Report' },
+    { key: 'lessons_report',      label: 'Lessons Report' },
+  ],
+  register: [
+    { key: 'risk_register',    label: 'Risk Register' },
+    { key: 'issue_register',   label: 'Issue Register' },
     { key: 'quality_register', label: 'Quality Register' },
+    { key: 'change_log',       label: 'Change Log' },
+    { key: 'lessons_log',      label: 'Lessons Log' },
+    { key: 'daily_log',        label: 'Daily Log' },
   ],
-  delivery: [
-    { key: 'product_status_account', label: 'Product Status Account' },
-    { key: 'daily_log', label: 'Daily Log' },
-    { key: 'lessons_log', label: 'Lessons Log' },
+  qa: [
+    { key: 'requirements_specification', label: 'Requirements Specification' },
+    { key: 'test_specification',         label: 'Test Specification' },
+    { key: 'test_session_plan',          label: 'Test Session Plan' },
+    { key: 'test_execution_report',      label: 'Test Execution Report' },
+    { key: 'traceability_matrix',        label: 'Traceability Matrix' },
   ],
-  closure: [
-    { key: 'end_stage_report', label: 'End Stage Report' },
-    { key: 'end_project_report', label: 'End Project Report' },
-    { key: 'lessons_learned_report', label: 'Lessons Learned Report' },
+  meeting: [
+    { key: 'meeting_agenda',  label: 'Meeting Agenda' },
+    { key: 'meeting_minutes', label: 'Meeting Minutes' },
   ],
-  governance: [
-    { key: 'communication_management_approach', label: 'Communication Management Approach' },
-    { key: 'change_control_approach', label: 'Change Control Approach' },
+  general: [
+    { key: 'general', label: 'General' },
   ],
 };
 
@@ -100,18 +118,18 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = Object.fromEnt
 ) as Record<DocumentType, string>;
 
 export const DOCUMENT_STATUS_LABELS: Record<DocumentStatus, string> = {
-  draft: 'Draft',
-  in_review: 'In Review',
-  confirmed: 'Confirmed',
+  draft:      'Draft',
+  in_review:  'In Review',
+  confirmed:  'Confirmed',
   superseded: 'Superseded',
 };
 
 export const DOCUMENT_STATUSES: DocumentStatus[] = ['draft', 'in_review', 'confirmed', 'superseded'];
 
 export const DOCUMENT_STATUS_TRANSITIONS: Record<DocumentStatus, DocumentStatus[]> = {
-  draft: ['in_review'],
-  in_review: ['confirmed', 'draft'],
-  confirmed: ['superseded'],
+  draft:      ['in_review'],
+  in_review:  ['confirmed', 'draft'],
+  confirmed:  ['superseded'],
   superseded: [],
 };
 
@@ -136,6 +154,7 @@ export interface DocumentApiResource {
   category: DocumentCategory;
   category_label: string;
   status: DocumentStatus;
+  tags: string[];
   owner: { id: number; name: string } | null;
   current_version: DocumentVersionApiResource | null;
   version_count: number;
@@ -164,6 +183,7 @@ export interface Document {
   category: DocumentCategory;
   categoryLabel: string;
   status: DocumentStatus;
+  tags: string[];
   owner: { id: number; name: string } | null;
   currentVersion: DocumentVersion | null;
   versionCount: number;
@@ -172,6 +192,7 @@ export interface Document {
 }
 
 export interface DocumentFilters {
+  category?: DocumentCategory;
   type?: DocumentType;
   status?: DocumentStatus;
   search?: string;
@@ -189,6 +210,11 @@ export interface UpdateDocumentPayload {
   type?: DocumentType;
   status?: DocumentStatus;
   owner_id?: number | null;
+}
+
+export interface ClassifyDocumentPayload {
+  type?: DocumentType;
+  tags?: string[];
 }
 
 export function mapDocumentVersion(api: DocumentVersionApiResource): DocumentVersion {
@@ -215,6 +241,7 @@ export function mapDocument(api: DocumentApiResource): Document {
     category: api.category,
     categoryLabel: api.category_label,
     status: api.status,
+    tags: api.tags ?? [],
     owner: api.owner,
     currentVersion: api.current_version
       ? mapDocumentVersion({ ...api.current_version, document_id: api.id })

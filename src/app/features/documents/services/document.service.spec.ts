@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 import { DocumentService } from './document.service';
 import { ApiService } from '../../../core/http/api.service';
 import { HttpClient } from '@angular/common/http';
@@ -26,6 +27,7 @@ const stubApi: DocumentApiResource = {
   category: 'initiation',
   category_label: 'Initiation',
   status: 'draft',
+  tags: [],
   owner: { id: 5, name: 'Alice' },
   current_version: stubVersionApi,
   version_count: 1,
@@ -39,12 +41,13 @@ describe('DocumentService', () => {
     get: ReturnType<typeof vi.fn>;
     post: ReturnType<typeof vi.fn>;
     put: ReturnType<typeof vi.fn>;
+    patch: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
   let httpMock: { get: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    apiMock = { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() };
+    apiMock = { get: vi.fn(), post: vi.fn(), put: vi.fn(), patch: vi.fn(), delete: vi.fn() };
     httpMock = { get: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
@@ -56,6 +59,8 @@ describe('DocumentService', () => {
     service = TestBed.inject(DocumentService);
   });
 
+  afterEach(() => TestBed.resetTestingModule());
+
   describe('list()', () => {
     it('sets documents and clears loading on success', () => {
       apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
@@ -65,13 +70,20 @@ describe('DocumentService', () => {
       expect(service.loading()).toBe(false);
     });
 
-    it('passes filter params', () => {
+    it('passes filter params including category', () => {
       apiMock.get.mockReturnValue(of({ data: [], meta: {} }));
-      service.list(3, { type: 'project_brief', status: 'draft' }).subscribe();
+      service.list(3, { category: 'initiation', type: 'project_brief', status: 'draft' }).subscribe();
       expect(apiMock.get).toHaveBeenCalledWith(
         '/projects/3/documents',
-        { type: 'project_brief', status: 'draft' },
+        { category: 'initiation', type: 'project_brief', status: 'draft' },
       );
+    });
+
+    it('omits category param when not set', () => {
+      apiMock.get.mockReturnValue(of({ data: [], meta: {} }));
+      service.list(3, { type: 'project_brief', status: 'draft' }).subscribe();
+      const callArgs = apiMock.get.mock.calls[0][1] as Record<string, string>;
+      expect(callArgs['category']).toBeUndefined();
     });
 
     it('clears loading on error', () => {
@@ -134,6 +146,20 @@ describe('DocumentService', () => {
     });
   });
 
+  describe('classify()', () => {
+    it('calls PATCH /:id/classify and syncs updated document', () => {
+      apiMock.get.mockReturnValue(of({ data: stubApi }));
+      service.load(3, 1).subscribe();
+
+      const classified = { ...stubApi, tags: ['qa', 'critical'] };
+      apiMock.patch.mockReturnValue(of({ data: classified }));
+      service.classify(3, 1, { tags: ['qa', 'critical'] }).subscribe();
+
+      expect(apiMock.patch).toHaveBeenCalledWith('/projects/3/documents/1/classify', { tags: ['qa', 'critical'] });
+      expect(service.selectedDocument()?.tags).toEqual(['qa', 'critical']);
+    });
+  });
+
   describe('remove()', () => {
     it('removes document from list', () => {
       apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
@@ -175,6 +201,25 @@ describe('DocumentService', () => {
       apiMock.post.mockReturnValue(throwError(() => new Error('fail')));
       service.uploadVersion(3, 1, new File([''], 'f.docx')).subscribe({ error: () => {} });
       expect(service.uploading()).toBe(false);
+    });
+  });
+
+  describe('download()', () => {
+    it('calls HttpClient.get with blob responseType', () => {
+      const blobSubject = new Subject<Blob>();
+      httpMock.get.mockReturnValue(blobSubject.asObservable());
+      service.download(3, 1);
+      expect(httpMock.get).toHaveBeenCalledWith(
+        expect.stringContaining('/projects/3/documents/1/download'),
+        expect.objectContaining({ responseType: 'blob' }),
+      );
+    });
+
+    it('calls with version param when versionId provided', () => {
+      httpMock.get.mockReturnValue(new Subject<Blob>().asObservable());
+      service.download(3, 1, 42);
+      const callArgs = httpMock.get.mock.calls[0][1] as { params: Record<string, string> };
+      expect(callArgs.params['version']).toBe('42');
     });
   });
 });

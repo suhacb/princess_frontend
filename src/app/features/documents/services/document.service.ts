@@ -12,6 +12,7 @@ import {
   DocumentVersionApiResource,
   CreateDocumentPayload,
   UpdateDocumentPayload,
+  ClassifyDocumentPayload,
   mapDocument,
   mapDocumentVersion,
 } from '../contracts/document.contracts';
@@ -38,6 +39,7 @@ export class DocumentService {
   list(projectId: number, filters: DocumentFilters = {}): Observable<Document[]> {
     this._loading.set(true);
     const params: Record<string, string> = {};
+    if (filters.category) params['category'] = filters.category;
     if (filters.type) params['type'] = filters.type;
     if (filters.status) params['status'] = filters.status;
     if (filters.search) params['search'] = filters.search;
@@ -87,6 +89,22 @@ export class DocumentService {
   update(projectId: number, docId: number, payload: UpdateDocumentPayload): Observable<Document> {
     return this.api
       .put<ApiResource<DocumentApiResource>>(`${this.base(projectId)}/${docId}`, payload)
+      .pipe(
+        map(res => mapDocument(res.data)),
+        tap(updated => this.syncUpdated(docId, updated)),
+      );
+  }
+
+  classify(
+    projectId: number,
+    docId: number,
+    payload: ClassifyDocumentPayload,
+  ): Observable<Document> {
+    return this.api
+      .patch<ApiResource<DocumentApiResource>>(
+        `${this.base(projectId)}/${docId}/classify`,
+        payload,
+      )
       .pipe(
         map(res => mapDocument(res.data)),
         tap(updated => this.syncUpdated(docId, updated)),

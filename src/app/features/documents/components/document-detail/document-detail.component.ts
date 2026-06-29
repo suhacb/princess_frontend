@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, EventEmitter, Output, computed, effect, inject, input, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,12 +14,12 @@ import { DocumentTypeSelectComponent } from '../document-type-select/document-ty
 import { UploadVersionDialogComponent, UploadVersionResult } from '../upload-version-dialog/upload-version-dialog.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import {
-  Document,
   DocumentType,
   DocumentStatus,
   DOCUMENT_STATUS_LABELS,
   DOCUMENT_STATUS_TRANSITIONS,
   UpdateDocumentPayload,
+  ClassifyDocumentPayload,
   formatFileSize,
 } from '../../contracts/document.contracts';
 
@@ -46,6 +46,8 @@ export class DocumentDetailComponent {
   readonly docId = input.required<number>();
   readonly projectId = input.required<number>();
 
+  @Output() readonly documentDeleted = new EventEmitter<void>();
+
   private readonly documentService = inject(DocumentService);
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
@@ -57,6 +59,7 @@ export class DocumentDetailComponent {
   protected readonly loadError = signal<string | null>(null);
   protected readonly saveError = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
+  protected readonly classifyError = signal<string | null>(null);
 
   protected readonly statusLabels = DOCUMENT_STATUS_LABELS;
   protected readonly formatFileSize = formatFileSize;
@@ -69,6 +72,10 @@ export class DocumentDetailComponent {
   protected readonly form = this.fb.group({
     title: [''],
     type: [null as DocumentType | null],
+  });
+
+  protected readonly classifyForm = this.fb.group({
+    tags: [''],
   });
 
   constructor() {
@@ -88,6 +95,8 @@ export class DocumentDetailComponent {
       if (d) {
         this.form.patchValue({ title: d.title, type: d.type });
         this.form.markAsPristine();
+        this.classifyForm.patchValue({ tags: d.tags.join(', ') });
+        this.classifyForm.markAsPristine();
       }
     });
   }
@@ -106,6 +115,25 @@ export class DocumentDetailComponent {
     this.documentService.update(projectId, d.id, payload).subscribe({
       next: () => this.form.markAsPristine(),
       error: () => this.saveError.set('Save failed. Please try again.'),
+    });
+  }
+
+  protected classify(): void {
+    const d = this.doc();
+    const projectId = this.projectId();
+    if (!d || !projectId) return;
+
+    const rawTags = this.classifyForm.value.tags ?? '';
+    const tags = rawTags
+      .split(',')
+      .map((t: string) => t.trim())
+      .filter(Boolean);
+
+    const payload: ClassifyDocumentPayload = { tags };
+    this.classifyError.set(null);
+    this.documentService.classify(projectId, d.id, payload).subscribe({
+      next: () => this.classifyForm.markAsPristine(),
+      error: () => this.classifyError.set('Classification failed. Please try again.'),
     });
   }
 
@@ -143,13 +171,13 @@ export class DocumentDetailComponent {
     this.documentService.download(projectId, d.id);
   }
 
-  protected deleteDocument(onDeleted: () => void): void {
+  protected deleteDocument(): void {
     const d = this.doc();
     const projectId = this.projectId();
     if (!d || !projectId) return;
     this.actionError.set(null);
     this.documentService.remove(projectId, d.id).subscribe({
-      next: () => onDeleted(),
+      next: () => this.documentDeleted.emit(),
       error: () => this.actionError.set('Delete failed. Please try again.'),
     });
   }
