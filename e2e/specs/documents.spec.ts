@@ -268,7 +268,6 @@ test.describe('documents API — project_manager', () => {
     );
     expect([200, 302]).toContain(downloadRes.status());
   });
-});
 
   test('GET /versions returns all versions for a document', async ({ page }) => {
     await page.goto('/projects');
@@ -356,6 +355,42 @@ test.describe('documents API — project_manager', () => {
     expect(typed.data).toHaveProperty('version_number');
     expect(Number(typed.data['version_number'])).toBeGreaterThan(1);
   });
+
+  test('GET /editor-config returns 200 with OnlyOffice config shape', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const token = await getAccessToken(page);
+
+    const { body: created } = await api(page, 'POST', `/api/projects/${id}/documents`, {
+      title: 'Editor Config Test',
+      type: 'project_brief',
+    });
+    const docId = (created as { data: { id: number } }).data.id;
+
+    await page.request.fetch(`${BACKEND}/api/projects/${id}/documents/${docId}/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      multipart: {
+        file: {
+          name: 'brief.docx',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          buffer: Buffer.from('fake docx content'),
+        },
+      },
+    });
+
+    const { status, body } = await api(page, 'GET', `/api/projects/${id}/documents/${docId}/editor-config`);
+    expect([200, 422]).toContain(status);
+
+    if (status === 200) {
+      const typed = body as { data: Record<string, unknown> };
+      expect(typed.data).toHaveProperty('document');
+      expect(typed.data).toHaveProperty('documentType');
+      expect(typed.data).toHaveProperty('editorConfig');
+      expect(typed.data).toHaveProperty('token');
+    }
+  });
+});
 
 // ─── observer (read-only) ────────────────────────────────────────────────────
 

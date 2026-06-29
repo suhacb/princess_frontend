@@ -118,4 +118,55 @@ describe('DocumentEditorPageComponent', () => {
     fixture.destroy();
     expect(destroySpy).toHaveBeenCalled();
   });
+
+  it('sets error when docId is missing from route params', () => {
+    const { fixture } = setup({ docId: null });
+    const comp = fixture.componentInstance as any;
+    expect(comp.error()).toBe('Could not determine project or document.');
+    expect(comp.loading()).toBe(false);
+  });
+
+  it('sets error when script fails to load', async () => {
+    const { fixture, documentService } = setup();
+    const comp = fixture.componentInstance as any;
+
+    comp.loading.set(true);
+    comp.error.set(null);
+    vi.spyOn(comp, 'loadScript').mockRejectedValue(new Error('net::ERR_CONNECTION_REFUSED'));
+
+    comp.initEditor(3, 1);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(comp.error()).toBe('Failed to load document editor. Is OnlyOffice running?');
+    expect(comp.loading()).toBe(false);
+    expect(documentService.loadEditorConfig).toHaveBeenCalledTimes(2);
+  });
+
+  it('loadScript resolves immediately when script tag already exists', async () => {
+    const existing = document.createElement('script');
+    existing.src = 'http://localhost:10112/web-apps/apps/api/documents/api.js';
+    document.head.appendChild(existing);
+
+    const { documentService } = setup();
+    expect(documentService.loadEditorConfig).toHaveBeenCalled();
+    existing.remove();
+  });
+
+  it('goBack() falls back to navigate(..) when project is missing', () => {
+    const { fixture, router } = setup({ projectId: null });
+    const comp = fixture.componentInstance as any;
+    comp.goBack();
+    expect(router.navigate).toHaveBeenCalledWith(['..'], expect.objectContaining({ relativeTo: expect.anything() }));
+  });
+
+  it('ngOnDestroy removes the script tag', () => {
+    const script = document.createElement('script');
+    script.src = 'http://localhost:10112/web-apps/apps/api/documents/api.js';
+    document.head.appendChild(script);
+
+    const { fixture } = setup();
+    fixture.destroy();
+
+    expect(document.querySelector('script[src*="onlyoffice"]')).toBeNull();
+  });
 });
