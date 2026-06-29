@@ -1,6 +1,6 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, tap } from 'rxjs';
+import { Observable, catchError, map, switchMap, tap } from 'rxjs';
 import { ApiService } from '../../../core/http/api.service';
 import { ApiResource, PaginatedApiResource } from '../../../shared/contracts/api.contracts';
 import { environment } from '../../../../environments/environment';
@@ -27,11 +27,16 @@ export class DocumentService {
   private readonly _loading = signal(false);
   private readonly _selectedDocument = signal<Document | null>(null);
   private readonly _uploading = signal(false);
+  private readonly _reviewQueue = signal<Document[]>([]);
+  private readonly _reviewQueueLoading = signal(false);
 
   readonly documents = this._documents.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly selectedDocument = this._selectedDocument.asReadonly();
   readonly uploading = this._uploading.asReadonly();
+  readonly reviewQueue = this._reviewQueue.asReadonly();
+  readonly reviewQueueLoading = this._reviewQueueLoading.asReadonly();
+  readonly reviewQueueCount = computed(() => this._reviewQueue().length);
 
   private base(projectId: number): string {
     return `/projects/${projectId}/documents`;
@@ -224,6 +229,44 @@ export class DocumentService {
           URL.revokeObjectURL(url);
         },
       });
+  }
+
+  listReviewQueue(projectId: number): Observable<Document[]> {
+    this._reviewQueueLoading.set(true);
+    return this.api
+      .get<PaginatedApiResource<DocumentApiResource>>(`${this.base(projectId)}/review-queue`)
+      .pipe(
+        map(res => res.data.map(mapDocument)),
+        tap(docs => {
+          this._reviewQueue.set(docs);
+          this._reviewQueueLoading.set(false);
+        }),
+        catchError(err => {
+          this._reviewQueueLoading.set(false);
+          throw err;
+        }),
+      );
+  }
+
+  acceptClassification(
+    projectId: number,
+    docId: number,
+    payload: ClassifyDocumentPayload,
+  ): Observable<Document> {
+    return this.classify(projectId, docId, payload).pipe(
+      switchMap(() => this.update(projectId, docId, { status: 'confirmed' })),
+      tap(() => this.removeFromQueue(docId)),
+    );
+  }
+
+  confirmQueueItem(projectId: number, docId: number): Observable<Document> {
+    return this.update(projectId, docId, { status: 'confirmed' }).pipe(
+      tap(() => this.removeFromQueue(docId)),
+    );
+  }
+
+  private removeFromQueue(docId: number): void {
+    this._reviewQueue.update(list => list.filter(d => d.id !== docId));
   }
 
   private syncUpdated(docId: number, updated: Document): void {

@@ -6,12 +6,14 @@ import { MatRippleModule } from '@angular/material/core';
 import { LayoutService } from '../../core/services/layout.service';
 import { ShellStore, AppRole } from '../../core/services/shell.store';
 import { ProjectService } from '../../features/projects/services/project.service';
+import { DocumentService } from '../../features/documents/services/document.service';
 
 interface NavItem {
   label: string;
   icon: string;
   route: string;
   roles?: AppRole[];
+  badge?: number;
 }
 
 interface NavGroup {
@@ -34,6 +36,7 @@ export class SidebarComponent {
   protected readonly layout = inject(LayoutService);
   protected readonly shell = inject(ShellStore);
   protected readonly projectService = inject(ProjectService);
+  private readonly documentService = inject(DocumentService);
   private readonly router = inject(Router);
 
   protected readonly portfolioItems = PORTFOLIO_ITEMS;
@@ -43,6 +46,7 @@ export class SidebarComponent {
   protected readonly projectNavGroups = computed<NavGroup[]>(() => {
     const id = this.shell.activeProjectId();
     const role = this.role();
+    const queueCount = this.documentService.reviewQueueCount();
     if (!id) return [];
 
     const base = `/p/${id}`;
@@ -81,7 +85,14 @@ export class SidebarComponent {
       {
         label: 'Documents',
         items: [
-          { label: 'Documents', icon: 'folder_open', route: `${base}/documents` },
+          { label: 'Documents',     icon: 'folder_open', route: `${base}/documents` },
+          {
+            label: 'Review Queue',
+            icon: 'rate_review',
+            route: `${base}/documents/review-queue`,
+            roles: ['pm', 'pmo'],
+            badge: queueCount > 0 ? queueCount : undefined,
+          },
         ],
       },
     ];

@@ -299,4 +299,69 @@ describe('DocumentService', () => {
       expect(callArgs.params['version']).toBe('42');
     });
   });
+
+  describe('listReviewQueue()', () => {
+    it('sets reviewQueue and clears reviewQueueLoading on success', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+      expect(service.reviewQueue()).toHaveLength(1);
+      expect(service.reviewQueue()[0].title).toBe('Project Brief');
+      expect(service.reviewQueueLoading()).toBe(false);
+    });
+
+    it('calls GET /projects/3/documents/review-queue', () => {
+      apiMock.get.mockReturnValue(of({ data: [], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/review-queue');
+    });
+
+    it('reviewQueueCount reflects queue length', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi, { ...stubApi, id: 2 }], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+      expect(service.reviewQueueCount()).toBe(2);
+    });
+
+    it('clears reviewQueueLoading on error', () => {
+      apiMock.get.mockReturnValue(throwError(() => new Error('fail')));
+      service.listReviewQueue(3).subscribe({ error: () => {} });
+      expect(service.reviewQueueLoading()).toBe(false);
+    });
+  });
+
+  describe('acceptClassification()', () => {
+    it('calls classify then update(status:confirmed) and removes from reviewQueue', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+      expect(service.reviewQueue()).toHaveLength(1);
+
+      const classified = { ...stubApi, tags: ['qa'] };
+      apiMock.patch.mockReturnValue(of({ data: classified }));
+      apiMock.put.mockReturnValue(of({ data: { ...classified, status: 'confirmed' } }));
+
+      service.acceptClassification(3, 1, { tags: ['qa'] }).subscribe();
+
+      expect(apiMock.patch).toHaveBeenCalledWith('/projects/3/documents/1/classify', { tags: ['qa'] });
+      expect(apiMock.put).toHaveBeenCalledWith(
+        '/projects/3/documents/1',
+        { status: 'confirmed' },
+      );
+      expect(service.reviewQueue()).toHaveLength(0);
+      expect(service.reviewQueueCount()).toBe(0);
+    });
+  });
+
+  describe('confirmQueueItem()', () => {
+    it('calls update(status:confirmed) and removes from reviewQueue', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi, { ...stubApi, id: 2 }], meta: {} }));
+      service.listReviewQueue(3).subscribe();
+      expect(service.reviewQueue()).toHaveLength(2);
+
+      apiMock.put.mockReturnValue(of({ data: { ...stubApi, status: 'confirmed' } }));
+      service.confirmQueueItem(3, 1).subscribe();
+
+      expect(apiMock.put).toHaveBeenCalledWith('/projects/3/documents/1', { status: 'confirmed' });
+      expect(service.reviewQueue()).toHaveLength(1);
+      expect(service.reviewQueue()[0].id).toBe(2);
+    });
+  });
 });

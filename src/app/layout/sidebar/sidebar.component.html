@@ -62,6 +62,11 @@
               <mat-icon class="sidebar__item-icon">{{ item.icon }}</mat-icon>
               @if (!collapsed()) {
                 <span class="sidebar__item-label">{{ item.label }}</span>
+                @if (item.badge) {
+                  <span class="sidebar__item-badge">{{ item.badge }}</span>
+                }
+              } @else if (item.badge) {
+                <span class="sidebar__item-badge sidebar__item-badge--collapsed">{{ item.badge }}</span>
               }
             </a>
           }
