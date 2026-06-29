@@ -171,6 +171,15 @@ describe('DocumentVersionListComponent', () => {
     expect(documentService.download).toHaveBeenCalledWith(3, 1, stubVersion2.id);
   });
 
+  it('does not call revertVersion when dialog is cancelled', () => {
+    const { fixture, documentService } = setup();
+    const comp = fixture.componentInstance as any;
+    const mockDialog = { open: vi.fn().mockReturnValue({ afterClosed: () => of(undefined) }) };
+    comp['dialog'] = mockDialog;
+    comp.openRevertDialog(stubVersion1);
+    expect(documentService.revertVersion).not.toHaveBeenCalled();
+  });
+
   it('openRevertDialog opens dialog with correct data', () => {
     const { fixture } = setup();
     const comp = fixture.componentInstance as any;

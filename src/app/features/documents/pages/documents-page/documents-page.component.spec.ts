@@ -63,6 +63,8 @@ function setup(docs: Document[] = [], docId: string | null = null) {
     remove: vi.fn().mockReturnValue(of(undefined)),
     uploadVersion: vi.fn().mockReturnValue(of({})),
     download: vi.fn(),
+    listVersions: vi.fn().mockReturnValue(of([])),
+    revertVersion: vi.fn().mockReturnValue(of({})),
   };
   const projectService = {
     selectedProject: signal({ id: 3, name: 'Test Project' } as never).asReadonly(),

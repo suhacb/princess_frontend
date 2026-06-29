@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, ElementRef, effect, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,6 +45,7 @@ export class DocumentVersionListComponent {
 
   private readonly documentService = inject(DocumentService);
   private readonly dialog = inject(MatDialog);
+  private readonly el = inject(ElementRef);
 
   protected readonly doc = this.documentService.selectedDocument;
 
@@ -69,13 +70,18 @@ export class DocumentVersionListComponent {
     });
   }
 
-  private load(projectId: number, docId: number): void {
+  private load(projectId: number, docId: number, scrollToTop = false): void {
     this._loading.set(true);
     this.error.set(null);
     this.documentService.listVersions(projectId, docId).subscribe({
       next: versions => {
         this._versions.set(versions);
         this._loading.set(false);
+        if (scrollToTop) {
+          (this.el.nativeElement as HTMLElement)
+            .querySelector('.version-row')
+            ?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
+        }
       },
       error: () => {
         this._loading.set(false);
@@ -125,7 +131,7 @@ export class DocumentVersionListComponent {
           .subscribe({
             next: () => {
               this._reverting.set(false);
-              this.load(this.projectId(), this.docId());
+              this.load(this.projectId(), this.docId(), true);
             },
             error: () => {
               this._reverting.set(false);
