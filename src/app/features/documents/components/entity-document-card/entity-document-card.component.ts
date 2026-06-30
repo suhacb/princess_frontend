@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { DocumentStatusChipComponent } from '../document-status-chip/document-status-chip.component';
+import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DocumentService } from '../../services/document.service';
 import {
@@ -32,6 +33,7 @@ import {
     MatTooltipModule,
     SkeletonComponent,
     DocumentStatusChipComponent,
+    StatusChipComponent,
   ],
   templateUrl: './entity-document-card.component.html',
   styleUrl: './entity-document-card.component.scss',
@@ -72,10 +74,6 @@ export class EntityDocumentCardComponent {
     if (d.status === 'confirmed' || d.status === 'superseded') return false;
     return ONLYOFFICE_EDITABLE_MIME_TYPES.has(d.currentVersion.mimeType);
   });
-
-  setDocument(doc: Document | null): void {
-    this.linkedDocument.set(doc);
-  }
 
   protected openInRegistry(): void {
     const d = this.linkedDocument();

@@ -166,4 +166,20 @@ describe('MeetingDetailComponent', () => {
     expect(f.componentInstance.members()).toHaveLength(1);
     expect(f.componentInstance.members()[0].person.name).toBe('Bob');
   });
+
+  describe('entity-document-card integration', () => {
+    it('renders the document card section', () => {
+      const svc = { show: vi.fn().mockReturnValue(of(makeMeeting())) };
+      const f = setup(svc);
+      expect(f.nativeElement.querySelector('app-entity-document-card')).toBeTruthy();
+    });
+
+    it('passes null initialDocument to card when meeting has no linked doc', () => {
+      const svc = { show: vi.fn().mockReturnValue(of(makeMeeting({ document: null }))) };
+      const f = setup(svc);
+      const card = f.debugElement.query(By.css('app-entity-document-card'));
+      expect(card).toBeTruthy();
+      expect(f.nativeElement.querySelector('.edc__empty')).toBeTruthy();
+    });
+  });
 });

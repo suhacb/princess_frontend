@@ -10,7 +10,7 @@
       <div class="edc__doc-info">
         <span class="edc__doc-title">{{ doc.title }}</span>
         <div class="edc__doc-meta">
-          <span class="edc__type-label">{{ doc.typeLabel }}</span>
+          <app-status-chip [label]="doc.typeLabel" tone="neutral" />
           <app-document-status-chip [status]="doc.status" />
         </div>
       </div>
