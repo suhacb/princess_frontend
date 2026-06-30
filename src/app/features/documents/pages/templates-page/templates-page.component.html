@@ -1,0 +1,116 @@
+<div class="templates-layout" [class.detail-open]="selected()">
+
+  <div class="tree-pane">
+    <div class="tree-pane__header">
+      <h2 class="tree-pane__title">Document Templates</h2>
+      <button mat-flat-button color="primary" (click)="openCreateRoot()">
+        <mat-icon>add</mat-icon> New template
+      </button>
+    </div>
+
+    @if (loading() && tree().length === 0) {
+      <div class="skeleton-rows">
+        @for (n of [1, 2, 3]; track n) {
+          <app-skeleton height="44px" borderRadius="0" />
+        }
+      </div>
+    } @else if (tree().length === 0) {
+      <app-empty-state
+        message="No templates configured. Create a root template to define project-wide styling, then add category and type overrides."
+      />
+    } @else {
+      <div class="tree">
+        @for (root of tree(); track root.id) {
+          <div class="tree-node tree-node--root">
+            <button
+              class="tree-node__row"
+              [class.tree-node__row--selected]="selected()?.id === root.id"
+              (click)="selectNode(root)"
+            >
+              <button
+                class="tree-node__expand-btn"
+                (click)="$event.stopPropagation(); toggleExpanded(root.id)"
+                [attr.aria-label]="expandedIds().has(root.id) ? 'Collapse' : 'Expand'"
+              >
+                <mat-icon class="tree-node__expand-icon">
+                  {{ expandedIds().has(root.id) ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </button>
+              <mat-icon class="tree-node__icon">layers</mat-icon>
+              <span class="tree-node__name">{{ root.name }}</span>
+              <span class="tree-node__level level--{{ root.level }}">{{ root.level }}</span>
+            </button>
+
+            @if (expandedIds().has(root.id)) {
+              @for (cat of root.children; track cat.id) {
+                <div class="tree-node tree-node--category">
+                  <button
+                    class="tree-node__row"
+                    [class.tree-node__row--selected]="selected()?.id === cat.id"
+                    (click)="selectNode(cat)"
+                  >
+                    <button
+                      class="tree-node__expand-btn"
+                      (click)="$event.stopPropagation(); toggleExpanded(cat.id)"
+                      [attr.aria-label]="expandedIds().has(cat.id) ? 'Collapse' : 'Expand'"
+                    >
+                      <mat-icon class="tree-node__expand-icon">
+                        {{ expandedIds().has(cat.id) ? 'expand_more' : 'chevron_right' }}
+                      </mat-icon>
+                    </button>
+                    <mat-icon class="tree-node__icon">folder</mat-icon>
+                    <span class="tree-node__name">{{ cat.name }}</span>
+                    @if (cat.categoryLabel) {
+                      <span class="tree-node__meta">{{ cat.categoryLabel }}</span>
+                    }
+                  </button>
+
+                  @if (expandedIds().has(cat.id)) {
+                    @for (leaf of cat.children; track leaf.id) {
+                      <div class="tree-node tree-node--type">
+                        <button
+                          class="tree-node__row"
+                          [class.tree-node__row--selected]="selected()?.id === leaf.id"
+                          (click)="selectNode(leaf)"
+                        >
+                          <span class="tree-node__indent"></span>
+                          <mat-icon class="tree-node__icon">description</mat-icon>
+                          <span class="tree-node__name">{{ leaf.name }}</span>
+                          @if (leaf.typeLabel) {
+                            <span class="tree-node__meta">{{ leaf.typeLabel }}</span>
+                          }
+                          @if (leaf.fileName) {
+                            <span class="file-badge" matTooltip="{{ leaf.fileName }}">
+                              <mat-icon>attach_file</mat-icon>
+                            </span>
+                          }
+                        </button>
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (selected(); as node) {
+    @if (project(); as p) {
+      <div class="detail-pane">
+        <div class="detail-pane__close-row">
+          <button mat-icon-button (click)="closeDetail()" aria-label="Close detail">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <app-template-node-detail
+          [node]="node"
+          [projectId]="p.id"
+          (nodeDeleted)="onNodeDeleted()"
+        />
+      </div>
+    }
+  }
+</div>
