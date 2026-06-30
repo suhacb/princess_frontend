@@ -92,6 +92,12 @@ export const cockpitRoutes: Routes = [
         title: 'Classification Review Queue',
       },
       {
+        path: 'documents/templates',
+        loadComponent: () =>
+          import('../documents/pages/templates-page/templates-page.component').then(m => m.TemplatesPageComponent),
+        title: 'Document Templates',
+      },
+      {
         path: 'documents/:docId',
         loadComponent: () =>
           import('../documents/pages/documents-page/documents-page.component').then(m => m.DocumentsPageComponent),

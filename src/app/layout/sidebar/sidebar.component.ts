@@ -93,6 +93,12 @@ export class SidebarComponent {
             roles: ['pm', 'pmo'],
             badge: queueCount > 0 ? queueCount : undefined,
           },
+          {
+            label: 'Templates',
+            icon: 'style',
+            route: `${base}/documents/templates`,
+            roles: ['pmo'],
+          },
         ],
       },
     ];

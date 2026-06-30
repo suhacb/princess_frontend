@@ -1,0 +1,201 @@
+<div class="node-detail">
+  <div class="node-detail__header">
+    <div class="node-meta">
+      <span class="node-kind-badge node-kind-badge--{{ node().kind }}">{{ node().kind }}</span>
+      @if (node().categoryLabel) {
+        <span class="node-meta__breadcrumb">{{ node().categoryLabel }}</span>
+      }
+      @if (node().typeLabel) {
+        <span class="node-meta__sep">›</span>
+        <span class="node-meta__breadcrumb">{{ node().typeLabel }}</span>
+      }
+    </div>
+    <div class="node-detail__actions">
+      @if (node().kind !== 'type') {
+        <button mat-stroked-button (click)="openAddChild()">
+          <mat-icon>add</mat-icon> Add child
+        </button>
+      }
+      <button mat-icon-button color="warn" (click)="openDelete()" matTooltip="Delete template">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="settings-form" (ngSubmit)="save()">
+    <section class="form-section">
+      <h3 class="form-section__title">General</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="2"></textarea>
+      </mat-form-field>
+    </section>
+
+    <section class="form-section">
+      <h3 class="form-section__title">Typography</h3>
+
+      <div class="field-with-hint">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Font family</mat-label>
+          <input matInput formControlName="fontFamily" placeholder="e.g. Arial" />
+          @if (!isLocallySet('fontFamily') && inheritedValue('fontFamily')) {
+            <mat-hint>Inherited: {{ inheritedValue('fontFamily') }}</mat-hint>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="field-with-hint">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Font size (pt)</mat-label>
+          <input matInput type="number" formControlName="fontSize" placeholder="e.g. 11" min="6" max="72" />
+          @if (!isLocallySet('fontSize') && inheritedValue('fontSize') != null) {
+            <mat-hint>Inherited: {{ inheritedValue('fontSize') }} pt</mat-hint>
+          }
+        </mat-form-field>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h3 class="form-section__title">Branding</h3>
+
+      <div class="color-row">
+        <mat-form-field appearance="outline" class="flex-grow">
+          <mat-label>Primary colour</mat-label>
+          <input matInput formControlName="primaryColor" placeholder="#003399" />
+          @if (!isLocallySet('primaryColor') && inheritedValue('primaryColor')) {
+            <mat-hint>Inherited: {{ inheritedValue('primaryColor') }}</mat-hint>
+          }
+        </mat-form-field>
+        <input
+          type="color"
+          class="color-swatch"
+          [value]="form.value.primaryColor || inheritedValue('primaryColor') || '#000000'"
+          (input)="form.controls.primaryColor.setValue($any($event.target).value); form.markAsDirty()"
+          matTooltip="Pick colour"
+        />
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Logo S3 key</mat-label>
+        <input matInput formControlName="logoS3Key" placeholder="logos/my-logo.png" />
+        @if (!isLocallySet('logoS3Key') && inheritedValue('logoS3Key')) {
+          <mat-hint>Inherited: {{ inheritedValue('logoS3Key') }}</mat-hint>
+        }
+      </mat-form-field>
+    </section>
+
+    <section class="form-section">
+      <h3 class="form-section__title">Header &amp; Footer</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Header text</mat-label>
+        <input matInput formControlName="headerText" />
+        @if (!isLocallySet('headerText') && inheritedValue('headerText')) {
+          <mat-hint>Inherited: {{ inheritedValue('headerText') }}</mat-hint>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Footer text</mat-label>
+        <input matInput formControlName="footerText" />
+        @if (!isLocallySet('footerText') && inheritedValue('footerText')) {
+          <mat-hint>Inherited: {{ inheritedValue('footerText') }}</mat-hint>
+        }
+      </mat-form-field>
+    </section>
+
+    <section class="form-section">
+      <h3 class="form-section__title">Margins (mm)</h3>
+      <div class="margins-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Top</mat-label>
+          <input matInput type="number" formControlName="marginTop" min="0" />
+          @if (form.value.marginTop == null && inheritedMargin('top') != null) {
+            <mat-hint>Inherited: {{ inheritedMargin('top') }}</mat-hint>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Right</mat-label>
+          <input matInput type="number" formControlName="marginRight" min="0" />
+          @if (form.value.marginRight == null && inheritedMargin('right') != null) {
+            <mat-hint>Inherited: {{ inheritedMargin('right') }}</mat-hint>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Bottom</mat-label>
+          <input matInput type="number" formControlName="marginBottom" min="0" />
+          @if (form.value.marginBottom == null && inheritedMargin('bottom') != null) {
+            <mat-hint>Inherited: {{ inheritedMargin('bottom') }}</mat-hint>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Left</mat-label>
+          <input matInput type="number" formControlName="marginLeft" min="0" />
+          @if (form.value.marginLeft == null && inheritedMargin('left') != null) {
+            <mat-hint>Inherited: {{ inheritedMargin('left') }}</mat-hint>
+          }
+        </mat-form-field>
+      </div>
+    </section>
+
+    @if (node().kind === 'type') {
+      <section class="form-section">
+        <h3 class="form-section__title">Template file (.docx)</h3>
+        @if (node().fileName) {
+          <div class="file-badge">
+            <mat-icon>description</mat-icon>
+            <span>{{ node().fileName }}</span>
+          </div>
+        } @else {
+          <p class="no-file-hint">No file uploaded yet.</p>
+        }
+
+        <label class="upload-btn-label">
+          <input
+            type="file"
+            accept=".docx,.doc,.odt"
+            class="hidden-input"
+            (change)="onFileSelected($event)"
+            [disabled]="uploading() || saving()"
+          />
+          <button
+            mat-stroked-button
+            type="button"
+            [disabled]="uploading() || saving()"
+            (click)="$any($event.target).closest('label').querySelector('input').click()"
+          >
+            <mat-icon>upload</mat-icon>
+            {{ node().fileName ? 'Replace file' : 'Upload .docx' }}
+          </button>
+        </label>
+
+        @if (uploading()) {
+          <p class="upload-hint">Uploading…</p>
+        }
+        @if (uploadError()) {
+          <p class="upload-error">{{ uploadError() }}</p>
+        }
+      </section>
+    }
+
+    <div class="form-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="form.pristine || saving()"
+      >
+        {{ saving() ? 'Saving…' : 'Save changes' }}
+      </button>
+      @if (!form.pristine) {
+        <button mat-button type="button" (click)="discard()">Discard</button>
+      }
+    </div>
+  </form>
+</div>
