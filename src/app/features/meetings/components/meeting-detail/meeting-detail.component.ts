@@ -22,13 +22,14 @@ import {
   MeetingActionItem,
 } from '../../contracts/meeting.contracts';
 import { MeetingService } from '../../services/meeting.service';
+import { EntityDocumentCardComponent } from '../../../documents/components/entity-document-card/entity-document-card.component';
 
 @Component({
   selector: 'app-meeting-detail',
   imports: [
     DatePipe, TitleCasePipe, ReactiveFormsModule,
     MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatTooltipModule,
-    EmptyStateComponent, SkeletonComponent,
+    EmptyStateComponent, SkeletonComponent, EntityDocumentCardComponent,
   ],
   templateUrl: './meeting-detail.component.html',
   styleUrl: './meeting-detail.component.scss',

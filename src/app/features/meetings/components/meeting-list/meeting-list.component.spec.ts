@@ -10,7 +10,7 @@ function makeMeeting(overrides: Partial<Meeting> = {}): Meeting {
     dateTime: '2026-07-01T09:00:00Z',
     agenda: null, minutesBody: null,
     attendees: [], actionItems: [],
-    actionItemsOpen: 0, actionItemsClosed: 0,
+    actionItemsOpen: 0, actionItemsClosed: 0, document: null,
     ...overrides,
   };
 }

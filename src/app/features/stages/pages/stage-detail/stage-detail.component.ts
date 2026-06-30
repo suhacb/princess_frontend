@@ -20,6 +20,7 @@ import {
 } from '../../contracts/stage.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { BoundaryListComponent } from '../../../boundaries/pages/boundary-list/boundary-list.component';
+import { EntityDocumentCardComponent } from '../../../documents/components/entity-document-card/entity-document-card.component';
 
 @Component({
   selector: 'app-stage-detail',
@@ -34,6 +35,7 @@ import { BoundaryListComponent } from '../../../boundaries/pages/boundary-list/b
     SkeletonComponent,
     TitleCasePipe,
     BoundaryListComponent,
+    EntityDocumentCardComponent,
   ],
   templateUrl: './stage-detail.component.html',
   styleUrl: './stage-detail.component.scss',

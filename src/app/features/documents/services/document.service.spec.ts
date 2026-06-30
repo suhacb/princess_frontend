@@ -375,4 +375,39 @@ describe('DocumentService', () => {
       expect(service.reviewQueue()[0].id).toBe(2);
     });
   });
+
+  describe('linkDocument()', () => {
+    it('calls POST .../link with correct payload', () => {
+      apiMock.post.mockReturnValue(of(undefined));
+      service.linkDocument(3, 1, 'meeting', 42).subscribe();
+      expect(apiMock.post).toHaveBeenCalledWith(
+        '/projects/3/documents/1/link',
+        { linkable_type: 'meeting', linkable_id: 42 },
+      );
+    });
+  });
+
+  describe('unlinkDocument()', () => {
+    it('calls DELETE .../link', () => {
+      apiMock.delete.mockReturnValue(of(undefined));
+      service.unlinkDocument(3, 1).subscribe();
+      expect(apiMock.delete).toHaveBeenCalledWith('/projects/3/documents/1/link');
+    });
+  });
+
+  describe('searchForLinking()', () => {
+    it('returns mapped documents without search param when omitted', () => {
+      apiMock.get.mockReturnValue(of({ data: [stubApi], meta: {} }));
+      let result: unknown;
+      service.searchForLinking(3).subscribe(d => (result = d));
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents', {});
+      expect((result as unknown[]).length).toBe(1);
+    });
+
+    it('passes search param when provided', () => {
+      apiMock.get.mockReturnValue(of({ data: [], meta: {} }));
+      service.searchForLinking(3, 'brief').subscribe();
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents', { search: 'brief' });
+    });
+  });
 });

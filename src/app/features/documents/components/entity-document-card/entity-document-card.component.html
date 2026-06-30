@@ -1,0 +1,97 @@
+<div class="edc">
+  @if (loading()) {
+    <div class="edc__skeleton">
+      <app-skeleton height="20px" width="180px" borderRadius="4px" />
+      <app-skeleton height="16px" width="100px" borderRadius="4px" />
+    </div>
+  } @else if (linkedDocument(); as doc) {
+    <!-- State: linked -->
+    <div class="edc__linked">
+      <div class="edc__doc-info">
+        <span class="edc__doc-title">{{ doc.title }}</span>
+        <div class="edc__doc-meta">
+          <span class="edc__type-label">{{ doc.typeLabel }}</span>
+          <app-document-status-chip [status]="doc.status" />
+        </div>
+      </div>
+      <div class="edc__actions">
+        <button
+          mat-icon-button
+          (click)="openInRegistry()"
+          matTooltip="Open in document registry"
+          aria-label="Open document"
+        >
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+        @if (canEdit()) {
+          <button
+            mat-icon-button
+            (click)="openEditor()"
+            matTooltip="Edit in OnlyOffice"
+            aria-label="Edit document"
+          >
+            <mat-icon>edit_document</mat-icon>
+          </button>
+        }
+        <button
+          mat-icon-button
+          (click)="confirmUnlink()"
+          [disabled]="working()"
+          matTooltip="Remove link"
+          aria-label="Unlink document"
+          class="edc__unlink-btn"
+        >
+          <mat-icon>link_off</mat-icon>
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- State: not linked -->
+    <div class="edc__empty">
+      <mat-icon class="edc__empty-icon">insert_drive_file</mat-icon>
+      <p class="edc__empty-hint">No document linked</p>
+      <div class="edc__empty-actions">
+        <button
+          mat-stroked-button
+          (click)="openLinkDialog()"
+          [disabled]="working()"
+        >
+          <mat-icon>link</mat-icon>
+          Link existing
+        </button>
+
+        @if (allowedTypes().length === 1) {
+          <button
+            mat-flat-button
+            (click)="createAndLink(allowedTypes()[0])"
+            [disabled]="working()"
+          >
+            <mat-icon>add</mat-icon>
+            Create from template
+          </button>
+        } @else {
+          <button
+            mat-flat-button
+            [matMenuTriggerFor]="createMenu"
+            [disabled]="working()"
+          >
+            <mat-icon>add</mat-icon>
+            Create from template
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #createMenu="matMenu">
+            @for (type of allowedTypes(); track type) {
+              <button mat-menu-item (click)="createAndLink(type)">
+                {{ typeLabels[type] }}
+              </button>
+            }
+          </mat-menu>
+        }
+      </div>
+    </div>
+  }
+
+  @if (error()) {
+    <p class="edc__error">{{ error() }}</p>
+  }
+</div>

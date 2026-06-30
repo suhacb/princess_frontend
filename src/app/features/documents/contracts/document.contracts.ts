@@ -252,6 +252,30 @@ export function mapDocument(api: DocumentApiResource): Document {
   };
 }
 
+// ─── Entity document link contracts ───────────────────────────────────────────
+
+export type DocumentLinkableType =
+  | 'meeting'
+  | 'stage'
+  | 'project'
+  | 'highlight_report'
+  | 'checkpoint_report'
+  | 'exception_report';
+
+export const ENTITY_DOCUMENT_TYPES: Record<DocumentLinkableType, DocumentType[]> = {
+  meeting:           ['meeting_agenda', 'meeting_minutes'],
+  stage:             ['stage_plan'],
+  project:           ['project_initiation_document'],
+  highlight_report:  ['highlight_report'],
+  checkpoint_report: ['checkpoint_report'],
+  exception_report:  ['exception_report'],
+};
+
+export interface LinkDocumentPayload {
+  linkable_type: DocumentLinkableType;
+  linkable_id: number;
+}
+
 export interface EditorConfigApiResource {
   document: {
     fileType: string;

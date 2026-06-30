@@ -104,9 +104,16 @@
     <!-- Nested tabs: Plan / Logs / QA / Boundaries -->
     <mat-tab-group class="stage-tabs">
       <mat-tab label="Plan">
-        <div class="tab-placeholder">
-          <mat-icon>description</mat-icon>
-          <p>Stage plan will be shown here.</p>
+        <div class="tab-content">
+          @if (project() && stageIdNum(); as sId) {
+            <app-entity-document-card
+              [projectId]="project()!.id"
+              entityType="stage"
+              [entityId]="sId"
+              [loading]="loading() && !stage()"
+              [initialDocument]="stage()?.document ?? null"
+            />
+          }
         </div>
       </mat-tab>
       <mat-tab label="Logs">

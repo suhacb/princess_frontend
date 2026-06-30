@@ -76,6 +76,21 @@
       }
     </section>
 
+    <!-- Linked document -->
+    <section class="md__section">
+      <h4 class="md__section-title">
+        <mat-icon class="md__section-icon">attach_file</mat-icon>
+        Document
+      </h4>
+      <app-entity-document-card
+        [projectId]="projectId()"
+        entityType="meeting"
+        [entityId]="meetingId()"
+        [loading]="loading()"
+        [initialDocument]="meeting()?.document ?? null"
+      />
+    </section>
+
     <!-- Action items -->
     <section class="md__section">
       <div class="md__section-header">
