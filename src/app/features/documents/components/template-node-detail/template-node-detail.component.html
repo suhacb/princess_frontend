@@ -159,7 +159,7 @@
         <label class="upload-btn-label">
           <input
             type="file"
-            accept=".docx,.doc,.odt"
+            accept=".docx"
             class="hidden-input"
             (change)="onFileSelected($event)"
             [disabled]="uploading() || saving()"
@@ -195,6 +195,9 @@
       </button>
       @if (!form.pristine) {
         <button mat-button type="button" (click)="discard()">Discard</button>
+      }
+      @if (saveError()) {
+        <span class="save-error">{{ saveError() }}</span>
       }
     </div>
   </form>

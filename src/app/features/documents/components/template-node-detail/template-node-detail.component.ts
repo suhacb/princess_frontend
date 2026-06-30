@@ -54,6 +54,7 @@ export class TemplateNodeDetailComponent implements OnChanges {
   protected readonly saving = this.templateService.saving;
   protected readonly uploading = signal(false);
   protected readonly uploadError = signal<string | null>(null);
+  protected readonly saveError = signal<string | null>(null);
 
   protected readonly form = this.fb.group({
     name: [''],
@@ -142,18 +143,13 @@ export class TemplateNodeDetailComponent implements OnChanges {
     if (v.headerText) settings.headerText = v.headerText;
     if (v.footerText) settings.footerText = v.footerText;
 
-    const hasMargins =
-      v.marginTop != null ||
-      v.marginRight != null ||
-      v.marginBottom != null ||
-      v.marginLeft != null;
-    if (hasMargins) {
-      settings.margins = {
-        top: v.marginTop ?? 0,
-        right: v.marginRight ?? 0,
-        bottom: v.marginBottom ?? 0,
-        left: v.marginLeft ?? 0,
-      };
+    const marginEntries: TemplateSettings['margins'] = {};
+    if (v.marginTop != null) marginEntries!.top = v.marginTop;
+    if (v.marginRight != null) marginEntries!.right = v.marginRight;
+    if (v.marginBottom != null) marginEntries!.bottom = v.marginBottom;
+    if (v.marginLeft != null) marginEntries!.left = v.marginLeft;
+    if (Object.keys(marginEntries!).length > 0) {
+      settings.margins = marginEntries;
     }
 
     const payload: UpdateTemplatePayload = {
@@ -162,8 +158,10 @@ export class TemplateNodeDetailComponent implements OnChanges {
       settings,
     };
 
+    this.saveError.set(null);
     this.templateService.update(this.projectId(), this.node().id, payload).subscribe({
       next: () => this.form.markAsPristine(),
+      error: () => this.saveError.set('Failed to save changes. Please try again.'),
     });
   }
 

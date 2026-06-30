@@ -36,6 +36,13 @@ function setup(data: CreateTemplateDialogData) {
   return { fixture, dialogRef };
 }
 
+function fillName(fixture: ComponentFixture<CreateTemplateDialogComponent>, name: string): void {
+  const input: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="name"]');
+  input.value = name;
+  input.dispatchEvent(new Event('input'));
+  fixture.detectChanges();
+}
+
 describe('CreateTemplateDialogComponent', () => {
   afterEach(() => TestBed.resetTestingModule());
 
@@ -64,10 +71,58 @@ describe('CreateTemplateDialogComponent', () => {
     expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('does not close with payload when form is invalid (name empty)', () => {
+  it('does not close with payload when name is empty', () => {
     const { fixture, dialogRef } = setup({ parent: null });
     const confirmBtn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
     confirmBtn.click();
     expect(dialogRef.close).not.toHaveBeenCalledWith(expect.objectContaining({ name: expect.any(String) }));
+  });
+
+  it('closes with correct payload for root node (no parent)', () => {
+    const { fixture, dialogRef } = setup({ parent: null });
+    fillName(fixture, 'My Root');
+    const confirmBtn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
+    confirmBtn.click();
+    expect(dialogRef.close).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'My Root',
+      parent_id: null,
+    }));
+  });
+
+  it('shows category select when parent is root (creating category node)', () => {
+    const { fixture } = setup({ parent: stubRoot });
+    expect(fixture.nativeElement.querySelector('mat-select[formControlName="category"]')).not.toBeNull();
+  });
+
+  it('shows type select when parent is category (creating type node)', () => {
+    const { fixture } = setup({ parent: stubCategoryNode });
+    expect(fixture.nativeElement.querySelector('mat-select[formControlName="type"]')).not.toBeNull();
+  });
+
+  it('does not show category or type select when creating root', () => {
+    const { fixture } = setup({ parent: null });
+    expect(fixture.nativeElement.querySelector('mat-select[formControlName="category"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('mat-select[formControlName="type"]')).toBeNull();
+  });
+
+  it('keeps confirm button disabled when category is required but not selected', () => {
+    const { fixture } = setup({ parent: stubRoot });
+    fillName(fixture, 'My Category');
+    const confirmBtn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
+    expect(confirmBtn.disabled).toBe(true);
+  });
+
+  it('includes parent_id in payload when creating child node', () => {
+    const { fixture, dialogRef } = setup({ parent: stubRoot });
+    fillName(fixture, 'My Category');
+    const component = fixture.componentInstance as unknown as { form: { controls: { category: { setValue: (v: string) => void } } } };
+    component.form.controls.category.setValue('initiation');
+    fixture.detectChanges();
+    const confirmBtn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
+    confirmBtn.click();
+    expect(dialogRef.close).toHaveBeenCalledWith(expect.objectContaining({
+      parent_id: 1,
+      category: 'initiation',
+    }));
   });
 });

@@ -20,6 +20,7 @@ const stubCategoryNode: DocumentTemplateNode = {
   ...stubRoot,
   id: 2, parentId: 1, category: 'initiation', type: null,
   name: 'Initiation', kind: 'category', categoryLabel: 'Initiation',
+  children: [],
 };
 
 const stubRootWithChild: DocumentTemplateNode = {
@@ -30,10 +31,11 @@ const stubRootWithChild: DocumentTemplateNode = {
 function setup(tree: DocumentTemplateNode[] = [], selected: DocumentTemplateNode | null = null) {
   const treeSignal = signal<DocumentTemplateNode[]>(tree);
   const selectedSignal = signal<DocumentTemplateNode | null>(selected);
+  const loadingSignal = signal(false);
 
   const templateService = {
     tree: treeSignal.asReadonly(),
-    loading: signal(false).asReadonly(),
+    loading: loadingSignal.asReadonly(),
     saving: signal(false).asReadonly(),
     selected: selectedSignal.asReadonly(),
     selectedId: signal<number | null>(null).asReadonly(),
@@ -43,6 +45,7 @@ function setup(tree: DocumentTemplateNode[] = [], selected: DocumentTemplateNode
     update: vi.fn().mockReturnValue(of(stubRoot)),
     remove: vi.fn().mockReturnValue(of(undefined)),
     uploadFile: vi.fn().mockReturnValue(of(stubRoot)),
+    _loadingSignal: loadingSignal,
   };
   const projectService = {
     selectedProject: signal({ id: 3, name: 'Test Project' } as never).asReadonly(),
@@ -61,7 +64,7 @@ function setup(tree: DocumentTemplateNode[] = [], selected: DocumentTemplateNode
   const fixture: ComponentFixture<TemplatesPageComponent> =
     TestBed.createComponent(TemplatesPageComponent);
   fixture.detectChanges();
-  return { fixture, templateService, treeSignal, selectedSignal, dialogSpy };
+  return { fixture, templateService, treeSignal, selectedSignal, loadingSignal, dialogSpy };
 }
 
 describe('TemplatesPageComponent', () => {
@@ -119,5 +122,55 @@ describe('TemplatesPageComponent', () => {
     const row: HTMLButtonElement = fixture.nativeElement.querySelector('.tree-node__row');
     row.click();
     expect(templateService.select).toHaveBeenCalledWith(1);
+  });
+
+  it('shows skeleton rows while loading', () => {
+    const { fixture, loadingSignal } = setup([]);
+    loadingSignal.set(true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('app-skeleton').length).toBeGreaterThan(0);
+  });
+
+  it('shows file badge in tree for leaf nodes with a file', () => {
+    const leafWithFile: DocumentTemplateNode = {
+      ...stubCategoryNode,
+      id: 3, parentId: 1, category: 'initiation', type: 'project_brief',
+      kind: 'type', typeLabel: 'Project Brief',
+      fileName: 'brief.docx', s3Key: 'templates/brief.docx',
+    };
+    const rootWithLeaf: DocumentTemplateNode = {
+      ...stubRoot,
+      children: [{ ...stubCategoryNode, children: [leafWithFile] }],
+    };
+    const { fixture } = setup([rootWithLeaf]);
+    // expand root then category
+    const expandBtns: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('.tree-node__expand-btn');
+    expandBtns[0].click();
+    fixture.detectChanges();
+    const expandBtns2: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('.tree-node__expand-btn');
+    expandBtns2[1].click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.file-badge')).not.toBeNull();
+  });
+
+  it('shows exact empty state hint text', () => {
+    const { fixture } = setup([]);
+    expect(fixture.nativeElement.textContent).toContain('Create a root template to define project-wide styling');
+  });
+
+  it('calls service.create when create dialog returns a payload', () => {
+    const { fixture, templateService, dialogSpy } = setup([]);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of({ name: 'New Root', parent_id: null }) });
+    const btn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
+    btn.click();
+    expect(templateService.create).toHaveBeenCalledWith(3, { name: 'New Root', parent_id: null });
+  });
+
+  it('does not call service.create when create dialog is cancelled', () => {
+    const { fixture, templateService, dialogSpy } = setup([]);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(null) });
+    const btn: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-flat-button]');
+    btn.click();
+    expect(templateService.create).not.toHaveBeenCalled();
   });
 });

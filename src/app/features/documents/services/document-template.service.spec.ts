@@ -62,6 +62,22 @@ describe('DocumentTemplateService', () => {
   afterEach(() => TestBed.resetTestingModule());
 
   describe('list()', () => {
+    it('handles multiple root nodes in the tree', () => {
+      const { service, apiMock } = setup();
+      const rootB: DocumentTemplateApiResource = { ...stubApi, id: 10, name: 'Root B' };
+      apiMock.get.mockReturnValue(of({ data: [stubApi, rootB] }));
+      service.list(3).subscribe();
+      expect(service.tree().length).toBe(2);
+    });
+
+    it('handles templates with completely empty settings', () => {
+      const { service, apiMock } = setup();
+      const emptySettings: DocumentTemplateApiResource = { ...stubApi, settings: {} };
+      apiMock.get.mockReturnValue(of({ data: [emptySettings] }));
+      service.list(3).subscribe();
+      expect(service.tree()[0].effectiveSettings).toEqual({});
+    });
+
     it('populates templates signal and clears loading on success', () => {
       const { service, apiMock } = setup();
       apiMock.get.mockReturnValue(of({ data: [stubApi, stubCategoryApi, stubTypeApi] }));

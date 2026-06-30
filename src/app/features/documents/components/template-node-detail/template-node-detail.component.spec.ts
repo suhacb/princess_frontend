@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TemplateNodeDetailComponent } from './template-node-detail.component';
 import { DocumentTemplateService } from '../../services/document-template.service';
@@ -115,5 +115,79 @@ describe('TemplateNodeDetailComponent', () => {
     const deleteBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[color="warn"]');
     deleteBtn.click();
     expect(dialogSpy.open).toHaveBeenCalled();
+  });
+
+  it('calls service.remove when delete is confirmed', () => {
+    const { fixture, templateService, dialogSpy } = setup(stubRootNode);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) });
+    const deleteBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[color="warn"]');
+    deleteBtn.click();
+    expect(templateService.remove).toHaveBeenCalledWith(3, 1);
+  });
+
+  it('does not call service.remove when delete is cancelled', () => {
+    const { fixture, templateService, dialogSpy } = setup(stubRootNode);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(false) });
+    const deleteBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[color="warn"]');
+    deleteBtn.click();
+    expect(templateService.remove).not.toHaveBeenCalled();
+  });
+
+  it('shows save error message when update fails', () => {
+    const { fixture, templateService } = setup(stubRootNode);
+    templateService.update.mockReturnValue(throwError(() => new Error('fail')));
+    const nameInput: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="name"]');
+    nameInput.value = 'Changed';
+    nameInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const saveBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
+    saveBtn.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.save-error')).not.toBeNull();
+  });
+
+  it('shows upload error message when upload fails', () => {
+    const { fixture, templateService } = setup(stubTypeNode);
+    templateService.uploadFile.mockReturnValue(throwError(() => new Error('fail')));
+    const fileInput: HTMLInputElement = fixture.nativeElement.querySelector('input[type="file"]');
+    const file = new File([''], 'bad.docx');
+    Object.defineProperty(fileInput, 'files', { value: [file], configurable: true });
+    fileInput.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.upload-error')).not.toBeNull();
+  });
+
+  it('save payload does not include empty settings fields', () => {
+    const nodeWithNoSettings: DocumentTemplateNode = {
+      ...stubRootNode,
+      settings: {},
+      effectiveSettings: {},
+    };
+    const { fixture, templateService } = setup(nodeWithNoSettings);
+    const nameInput: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="name"]');
+    nameInput.value = 'Changed Name';
+    nameInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const saveBtn: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
+    saveBtn.click();
+    const callArgs = templateService.update.mock.calls[0][2];
+    expect(callArgs.settings.fontFamily).toBeUndefined();
+    expect(callArgs.settings.headerText).toBeUndefined();
+    expect(callArgs.settings.margins).toBeUndefined();
+  });
+
+  it('resets form to node own settings on discard', () => {
+    const { fixture } = setup(stubRootNode);
+    const nameInput: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="name"]');
+    nameInput.value = 'Dirty Value';
+    nameInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const discardBtn = (Array.from(
+      fixture.nativeElement.querySelectorAll('button')
+    ) as HTMLButtonElement[]).find(b => b.textContent?.includes('Discard'))!;
+    discardBtn.click();
+    fixture.detectChanges();
+    const resetInput: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="name"]');
+    expect(resetInput.value).toBe('Root Template');
   });
 });

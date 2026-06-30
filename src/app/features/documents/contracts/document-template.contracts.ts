@@ -15,12 +15,12 @@ export interface TemplateSettings {
   logoS3Key?: string;
   headerText?: string;
   footerText?: string;
-  margins?: {
+  margins?: Partial<{
     top: number;
     right: number;
     bottom: number;
     left: number;
-  };
+  }>;
 }
 
 export interface DocumentTemplateApiResource {
@@ -104,11 +104,11 @@ export function mapDocumentTemplate(api: DocumentTemplateApiResource): DocumentT
 }
 
 export function mergeSettings(parent: TemplateSettings, child: TemplateSettings): TemplateSettings {
-  return {
-    ...parent,
-    ...child,
-    margins: child.margins ?? parent.margins,
-  };
+  const merged: TemplateSettings = { ...parent, ...child };
+  if (parent.margins || child.margins) {
+    merged.margins = { ...(parent.margins ?? {}), ...(child.margins ?? {}) };
+  }
+  return merged;
 }
 
 export function buildTemplateTree(templates: DocumentTemplate[]): DocumentTemplateNode[] {

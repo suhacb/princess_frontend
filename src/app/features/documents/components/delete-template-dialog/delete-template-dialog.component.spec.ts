@@ -54,6 +54,18 @@ describe('DeleteTemplateDialogComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('1 child template');
   });
 
+  it('uses plural "templates" when node has 2+ children', () => {
+    const nodeWith2Children: DocumentTemplateNode = {
+      ...stubNode,
+      children: [
+        { ...stubNode, id: 2, name: 'Child A', kind: 'category' },
+        { ...stubNode, id: 3, name: 'Child B', kind: 'category' },
+      ],
+    };
+    const { fixture } = setup({ node: nodeWith2Children });
+    expect(fixture.nativeElement.textContent).toContain('2 child templates');
+  });
+
   it('closes with true on confirm', () => {
     const { fixture, dialogRef } = setup({ node: stubNode });
     const deleteBtn: HTMLButtonElement = fixture.nativeElement.querySelector('[color="warn"]');
