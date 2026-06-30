@@ -90,7 +90,7 @@ describe('StageService', () => {
 
   describe('create()', () => {
     it('appends the created stage to the stages signal', async () => {
-      service['_stages'].set([{ ...stubApi2, projectId: 10, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' }]);
+      service['_stages'].set([{ ...stubApi2, projectId: 10, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' }]);
       const payload = { name: 'Initiation Stage', type: 'initiation' as const, planned_start_date: null, planned_end_date: null, tolerances: stubApi.tolerances };
       const result$ = firstValueFrom(service.create(10, payload));
       http.expectOne(BASE).flush({ data: stubApi });
@@ -103,7 +103,7 @@ describe('StageService', () => {
 
   describe('update()', () => {
     it('replaces the updated stage in the stages signal', async () => {
-      const mapped = { id: 1, projectId: 10, name: 'Initiation Stage', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' };
+      const mapped = { id: 1, projectId: 10, name: 'Initiation Stage', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' };
       service['_stages'].set([mapped]);
       const result$ = firstValueFrom(service.update(10, 1, { name: 'Updated' }));
       http.expectOne(`${BASE}/1`).flush({ data: { ...stubApi, name: 'Updated' } });
@@ -112,7 +112,7 @@ describe('StageService', () => {
     });
 
     it('updates selectedStage when the same stage is selected', async () => {
-      const mapped = { id: 1, projectId: 10, name: 'Initiation Stage', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' };
+      const mapped = { id: 1, projectId: 10, name: 'Initiation Stage', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: '2026-01-01', plannedEndDate: '2026-02-01', actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' };
       service['_selectedStage'].set(mapped);
       service['_stages'].set([mapped]);
       const result$ = firstValueFrom(service.update(10, 1, { name: 'Updated' }));
@@ -124,7 +124,7 @@ describe('StageService', () => {
 
   describe('remove()', () => {
     it('removes the stage from the stages signal', async () => {
-      const mapped1 = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' };
+      const mapped1 = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' };
       const mapped2 = { ...mapped1, id: 2, name: 'B' };
       service['_stages'].set([mapped1, mapped2]);
       const result$ = firstValueFrom(service.remove(10, 1));
@@ -135,7 +135,7 @@ describe('StageService', () => {
     });
 
     it('clears selectedStage when removed', async () => {
-      const mapped = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' };
+      const mapped = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' };
       service['_selectedStage'].set(mapped);
       service['_stages'].set([mapped]);
       const result$ = firstValueFrom(service.remove(10, 1));
@@ -147,7 +147,7 @@ describe('StageService', () => {
 
   describe('transition()', () => {
     it('updates stage status in the stages signal', async () => {
-      const mapped = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, createdAt: '2026-01-01T00:00:00Z' };
+      const mapped = { id: 1, projectId: 10, name: 'A', type: 'initiation' as const, status: 'planned' as const, plannedStartDate: null, plannedEndDate: null, actualStartDate: null, actualEndDate: null, tolerances: stubApi.tolerances, toleranceStatus: stubApi.tolerance_status, document: null, createdAt: '2026-01-01T00:00:00Z' };
       service['_stages'].set([mapped]);
       const result$ = firstValueFrom(service.transition(10, 1, 'start'));
       http.expectOne(`${BASE}/1/transition`).flush({ data: { ...stubApi, status: 'active' } });

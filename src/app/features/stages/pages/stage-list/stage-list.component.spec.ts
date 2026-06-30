@@ -32,6 +32,7 @@ const stubStage: Stage = {
   actualEndDate: null,
   tolerances: stubProject.tolerances,
   toleranceStatus: { time: 'within', cost: null, scope: null, risk: null, quality: null, benefit: null },
+  document: null,
   createdAt: '2026-01-01T00:00:00Z',
 };
 

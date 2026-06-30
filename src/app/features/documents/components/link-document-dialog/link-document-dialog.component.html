@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Link existing document</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="ld__search-field">
+    <mat-label>Search</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="searchControl" placeholder="Search by title…" />
+  </mat-form-field>
+
+  @if (data.allowedTypes.length > 0) {
+    <p class="ld__type-hint">
+      Showing compatible documents:
+      @for (t of data.allowedTypes; track t; let last = $last) {
+        <strong>{{ typeLabels[t] }}</strong>@if (!last) { , }
+      }
+    </p>
+  }
+
+  @if (loading()) {
+    <div class="ld__skeletons">
+      @for (n of [1,2,3]; track n) {
+        <app-skeleton height="52px" borderRadius="8px" />
+      }
+    </div>
+  } @else if (results().length === 0) {
+    <p class="ld__empty">No compatible documents found.</p>
+  } @else {
+    <ul class="ld__list" role="listbox" aria-label="Documents">
+      @for (doc of results(); track doc.id) {
+        <li
+          class="ld__item"
+          role="option"
+          [attr.aria-selected]="selected()?.id === doc.id"
+          [class.ld__item--selected]="selected()?.id === doc.id"
+          (click)="select(doc)"
+        >
+          <div class="ld__item-info">
+            <span class="ld__item-title">{{ doc.title }}</span>
+            <span class="ld__item-meta">{{ doc.typeLabel }}</span>
+          </div>
+          <app-document-status-chip [status]="doc.status" />
+        </li>
+      }
+    </ul>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button [disabled]="!selected()" (click)="confirm()">Link document</button>
+</mat-dialog-actions>

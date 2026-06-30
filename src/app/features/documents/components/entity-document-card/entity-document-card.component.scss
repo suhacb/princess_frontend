@@ -1,0 +1,99 @@
+.edc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.edc__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+// ── Linked state ──────────────────────────────────────────────────────────────
+
+.edc__linked {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--princess-border-radius-chip);
+  background: var(--mat-sys-surface-container-low);
+}
+
+.edc__doc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.edc__doc-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edc__doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edc__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.edc__unlink-btn {
+  color: var(--mat-sys-error);
+}
+
+// ── Not linked state ──────────────────────────────────────────────────────────
+
+.edc__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border: 1px dashed var(--mat-sys-outline-variant);
+  border-radius: var(--princess-border-radius-chip);
+  text-align: center;
+}
+
+.edc__empty-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--mat-sys-outline);
+}
+
+.edc__empty-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.edc__empty-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+// ── Error ─────────────────────────────────────────────────────────────────────
+
+.edc__error {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: var(--mat-sys-error);
+}

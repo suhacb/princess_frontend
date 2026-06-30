@@ -1,3 +1,7 @@
+import { Document, DocumentApiResource, mapDocument } from '../../documents/contracts/document.contracts';
+
+export type { Document };
+
 export type MeetingActionItemStatus = 'open' | 'closed';
 
 export const MEETING_ACTION_ITEM_STATUSES: MeetingActionItemStatus[] = ['open', 'closed'];
@@ -38,6 +42,7 @@ export interface MeetingApiResource {
   // Conditionally present: from withCount — only on index (list) response
   action_items_open?: number;
   action_items_closed?: number;
+  document?: DocumentApiResource | null;
   created_at: string;
   updated_at: string;
 }
@@ -70,6 +75,7 @@ export interface Meeting {
   actionItems: MeetingActionItem[];
   actionItemsOpen: number;
   actionItemsClosed: number;
+  document: Document | null;
 }
 
 // ─── Mappers ──────────────────────────────────────────────────────────────────
@@ -102,6 +108,7 @@ export function mapMeeting(api: MeetingApiResource): Meeting {
     actionItems: (api.action_items ?? []).map(mapMeetingActionItem),
     actionItemsOpen: api.action_items_open ?? 0,
     actionItemsClosed: api.action_items_closed ?? 0,
+    document: api.document ? mapDocument(api.document) : null,
   };
 }
 

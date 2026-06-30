@@ -101,6 +101,18 @@
       </div>
     </div>
 
+    <!-- Linked stage plan document -->
+    @if (project() && stageIdNum(); as sId) {
+      <app-entity-document-card
+        [projectId]="project()!.id"
+        entityType="stage"
+        [entityId]="sId"
+        [loading]="loading() && !stage()"
+        [initialDocument]="stage()?.document ?? null"
+        class="stage-document-card"
+      />
+    }
+
     <!-- Nested tabs: Plan / Logs / QA / Boundaries -->
     <mat-tab-group class="stage-tabs">
       <mat-tab label="Plan">

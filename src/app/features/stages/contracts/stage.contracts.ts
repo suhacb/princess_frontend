@@ -1,4 +1,5 @@
 import { ProjectTolerances, normalizeTolerances } from '../../projects/contracts/project.contracts';
+import { Document, DocumentApiResource, mapDocument } from '../../documents/contracts/document.contracts';
 
 export type StageType = 'initiation' | 'delivery' | 'final';
 export type StageStatus = 'planned' | 'active' | 'completed' | 'exception';
@@ -47,6 +48,7 @@ export interface StageApiResource {
   actual_end_date: string | null;
   tolerances: ProjectTolerances;
   tolerance_status: StageToleranceStatus;
+  document?: DocumentApiResource | null;
   created_at: string;
   updated_at: string;
 }
@@ -63,6 +65,7 @@ export interface Stage {
   actualEndDate: string | null;
   tolerances: ProjectTolerances;
   toleranceStatus: StageToleranceStatus;
+  document: Document | null;
   createdAt: string;
 }
 
@@ -79,6 +82,7 @@ export function mapStage(api: StageApiResource): Stage {
     actualEndDate: api.actual_end_date,
     tolerances: normalizeTolerances(api.tolerances),
     toleranceStatus: api.tolerance_status,
+    document: api.document ? mapDocument(api.document) : null,
     createdAt: api.created_at,
   };
 }

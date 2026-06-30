@@ -33,6 +33,7 @@ const stubStage: Stage = {
   actualEndDate: null,
   tolerances: stubProject.tolerances,
   toleranceStatus: { time: 'within', cost: null, scope: null, risk: null, quality: null, benefit: null },
+  document: null,
   createdAt: '2026-01-01T00:00:00Z',
 };
 
@@ -135,5 +136,31 @@ describe('StageDetailComponent', () => {
     expect(tabs).toContain('Logs');
     expect(tabs).toContain('QA');
     expect(tabs).toContain('Boundaries');
+  });
+
+  describe('entity-document-card integration', () => {
+    it('renders the document card below the info section', () => {
+      const { fixture } = setup();
+      fixture.componentRef.setInput('stageId', '1');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('app-entity-document-card')).toBeTruthy();
+    });
+
+    it('passes null initialDocument to card when stage has no linked doc', () => {
+      const { fixture } = setup();
+      fixture.componentRef.setInput('stageId', '1');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.edc__empty')).toBeTruthy();
+    });
+
+    it('card is outside the tab group (visible without tab click)', () => {
+      const { fixture } = setup();
+      fixture.componentRef.setInput('stageId', '1');
+      fixture.detectChanges();
+      const card = fixture.nativeElement.querySelector('app-entity-document-card');
+      const tabGroup = fixture.nativeElement.querySelector('mat-tab-group');
+      expect(card).toBeTruthy();
+      expect(tabGroup.contains(card)).toBe(false);
+    });
   });
 });

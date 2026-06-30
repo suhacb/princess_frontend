@@ -8,6 +8,7 @@ import {
   Document,
   DocumentApiResource,
   DocumentFilters,
+  DocumentLinkableType,
   DocumentVersion,
   DocumentVersionApiResource,
   EditorConfigApiResource,
@@ -207,6 +208,30 @@ export class DocumentService {
     return this.api
       .get<ApiResource<EditorConfigApiResource>>(`${this.base(projectId)}/${docId}/editor-config`)
       .pipe(map(res => res.data));
+  }
+
+  linkDocument(
+    projectId: number,
+    docId: number,
+    linkableType: DocumentLinkableType,
+    linkableId: number,
+  ): Observable<void> {
+    return this.api.post<void>(`${this.base(projectId)}/${docId}/link`, {
+      linkable_type: linkableType,
+      linkable_id: linkableId,
+    });
+  }
+
+  unlinkDocument(projectId: number, docId: number): Observable<void> {
+    return this.api.delete<void>(`${this.base(projectId)}/${docId}/link`);
+  }
+
+  searchForLinking(projectId: number, search?: string): Observable<Document[]> {
+    const params: Record<string, string> = {};
+    if (search) params['search'] = search;
+    return this.api
+      .get<PaginatedApiResource<DocumentApiResource>>(this.base(projectId), params)
+      .pipe(map(res => res.data.map(mapDocument)));
   }
 
   download(projectId: number, docId: number, versionId?: number): void {

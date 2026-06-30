@@ -494,3 +494,159 @@ test.describe('documents API — non_member', () => {
     expect(status).toBe(403);
   });
 });
+
+// ─── entity document links (FE-DOC-07) ───────────────────────────────────────
+
+test.describe('document links API — project_manager', () => {
+  test.use({ storageState: roleStateFile('project_manager') });
+
+  test.beforeEach(async () => { await resetDb(); });
+
+  test('POST /link links a document to a meeting', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: docBody } = await api(page, 'POST', `/api/projects/${projectId}/documents`, {
+      title: 'Kick-off Agenda',
+      type: 'meeting_agenda',
+    });
+    const docId = (docBody as { data: { id: number } }).data.id;
+
+    const { body: meetingBody } = await api(page, 'POST', `/api/projects/${projectId}/meetings`, {
+      title: 'Kick-off Meeting',
+      date_time: '2026-07-01T09:00:00Z',
+    });
+    const meetingId = (meetingBody as { data: { id: number } }).data.id;
+
+    const { status } = await api(
+      page, 'POST', `/api/projects/${projectId}/documents/${docId}/link`,
+      { linkable_type: 'meeting', linkable_id: meetingId },
+    );
+    expect([200, 201]).toContain(status);
+  });
+
+  test('GET meeting show response contains document key after linking', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: docBody } = await api(page, 'POST', `/api/projects/${projectId}/documents`, {
+      title: 'Meeting Minutes Doc',
+      type: 'meeting_minutes',
+    });
+    const docId = (docBody as { data: { id: number } }).data.id;
+
+    const { body: meetingBody } = await api(page, 'POST', `/api/projects/${projectId}/meetings`, {
+      title: 'Sprint Review',
+      date_time: '2026-07-02T10:00:00Z',
+    });
+    const meetingId = (meetingBody as { data: { id: number } }).data.id;
+
+    await api(page, 'POST', `/api/projects/${projectId}/documents/${docId}/link`,
+      { linkable_type: 'meeting', linkable_id: meetingId });
+
+    const { status, body } = await api(page, 'GET', `/api/projects/${projectId}/meetings/${meetingId}`);
+    expect(status).toBe(200);
+    const typed = body as { data: Record<string, unknown> };
+    expect(typed.data).toHaveProperty('document');
+    const linkedDoc = typed.data['document'] as Record<string, unknown> | null;
+    expect(linkedDoc).not.toBeNull();
+    expect(linkedDoc?.['id']).toBe(docId);
+  });
+
+  test('DELETE /link unlinks the document from a meeting', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: docBody } = await api(page, 'POST', `/api/projects/${projectId}/documents`, {
+      title: 'To Unlink',
+      type: 'meeting_agenda',
+    });
+    const docId = (docBody as { data: { id: number } }).data.id;
+
+    const { body: meetingBody } = await api(page, 'POST', `/api/projects/${projectId}/meetings`, {
+      title: 'Meeting to Unlink From',
+      date_time: '2026-07-03T10:00:00Z',
+    });
+    const meetingId = (meetingBody as { data: { id: number } }).data.id;
+
+    await api(page, 'POST', `/api/projects/${projectId}/documents/${docId}/link`,
+      { linkable_type: 'meeting', linkable_id: meetingId });
+
+    const { status } = await api(page, 'DELETE', `/api/projects/${projectId}/documents/${docId}/link`);
+    expect([200, 204]).toContain(status);
+
+    const { body: afterBody } = await api(page, 'GET', `/api/projects/${projectId}/meetings/${meetingId}`);
+    const afterTyped = afterBody as { data: Record<string, unknown> };
+    expect(afterTyped.data['document']).toBeNull();
+  });
+
+  test('POST /link to a stage returns 200/201', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: docBody } = await api(page, 'POST', `/api/projects/${projectId}/documents`, {
+      title: 'Stage Plan Doc',
+      type: 'stage_plan',
+    });
+    const docId = (docBody as { data: { id: number } }).data.id;
+
+    const { body: stagesBody } = await api(page, 'GET', `/api/projects/${projectId}/stages`);
+    const stages = (stagesBody as { data: Array<{ id: number }> }).data;
+    if (stages.length === 0) {
+      test.skip();
+      return;
+    }
+    const stageId = stages[0].id;
+
+    const { status } = await api(
+      page, 'POST', `/api/projects/${projectId}/documents/${docId}/link`,
+      { linkable_type: 'stage', linkable_id: stageId },
+    );
+    expect([200, 201]).toContain(status);
+  });
+
+  test('GET stage show response contains document key', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: stagesBody } = await api(page, 'GET', `/api/projects/${projectId}/stages`);
+    const stages = (stagesBody as { data: Array<{ id: number }> }).data;
+    if (stages.length === 0) {
+      test.skip();
+      return;
+    }
+    const stageId = stages[0].id;
+
+    const { status, body } = await api(page, 'GET', `/api/projects/${projectId}/stages/${stageId}`);
+    expect(status).toBe(200);
+    const typed = body as { data: Record<string, unknown> };
+    expect(typed.data).toHaveProperty('document');
+  });
+});
+
+test.describe('document links API — observer', () => {
+  test.use({ storageState: roleStateFile('observer') });
+
+  test.beforeEach(async () => { await resetDb(); });
+
+  test('POST /link returns 403 for observer', async ({ page }) => {
+    await page.goto('/projects');
+    const projectId = await getTestProjectId(page);
+
+    const { body: docBody } = await api(page, 'POST', `/api/projects/${projectId}/documents`, {
+      title: 'Should Fail',
+      type: 'meeting_agenda',
+    });
+    const docId = (docBody as { data?: { id: number } }).data?.id ?? 0;
+    if (!docId) {
+      test.skip();
+      return;
+    }
+
+    const { status } = await api(
+      page, 'POST', `/api/projects/${projectId}/documents/${docId}/link`,
+      { linkable_type: 'meeting', linkable_id: 1 },
+    );
+    expect(status).toBe(403);
+  });
+});
