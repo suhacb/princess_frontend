@@ -47,8 +47,12 @@ export class DocumentEditorPageComponent implements OnDestroy {
       next: config => {
         this.loadScript(ONLYOFFICE_SCRIPT)
           .then(() => {
-            this.editor = new DocsAPI.DocEditor('onlyoffice-editor', config);
             this.loading.set(false);
+            // Give Angular one event-loop tick to render the now-visible container
+            // before DocsAPI measures its dimensions for initialization.
+            setTimeout(() => {
+              this.editor = new DocsAPI.DocEditor('onlyoffice-editor', config);
+            }, 0);
           })
           .catch(() => {
             this.loading.set(false);
