@@ -100,14 +100,21 @@ export class DocumentVersionListComponent {
     return doc.status !== 'confirmed' && !this.isCurrentVersion(version);
   }
 
-  protected revertTooltip(version: DocumentVersion): string {
+  protected restoreTooltip(version: DocumentVersion): string {
     if (this.isCurrentVersion(version)) return 'Current version';
-    if (this.doc()?.status === 'confirmed') return 'Cannot revert a confirmed document';
-    return `Revert to v${version.versionNumber}`;
+    if (this.doc()?.status === 'confirmed') return 'Cannot restore a confirmed document';
+    return `Restore v${version.versionNumber} as current`;
   }
 
   protected downloadVersion(version: DocumentVersion): void {
     this.documentService.download(this.projectId(), this.docId(), version.id);
+  }
+
+  protected viewVersion(version: DocumentVersion): void {
+    window.open(
+      `/editor/${this.projectId()}/documents/${this.docId()}?versionId=${version.id}&view=1`,
+      '_blank',
+    );
   }
 
   protected openRevertDialog(version: DocumentVersion): void {

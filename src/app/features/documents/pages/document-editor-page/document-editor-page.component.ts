@@ -25,17 +25,21 @@ export class DocumentEditorPageComponent implements OnDestroy {
   constructor() {
     const projectId = +this.route.snapshot.params['projectId'];
     const docId = +this.route.snapshot.params['docId'];
+    const versionId = this.route.snapshot.queryParams['versionId']
+      ? +this.route.snapshot.queryParams['versionId']
+      : undefined;
+    const viewMode = this.route.snapshot.queryParams['view'] === '1';
 
     if (projectId && docId) {
-      this.initEditor(projectId, docId);
+      this.initEditor(projectId, docId, versionId, viewMode);
     } else {
       this.loading.set(false);
       this.error.set('Could not determine project or document.');
     }
   }
 
-  private initEditor(projectId: number, docId: number): void {
-    this.documentService.loadEditorConfig(projectId, docId).subscribe({
+  private initEditor(projectId: number, docId: number, versionId?: number, viewMode = false): void {
+    this.documentService.loadEditorConfig(projectId, docId, versionId).subscribe({
       next: config => {
         this.loadScript(ONLYOFFICE_SCRIPT)
           .then(() => {
@@ -45,6 +49,10 @@ export class DocumentEditorPageComponent implements OnDestroy {
             setTimeout(() => {
               this.editor = new DocsAPI.DocEditor('onlyoffice-editor', {
                 ...config,
+                editorConfig: {
+                  ...config.editorConfig,
+                  ...(viewMode ? { mode: 'view' } : {}),
+                },
                 events: { onRequestClose: () => window.close() },
               });
             }, 0);

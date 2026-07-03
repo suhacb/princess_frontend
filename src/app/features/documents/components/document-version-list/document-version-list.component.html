@@ -36,15 +36,23 @@
             [matTooltip]="'Download v' + v.versionNumber"
             (click)="downloadVersion(v)"
           >
-            <mat-icon>download</mat-icon>
+            <mat-icon>file_download</mat-icon>
           </button>
           <button
             mat-icon-button
-            [matTooltip]="revertTooltip(v)"
+            [matTooltip]="'View v' + v.versionNumber + ' (read-only)'"
+            (click)="viewVersion(v)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            [matTooltip]="restoreTooltip(v)"
             [disabled]="!canRevert(v) || reverting()"
             (click)="openRevertDialog(v)"
           >
-            <mat-icon>history</mat-icon>
+            <mat-icon>restore</mat-icon>
           </button>
         </div>
       </div>

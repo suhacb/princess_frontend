@@ -204,9 +204,10 @@ export class DocumentService {
       );
   }
 
-  loadEditorConfig(projectId: number, docId: number): Observable<EditorConfigApiResource> {
+  loadEditorConfig(projectId: number, docId: number, versionId?: number): Observable<EditorConfigApiResource> {
+    const qs = versionId ? `?version_id=${versionId}` : '';
     return this.api
-      .get<ApiResource<EditorConfigApiResource>>(`${this.base(projectId)}/${docId}/editor-config`)
+      .get<ApiResource<EditorConfigApiResource>>(`${this.base(projectId)}/${docId}/editor-config${qs}`)
       .pipe(map(res => res.data));
   }
 
