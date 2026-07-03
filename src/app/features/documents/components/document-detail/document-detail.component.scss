@@ -2,8 +2,10 @@
 
 .skeleton-wrap { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
 
+// ─── Header ──────────────────────────────────────────────────────────────────
+
 .detail-header {
-  padding: 16px 20px 12px;
+  padding: 16px 20px 14px;
 }
 
 .detail-title-row {
@@ -11,7 +13,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .detail-title {
@@ -22,56 +24,79 @@
   flex: 1;
 }
 
-.detail-meta {
+.detail-subtitle {
   font-size: 0.8125rem;
   color: var(--mat-sys-on-surface-variant);
 }
 
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px 20px;
-}
-
-.full-width { width: 100%; }
+// ─── Sections ────────────────────────────────────────────────────────────────
 
 .section {
   padding: 14px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .section-title {
-  margin: 0 0 4px;
+  margin: 0;
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mat-sys-on-surface-variant);
 }
 
-.version-info {
+.section-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
+  margin-bottom: -2px;
+}
+
+// ─── Details form ─────────────────────────────────────────────────────────────
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.full-width { width: 100%; }
+
+.save-btn { align-self: flex-start; }
+
+// ─── Current version ─────────────────────────────────────────────────────────
+
+.version-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin: -8px -8px -8px 0;
 }
 
 .version-file {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  min-width: 0;
 }
 
-.file-icon { color: var(--mat-sys-primary); font-size: 20px; flex-shrink: 0; }
+.file-icon {
+  color: var(--mat-sys-primary);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
 .version-file-details {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
@@ -88,16 +113,34 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-.uploaded-by, .version-comment, .version-count {
+.file-uploader {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0.8;
+}
+
+.version-comment {
+  margin: 0;
   font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+}
+
+.no-version {
+  margin: 0;
+  font-size: 0.875rem;
   color: var(--mat-sys-on-surface-variant);
 }
 
-.version-comment { font-style: italic; }
-
-.no-version { font-size: 0.875rem; color: var(--mat-sys-on-surface-variant); margin: 0; }
-
 .upload-btn { align-self: flex-start; }
+
+.version-count {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0.75;
+}
+
+// ─── Lifecycle ───────────────────────────────────────────────────────────────
 
 .transition-actions {
   display: flex;
@@ -110,35 +153,18 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-.meta-section { gap: 6px; }
+// ─── Classification ───────────────────────────────────────────────────────────
 
-.meta-row {
+.classify-form {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   gap: 8px;
-}
-
-.meta-label {
-  font-size: 0.8125rem;
-  color: var(--mat-sys-on-surface-variant);
-  width: 64px;
-  flex-shrink: 0;
-}
-
-.meta-value { font-size: 0.875rem; }
-
-.version-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  flex-shrink: 0;
 }
 
 .tags-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 4px;
 }
 
 .tag-chip {
@@ -155,9 +181,35 @@
   white-space: nowrap;
 }
 
-.meta-delete {
-  margin-top: 8px;
+// ─── Meta ─────────────────────────────────────────────────────────────────────
+
+.meta-section { gap: 6px; }
+
+.meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
+
+.meta-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  width: 56px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.meta-value {
+  font-size: 0.875rem;
+}
+
+.meta-delete {
+  margin-top: 10px;
+}
+
+// ─── Errors ───────────────────────────────────────────────────────────────────
 
 .error-msg {
   margin: 0;

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DatePipe } from '@angular/common';
 import { DocumentService } from '../../services/document.service';
 import { DocumentStatusChipComponent } from '../document-status-chip/document-status-chip.component';
@@ -36,6 +37,7 @@ import {
     MatSelectModule,
     MatDialogModule,
     MatDividerModule,
+    MatTooltipModule,
     DatePipe,
     DocumentStatusChipComponent,
     DocumentTypeSelectComponent,

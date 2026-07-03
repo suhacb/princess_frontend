@@ -7,64 +7,70 @@
 } @else if (loadError()) {
   <p class="error-msg">{{ loadError() }}</p>
 } @else if (doc(); as d) {
+
   <div class="detail-header">
     <div class="detail-title-row">
       <h3 class="detail-title">{{ d.title }}</h3>
       <app-document-status-chip [status]="d.status" />
     </div>
-    <span class="detail-meta">{{ d.categoryLabel }} · {{ d.typeLabel }}</span>
+    <span class="detail-subtitle">{{ d.categoryLabel }} · {{ d.typeLabel }}</span>
   </div>
 
   <mat-divider />
 
-  <form [formGroup]="form" class="edit-form">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" />
-    </mat-form-field>
-
-    <app-document-type-select formControlName="type" label="Type" />
-
-    @if (saveError()) {
-      <p class="error-msg">{{ saveError() }}</p>
-    }
-
-    <button
-      mat-flat-button
-      color="primary"
-      [disabled]="form.pristine || form.invalid"
-      (click)="save()"
-    >Save changes</button>
-  </form>
+  <div class="section">
+    <h4 class="section-title">Details</h4>
+    <form [formGroup]="form" class="edit-form">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+      <app-document-type-select formControlName="type" label="Type" />
+      @if (saveError()) {
+        <p class="error-msg">{{ saveError() }}</p>
+      }
+      <button
+        mat-flat-button
+        color="primary"
+        class="save-btn"
+        [disabled]="form.pristine || form.invalid"
+        (click)="save()"
+      >Save changes</button>
+    </form>
+  </div>
 
   <mat-divider />
 
   <div class="section">
-    <h4 class="section-title">Current version</h4>
-    @if (d.currentVersion; as v) {
-      <div class="version-info">
-        <div class="version-file">
-          <mat-icon class="file-icon">description</mat-icon>
-          <div class="version-file-details">
-            <span class="file-name">{{ v.fileName }}</span>
-            <span class="file-meta">v{{ v.versionNumber }} · {{ formatFileSize(v.fileSize) }} · {{ v.uploadedAt | date: 'dd MMM yyyy' }}</span>
-          </div>
-        </div>
+    <div class="section-title-row">
+      <h4 class="section-title">Current version</h4>
+      @if (d.currentVersion) {
         <div class="version-actions">
-          <button mat-stroked-button (click)="download()">
-            <mat-icon>download</mat-icon> Download
+          <button mat-icon-button matTooltip="Download" (click)="download()">
+            <mat-icon>file_download</mat-icon>
           </button>
           <button
-            mat-flat-button
+            mat-icon-button
             color="primary"
+            matTooltip="Open in editor"
             [disabled]="!isEditable()"
             (click)="openEditor()"
           >
-            <mat-icon>edit_document</mat-icon> Edit
+            <mat-icon>open_in_new</mat-icon>
           </button>
         </div>
+      }
+    </div>
+
+    @if (d.currentVersion; as v) {
+      <div class="version-file">
+        <mat-icon class="file-icon">description</mat-icon>
+        <div class="version-file-details">
+          <span class="file-name">{{ v.fileName }}</span>
+          <span class="file-meta">v{{ v.versionNumber }} · {{ formatFileSize(v.fileSize) }} · {{ v.uploadedAt | date: 'dd MMM yyyy' }}</span>
+          <span class="file-uploader">{{ v.uploadedBy.name }}</span>
+        </div>
       </div>
-      <span class="uploaded-by">Uploaded by {{ v.uploadedBy.name }}</span>
       @if (v.comment) {
         <p class="version-comment">{{ v.comment }}</p>
       }
@@ -105,29 +111,26 @@
         <span class="terminal-status">No further transitions available.</span>
       }
     </div>
+    @if (actionError()) {
+      <p class="error-msg">{{ actionError() }}</p>
+    }
   </div>
-
-  @if (actionError()) {
-    <p class="error-msg action-error">{{ actionError() }}</p>
-  }
 
   <mat-divider />
 
   <div class="section">
     <h4 class="section-title">Classification</h4>
-    <form [formGroup]="classifyForm">
-      <mat-form-field appearance="outline" class="full-width">
+    <form [formGroup]="classifyForm" class="classify-form">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
         <mat-label>Tags (comma-separated)</mat-label>
-        <input matInput formControlName="tags" placeholder="e.g. urgent, phase1, qa" />
+        <input matInput formControlName="tags" placeholder="urgent, phase1, qa" />
       </mat-form-field>
       @if (classifyError()) {
         <p class="error-msg">{{ classifyError() }}</p>
       }
-      <button
-        mat-stroked-button
-        [disabled]="classifyForm.pristine"
-        (click)="classify()"
-      >Apply classification</button>
+      <button mat-stroked-button [disabled]="classifyForm.pristine" (click)="classify()">
+        Apply
+      </button>
     </form>
     @if (d.tags.length > 0) {
       <div class="tags-list">
@@ -153,8 +156,8 @@
       <span class="meta-label">Updated</span>
       <span class="meta-value">{{ d.updatedAt | date: 'dd MMM yyyy' }}</span>
     </div>
-    <div class="meta-row meta-delete">
-      <button mat-stroked-button color="warn" class="delete-btn" (click)="deleteDocument()">
+    <div class="meta-delete">
+      <button mat-stroked-button color="warn" (click)="deleteDocument()">
         <mat-icon>delete</mat-icon> Delete document
       </button>
     </div>
