@@ -1,10 +1,7 @@
 import { Component, OnDestroy, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DocumentService } from '../../services/document.service';
-import { ProjectService } from '../../../projects/services/project.service';
 
 declare const DocsAPI: any;
 
@@ -12,15 +9,13 @@ const ONLYOFFICE_SCRIPT = 'http://localhost:10112/web-apps/apps/api/documents/ap
 
 @Component({
   selector: 'app-document-editor-page',
-  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [MatProgressSpinnerModule],
   templateUrl: './document-editor-page.component.html',
   styleUrl: './document-editor-page.component.scss',
 })
 export class DocumentEditorPageComponent implements OnDestroy {
   private readonly documentService = inject(DocumentService);
-  private readonly projectService = inject(ProjectService);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
 
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -28,14 +23,11 @@ export class DocumentEditorPageComponent implements OnDestroy {
   private editor: any = null;
 
   constructor() {
-    const docId = this.route.snapshot.params['docId']
-      ? +this.route.snapshot.params['docId']
-      : null;
+    const projectId = +this.route.snapshot.params['projectId'];
+    const docId = +this.route.snapshot.params['docId'];
 
-    const project = this.projectService.selectedProject();
-
-    if (project && docId) {
-      this.initEditor(project.id, docId);
+    if (projectId && docId) {
+      this.initEditor(projectId, docId);
     } else {
       this.loading.set(false);
       this.error.set('Could not determine project or document.');
@@ -51,7 +43,10 @@ export class DocumentEditorPageComponent implements OnDestroy {
             // Give Angular one event-loop tick to render the now-visible container
             // before DocsAPI measures its dimensions for initialization.
             setTimeout(() => {
-              this.editor = new DocsAPI.DocEditor('onlyoffice-editor', config);
+              this.editor = new DocsAPI.DocEditor('onlyoffice-editor', {
+                ...config,
+                events: { onRequestClose: () => window.close() },
+              });
             }, 0);
           })
           .catch(() => {
@@ -78,14 +73,8 @@ export class DocumentEditorPageComponent implements OnDestroy {
     });
   }
 
-  protected goBack(): void {
-    const project = this.projectService.selectedProject();
-    const docId = this.route.snapshot.params['docId'];
-    if (project && docId) {
-      this.router.navigate(['/p', project.id, 'documents', docId]);
-    } else {
-      this.router.navigate(['..'], { relativeTo: this.route });
-    }
+  protected closeTab(): void {
+    window.close();
   }
 
   ngOnDestroy(): void {

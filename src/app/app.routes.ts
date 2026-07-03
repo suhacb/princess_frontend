@@ -32,5 +32,14 @@ export const routes: Routes = [
     ],
   },
 
+  {
+    path: 'editor/:projectId/documents/:docId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/documents/pages/document-editor-page/document-editor-page.component')
+        .then(m => m.DocumentEditorPageComponent),
+    title: 'Document Editor',
+  },
+
   { path: '**', redirectTo: '' },
 ];
