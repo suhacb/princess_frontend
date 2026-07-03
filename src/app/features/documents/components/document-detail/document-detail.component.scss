@@ -45,6 +45,7 @@
 
 .section-title {
   margin: 0 0 4px;
+  font-family: var(--font-display);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -125,6 +126,38 @@
 }
 
 .meta-value { font-size: 0.875rem; }
+
+.version-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-chip);
+  background: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+  color: var(--mat-sys-primary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta-delete {
+  margin-top: 8px;
+}
 
 .error-msg {
   margin: 0;
