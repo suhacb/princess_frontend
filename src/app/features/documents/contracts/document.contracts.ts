@@ -157,7 +157,7 @@ export interface DocumentApiResource {
   tags?: string[];
   owner?: { id: number; name: string } | null;
   current_version?: DocumentVersionApiResource | null;
-  version_count?: number;
+  versions_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -248,7 +248,7 @@ export function mapDocument(api: DocumentApiResource): Document {
     currentVersion: api.current_version
       ? mapDocumentVersion({ ...api.current_version, document_id: api.id })
       : null,
-    versionCount: api.version_count ?? 0,
+    versionCount: api.versions_count ?? 0,
     createdAt: new Date(api.created_at),
     updatedAt: new Date(api.updated_at),
   };

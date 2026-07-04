@@ -58,4 +58,26 @@
       </div>
     }
   </div>
+
+  @if (lastPage() > 1) {
+    <div class="vl-pagination">
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === 1"
+        matTooltip="Previous page"
+        (click)="goToPage(currentPage() - 1)"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="vl-page-label">{{ currentPage() }} / {{ lastPage() }}</span>
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === lastPage()"
+        matTooltip="Next page"
+        (click)="goToPage(currentPage() + 1)"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  }
 }

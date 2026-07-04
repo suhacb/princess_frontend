@@ -52,9 +52,16 @@ export class DocumentVersionListComponent {
   private readonly _versions = signal<DocumentVersion[]>([]);
   private readonly _loading = signal(false);
   private readonly _reverting = signal(false);
+  private readonly _currentPage = signal(1);
+  private readonly _lastPage = signal(1);
+  private readonly _total = signal(0);
+
   protected readonly versions = this._versions.asReadonly();
   protected readonly loading = this._loading.asReadonly();
   protected readonly reverting = this._reverting.asReadonly();
+  protected readonly currentPage = this._currentPage.asReadonly();
+  protected readonly lastPage = this._lastPage.asReadonly();
+  protected readonly total = this._total.asReadonly();
   protected readonly error = signal<string | null>(null);
 
   protected readonly formatFileSize = formatFileSize;
@@ -65,17 +72,21 @@ export class DocumentVersionListComponent {
       const docId = this.docId();
       const projectId = this.projectId();
       if (docId && projectId) {
-        this.load(projectId, docId);
+        this._currentPage.set(1);
+        this.load(projectId, docId, 1);
       }
     });
   }
 
-  private load(projectId: number, docId: number, scrollToTop = false): void {
+  private load(projectId: number, docId: number, page: number, scrollToTop = false): void {
     this._loading.set(true);
     this.error.set(null);
-    this.documentService.listVersions(projectId, docId).subscribe({
-      next: versions => {
-        this._versions.set(versions);
+    this.documentService.listVersions(projectId, docId, page).subscribe({
+      next: result => {
+        this._versions.set(result.versions);
+        this._currentPage.set(result.currentPage);
+        this._lastPage.set(result.lastPage);
+        this._total.set(result.total);
         this._loading.set(false);
         if (scrollToTop) {
           (this.el.nativeElement as HTMLElement)
@@ -88,6 +99,11 @@ export class DocumentVersionListComponent {
         this.error.set('Failed to load version history.');
       },
     });
+  }
+
+  protected goToPage(page: number): void {
+    this._currentPage.set(page);
+    this.load(this.projectId(), this.docId(), page, true);
   }
 
   protected isCurrentVersion(version: DocumentVersion): boolean {
@@ -138,7 +154,8 @@ export class DocumentVersionListComponent {
           .subscribe({
             next: () => {
               this._reverting.set(false);
-              this.load(this.projectId(), this.docId(), true);
+              this._currentPage.set(1);
+              this.load(this.projectId(), this.docId(), 1, true);
             },
             error: () => {
               this._reverting.set(false);

@@ -170,10 +170,24 @@ export class DocumentService {
       );
   }
 
-  listVersions(projectId: number, docId: number): Observable<DocumentVersion[]> {
+  listVersions(
+    projectId: number,
+    docId: number,
+    page = 1,
+  ): Observable<{ versions: DocumentVersion[]; currentPage: number; lastPage: number; total: number }> {
     return this.api
-      .get<{ data: DocumentVersionApiResource[] }>(`${this.base(projectId)}/${docId}/versions`)
-      .pipe(map(res => res.data.map(mapDocumentVersion)));
+      .get<PaginatedApiResource<DocumentVersionApiResource>>(
+        `${this.base(projectId)}/${docId}/versions`,
+        { page },
+      )
+      .pipe(
+        map(res => ({
+          versions: res.data.map(mapDocumentVersion),
+          currentPage: res.meta.current_page,
+          lastPage: res.meta.last_page,
+          total: res.meta.total,
+        })),
+      );
   }
 
   revertVersion(projectId: number, docId: number, versionId: number): Observable<DocumentVersion> {

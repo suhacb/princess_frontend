@@ -86,3 +86,18 @@
   gap: 2px;
   flex-shrink: 0;
 }
+
+.vl-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding-top: 6px;
+}
+
+.vl-page-label {
+  font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
+  min-width: 40px;
+  text-align: center;
+}
