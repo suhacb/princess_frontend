@@ -182,7 +182,7 @@ export class DocumentService {
       )
       .pipe(
         map(res => ({
-          versions: res.data.map(mapDocumentVersion),
+          versions: res.data.map(mapDocumentVersion).sort((a, b) => b.versionNumber - a.versionNumber),
           currentPage: res.meta.current_page,
           lastPage: res.meta.last_page,
           total: res.meta.total,

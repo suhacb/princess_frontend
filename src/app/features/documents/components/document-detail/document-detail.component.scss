@@ -153,10 +153,21 @@
 
 .upload-btn { align-self: flex-start; }
 
+.version-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .version-count {
   font-size: 0.75rem;
   color: var(--mat-sys-on-surface-variant);
   opacity: 0.75;
+}
+
+.history-btn {
+  margin: -4px -8px -4px 0;
+  font-size: 0.8125rem;
 }
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────

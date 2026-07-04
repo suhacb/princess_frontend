@@ -90,14 +90,14 @@
       <mat-icon>upload</mat-icon>
       {{ uploading() ? 'Uploading…' : 'Upload new version' }}
     </button>
-    <span class="version-count">{{ d.versionCount }} version{{ d.versionCount === 1 ? '' : 's' }} total</span>
-  </div>
-
-  <mat-divider />
-
-  <div class="section">
-    <h4 class="section-title">Version history</h4>
-    <app-document-version-list [projectId]="projectId()" [docId]="docId()" />
+    <div class="version-footer">
+      <span class="version-count">{{ d.versionCount }} version{{ d.versionCount === 1 ? '' : 's' }}</span>
+      @if (d.versionCount > 0) {
+        <button mat-button class="history-btn" (click)="openVersionHistory()">
+          <mat-icon>history</mat-icon> View history
+        </button>
+      }
+    </div>
   </div>
 
   <mat-divider />
