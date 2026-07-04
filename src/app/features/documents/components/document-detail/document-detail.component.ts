@@ -78,7 +78,9 @@ export class DocumentDetailComponent {
     const d = this.doc();
     if (!d || !d.currentVersion) return false;
     if (d.status === 'confirmed' || d.status === 'superseded') return false;
-    return ONLYOFFICE_EDITABLE_MIME_TYPES.has(d.currentVersion.mimeType);
+    const mime = d.currentVersion.mimeType;
+    if (!mime) return true; // backend omits mime_type; let OnlyOffice reject unsupported formats
+    return ONLYOFFICE_EDITABLE_MIME_TYPES.has(mime);
   });
 
   protected readonly form = this.fb.group({
