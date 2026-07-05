@@ -61,7 +61,15 @@ export class SidebarComponent {
         label: 'Planning',
         roles: ['pm', 'pmo'],
         items: [
-          { label: 'Plan & stages', icon: 'account_tree', route: `${base}/plan`, roles: ['pm', 'pmo'] },
+          { label: 'Plan & stages', icon: 'account_tree',        route: `${base}/plan` },
+          { label: 'Stages',        icon: 'stacked_line_chart',  route: `${base}/stages` },
+        ],
+      },
+      {
+        label: 'Team',
+        items: [
+          { label: 'Members',   icon: 'group', route: `${base}/members` },
+          { label: 'Daily Log', icon: 'today', route: `${base}/daily-log` },
         ],
       },
       {

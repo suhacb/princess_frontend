@@ -20,6 +20,36 @@ export const cockpitRoutes: Routes = [
         title: 'Plan & Stages',
       },
       {
+        path: 'stages',
+        loadComponent: () =>
+          import('../stages/pages/stage-list/stage-list.component').then(m => m.StageListComponent),
+        title: 'Stages',
+      },
+      {
+        path: 'stages/:stageId',
+        loadComponent: () =>
+          import('../stages/pages/stage-detail/stage-detail.component').then(m => m.StageDetailComponent),
+        title: 'Stage',
+      },
+      {
+        path: 'stages/:stageId/boundaries/:boundaryId',
+        loadComponent: () =>
+          import('../boundaries/pages/boundary-detail/boundary-detail.component').then(m => m.BoundaryDetailComponent),
+        title: 'Boundary',
+      },
+      {
+        path: 'members',
+        loadComponent: () =>
+          import('../members/pages/member-list/member-list.component').then(m => m.MemberListComponent),
+        title: 'Members',
+      },
+      {
+        path: 'daily-log',
+        loadComponent: () =>
+          import('../daily-log/pages/daily-log/daily-log.component').then(m => m.DailyLogComponent),
+        title: 'Daily Log',
+      },
+      {
         path: 'risks',
         loadComponent: () =>
           import('../risks/pages/risk-list/risk-list.component').then(m => m.RiskListComponent),
