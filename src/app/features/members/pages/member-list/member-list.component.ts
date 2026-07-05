@@ -14,6 +14,7 @@ import {
 import { Member, PERSON_SIDE_LABELS, PersonSide, UpdateMemberPayload } from '../../contracts/member.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-member-list',
@@ -26,6 +27,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     MemberRoleChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './member-list.component.html',
   styleUrl: './member-list.component.scss',

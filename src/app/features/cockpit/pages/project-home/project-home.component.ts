@@ -7,6 +7,7 @@ import { ProjectService } from '../../../projects/services/project.service';
 import { LifecycleStepperComponent } from '../../../../shared/components/lifecycle-stepper/lifecycle-stepper.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-project-home',
@@ -16,6 +17,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     LifecycleStepperComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './project-home.component.html',
   styleUrl: './project-home.component.scss',
