@@ -1,13 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
 import { ApiService } from '../../../core/http/api.service';
-import { ApiResource } from '../../../shared/contracts/api.contracts';
+import { ApiResource, PaginatedApiResource } from '../../../shared/contracts/api.contracts';
 import {
   CreateRequirementPayload,
   Requirement,
   RequirementApiResource,
+  RequirementVersion,
+  RequirementVersionApiResource,
   UpdateRequirementPayload,
   mapRequirement,
+  mapRequirementVersion,
 } from '../contracts/requirement.contracts';
 
 @Injectable({ providedIn: 'root' })
@@ -104,6 +107,26 @@ export class RequirementService {
 
   defer(projectId: number, requirementId: number): Observable<Requirement> {
     return this.transition(projectId, requirementId, 'defer');
+  }
+
+  listVersions(
+    projectId: number,
+    requirementId: number,
+    page = 1,
+  ): Observable<{ versions: RequirementVersion[]; currentPage: number; lastPage: number; total: number }> {
+    return this.api
+      .get<PaginatedApiResource<RequirementVersionApiResource>>(
+        `${this.base(projectId)}/${requirementId}/versions`,
+        { page },
+      )
+      .pipe(
+        map(res => ({
+          versions: res.data.map(mapRequirementVersion),
+          currentPage: res.meta.current_page,
+          lastPage: res.meta.last_page,
+          total: res.meta.total,
+        })),
+      );
   }
 
   private transition(

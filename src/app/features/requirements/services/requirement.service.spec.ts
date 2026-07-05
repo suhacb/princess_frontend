@@ -173,4 +173,41 @@ describe('RequirementService', () => {
       expect(service.selectedRequirement()?.status).toBe('deferred');
     });
   });
+
+  describe('listVersions()', () => {
+    it('maps versions and pagination meta', () => {
+      apiMock.get.mockReturnValue(
+        of({
+          data: [
+            {
+              id: 1,
+              requirement_id: 1,
+              version_number: 2,
+              title: 'System must support SSO',
+              description: null,
+              type: 'classic',
+              priority: 'must',
+              status: 'reviewed',
+              role: null,
+              action: null,
+              benefit: null,
+              owner: null,
+              created_by: { id: 11, name: 'Bob', email: null, job_title: null, organization: null },
+              created_at: '2026-06-02T10:00:00Z',
+            },
+          ],
+          meta: { current_page: 1, last_page: 2, per_page: 25, total: 30 },
+        }),
+      );
+      service.listVersions(5, 1).subscribe(result => {
+        expect(result.versions).toHaveLength(1);
+        expect(result.versions[0].versionNumber).toBe(2);
+        expect(result.versions[0].createdBy?.name).toBe('Bob');
+        expect(result.currentPage).toBe(1);
+        expect(result.lastPage).toBe(2);
+        expect(result.total).toBe(30);
+      });
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/5/requirements/1/versions', { page: 1 });
+    });
+  });
 });

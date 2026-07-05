@@ -46,6 +46,7 @@ function buildRequirementServiceMock(requirement: Requirement | null, loading = 
     approve: vi.fn().mockReturnValue(of(requirement)),
     reject: vi.fn().mockReturnValue(of(requirement)),
     defer: vi.fn().mockReturnValue(of(requirement)),
+    listVersions: vi.fn().mockReturnValue(of({ versions: [], currentPage: 1, lastPage: 1, total: 0 })),
   };
 }
 
@@ -221,6 +222,7 @@ describe('RequirementDetailComponent', () => {
       approve: vi.fn(),
       reject: vi.fn(),
       defer: vi.fn(),
+      listVersions: vi.fn().mockReturnValue(of({ versions: [], currentPage: 1, lastPage: 1, total: 0 })),
     };
     const memberService = { members: signal([]).asReadonly(), list: vi.fn().mockReturnValue(of([])) };
     const projectService = { selectedProject: signal({ id: 5, name: 'Test' } as never).asReadonly() };
@@ -245,5 +247,11 @@ describe('RequirementDetailComponent', () => {
     const child: Requirement = { ...stubRequirement, id: 2, ref: 'US-001', title: 'Sign up flow', parentId: 1 };
     const { fixture } = setup({ ...stubRequirement, type: 'epic', children: [child] });
     expect(fixture.nativeElement.textContent).toContain('Sign up flow');
+  });
+
+  it('renders the version history section', () => {
+    const { fixture, requirementService } = setup();
+    expect(fixture.nativeElement.querySelector('app-requirement-version-list')).toBeTruthy();
+    expect(requirementService.listVersions).toHaveBeenCalledWith(5, 1, 1);
   });
 });

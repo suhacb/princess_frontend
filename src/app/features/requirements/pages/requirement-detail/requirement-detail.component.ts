@@ -12,6 +12,7 @@ import { MemberService } from '../../../members/services/member.service';
 import { ProjectService } from '../../../projects/services/project.service';
 import { RequirementStatusChipComponent } from '../../components/requirement-status-chip/requirement-status-chip.component';
 import { RequirementPriorityChipComponent } from '../../components/requirement-priority-chip/requirement-priority-chip.component';
+import { RequirementVersionListComponent } from '../../components/requirement-version-list/requirement-version-list.component';
 import {
   REQUIREMENT_PRIORITIES,
   REQUIREMENT_PRIORITY_LABELS,
@@ -34,6 +35,7 @@ import { PageScrollComponent } from '../../../../shared/components/page-scroll/p
     DatePipe,
     RequirementStatusChipComponent,
     RequirementPriorityChipComponent,
+    RequirementVersionListComponent,
     SkeletonComponent,
     PageScrollComponent,
   ],

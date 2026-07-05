@@ -136,3 +136,56 @@ export interface UpdateRequirementPayload {
   owner_id?: number | null;
   parent_id?: number | null;
 }
+
+export interface RequirementVersionApiResource {
+  id: number;
+  requirement_id: number;
+  version_number: number;
+  title: string;
+  description: string | null;
+  type: RequirementType;
+  priority: RequirementPriority;
+  status: RequirementStatus;
+  role: string | null;
+  action: string | null;
+  benefit: string | null;
+  owner: PersonApiResource | null;
+  created_by: PersonApiResource | null;
+  created_at: string;
+}
+
+export interface RequirementVersion {
+  id: number;
+  requirementId: number;
+  versionNumber: number;
+  title: string;
+  description: string | null;
+  type: RequirementType;
+  priority: RequirementPriority;
+  status: RequirementStatus;
+  role: string | null;
+  action: string | null;
+  benefit: string | null;
+  owner: Person | null;
+  createdBy: Person | null;
+  createdAt: string;
+}
+
+export function mapRequirementVersion(api: RequirementVersionApiResource): RequirementVersion {
+  return {
+    id: api.id,
+    requirementId: api.requirement_id,
+    versionNumber: api.version_number,
+    title: api.title,
+    description: api.description,
+    type: api.type,
+    priority: api.priority,
+    status: api.status,
+    role: api.role,
+    action: api.action,
+    benefit: api.benefit,
+    owner: api.owner ? mapPerson(api.owner) : null,
+    createdBy: api.created_by ? mapPerson(api.created_by) : null,
+    createdAt: api.created_at,
+  };
+}

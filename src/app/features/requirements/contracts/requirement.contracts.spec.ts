@@ -1,4 +1,4 @@
-import { mapRequirement, RequirementApiResource } from './requirement.contracts';
+import { mapRequirement, mapRequirementVersion, RequirementApiResource, RequirementVersionApiResource } from './requirement.contracts';
 
 const stubApi: RequirementApiResource = {
   id: 1,
@@ -62,5 +62,42 @@ describe('mapRequirement()', () => {
     const { children, ...withoutChildren } = stubApi;
     const r = mapRequirement(withoutChildren as RequirementApiResource);
     expect(r.children).toEqual([]);
+  });
+});
+
+describe('mapRequirementVersion()', () => {
+  const stubVersionApi: RequirementVersionApiResource = {
+    id: 1,
+    requirement_id: 1,
+    version_number: 2,
+    title: 'Login as a customer',
+    description: 'Full description',
+    type: 'user_story',
+    priority: 'must',
+    status: 'reviewed',
+    role: 'customer',
+    action: 'log in with SSO',
+    benefit: 'I can access my account securely',
+    owner: { id: 10, name: 'Alice', email: null, job_title: null, organization: null },
+    created_by: { id: 11, name: 'Bob', email: null, job_title: null, organization: null },
+    created_at: '2026-06-02T10:00:00Z',
+  };
+
+  it('maps all fields correctly', () => {
+    const v = mapRequirementVersion(stubVersionApi);
+    expect(v.id).toBe(1);
+    expect(v.requirementId).toBe(1);
+    expect(v.versionNumber).toBe(2);
+    expect(v.title).toBe('Login as a customer');
+    expect(v.status).toBe('reviewed');
+    expect(v.priority).toBe('must');
+    expect(v.owner?.name).toBe('Alice');
+    expect(v.createdBy?.name).toBe('Bob');
+  });
+
+  it('handles null owner and createdBy', () => {
+    const v = mapRequirementVersion({ ...stubVersionApi, owner: null, created_by: null });
+    expect(v.owner).toBeNull();
+    expect(v.createdBy).toBeNull();
   });
 });

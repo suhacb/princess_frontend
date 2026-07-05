@@ -142,6 +142,11 @@
         </section>
       }
     </form>
+
+    <section class="form-section">
+      <h3 class="section-heading">Version history</h3>
+      <app-requirement-version-list [projectId]="project()!.id" [requirementId]="r.id" />
+    </section>
   </div>
 }
 
