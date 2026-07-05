@@ -1,5 +1,6 @@
 import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DocumentService } from '../../services/document.service';
 
@@ -62,9 +63,16 @@ export class DocumentEditorPageComponent implements OnDestroy {
             this.error.set('Failed to load document editor. Is OnlyOffice running?');
           });
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
-        this.error.set('Failed to load editor configuration.');
+        // version_id is only ever attached to this request from our own "View
+        // v{n}" action, so a 404/422 here means the link is stale (version
+        // removed, or the id was tampered with) rather than a config failure.
+        this.error.set(
+          versionId !== undefined && (err.status === 404 || err.status === 422)
+            ? 'This version could not be found. It may have been removed.'
+            : 'Failed to load editor configuration.',
+        );
       },
     });
   }

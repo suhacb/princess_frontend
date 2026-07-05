@@ -18,13 +18,14 @@ function setup(options: {
   docId?: number | null;
   versionId?: number | null;
   view?: boolean;
+  errorStatus?: number;
 } = {}) {
-  const { config = stubConfig, projectId = 3, docId = 1, versionId = null, view = false } = options;
+  const { config = stubConfig, projectId = 3, docId = 1, versionId = null, view = false, errorStatus } = options;
 
   const documentService = {
     loadEditorConfig: vi.fn().mockReturnValue(
       config === 'error'
-        ? throwError(() => new Error('fail'))
+        ? throwError(() => ({ status: errorStatus, message: 'fail' }))
         : of(config),
     ),
   };
@@ -87,6 +88,24 @@ describe('DocumentEditorPageComponent', () => {
     const comp = fixture.componentInstance as any;
     expect(comp.error()).toBe('Failed to load editor configuration.');
     expect(comp.loading()).toBe(false);
+  });
+
+  it('sets a version-specific error when loadEditorConfig 404s for a stale versionId', () => {
+    const { fixture } = setup({ config: 'error', versionId: 12, errorStatus: 404 });
+    const comp = fixture.componentInstance as any;
+    expect(comp.error()).toBe('This version could not be found. It may have been removed.');
+  });
+
+  it('sets a version-specific error when loadEditorConfig 422s for a stale versionId', () => {
+    const { fixture } = setup({ config: 'error', versionId: 12, errorStatus: 422 });
+    const comp = fixture.componentInstance as any;
+    expect(comp.error()).toBe('This version could not be found. It may have been removed.');
+  });
+
+  it('sets the generic error for a 404 when no versionId was requested', () => {
+    const { fixture } = setup({ config: 'error', errorStatus: 404 });
+    const comp = fixture.componentInstance as any;
+    expect(comp.error()).toBe('Failed to load editor configuration.');
   });
 
   it('sets error when project is missing from route params', () => {

@@ -284,12 +284,16 @@ export interface EditorConfigApiResource {
     key: string;
     title: string;
     url: string;
+    // false (read-only) when the request resolves to a non-current version.
+    permissions: { edit: boolean };
   };
   documentType: string;
   editorConfig: {
     callbackUrl: string;
     user: { id: string; name: string };
     lang: string;
+    // 'view' when version_id resolves to a non-current version, else 'edit'.
+    mode: 'view' | 'edit';
   };
   token: string;
 }

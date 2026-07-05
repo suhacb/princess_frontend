@@ -242,4 +242,45 @@ test.describe('OnlyOffice editor tab — project_manager', () => {
     expect(popup.url()).toContain('versionId=');
     await popup.close();
   });
+
+  test('editor-config marks a historical version read-only but leaves the current version fully editable', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const docId = await createDocument(page, id, 'E2E Editor Config Doc');
+    await uploadVersion(page, id, docId, 'v1.docx');
+    await uploadVersion(page, id, docId, 'v2.docx');
+
+    const { body: versionsBody } = await api(page, 'GET', `/api/projects/${id}/documents/${docId}/versions`);
+    const versions = (versionsBody as { data: Array<{ id: number; file_name: string }> }).data;
+    const v1Id = versions.find(v => v.file_name === 'v1.docx')!.id;
+
+    const { status: olderStatus, body: olderBody } = await api(
+      page, 'GET', `/api/projects/${id}/documents/${docId}/editor-config?version_id=${v1Id}`,
+    );
+    expect(olderStatus).toBe(200);
+    const older = (olderBody as {
+      data: { document: { permissions?: { edit: boolean } }; editorConfig: { mode?: string } };
+    }).data;
+    expect(older.editorConfig.mode).toBe('view');
+    expect(older.document.permissions?.edit).toBe(false);
+
+    const { status: currentStatus, body: currentBody } = await api(
+      page, 'GET', `/api/projects/${id}/documents/${docId}/editor-config`,
+    );
+    expect(currentStatus).toBe(200);
+    const current = (currentBody as { data: { editorConfig: { mode?: string } } }).data;
+    expect(current.editorConfig.mode).toBe('edit');
+  });
+
+  test('a stale version link shows a clear "not found" error instead of a generic failure', async ({ page }) => {
+    await page.goto('/projects');
+    const id = await getTestProjectId(page);
+    const docId = await createDocument(page, id, 'E2E Stale Version Doc');
+    await uploadVersion(page, id, docId, 'v1.docx');
+
+    await page.goto(`/editor/${id}/documents/${docId}?versionId=999999&view=1`);
+
+    await expect(page.getByText('This version could not be found. It may have been removed.'))
+      .toBeVisible();
+  });
 });
