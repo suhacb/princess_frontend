@@ -16,6 +16,7 @@ import {
 } from '../../contracts/boundary.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-boundary-list',
@@ -27,6 +28,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     BoundaryStatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './boundary-list.component.html',
   styleUrl: './boundary-list.component.scss',

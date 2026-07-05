@@ -18,6 +18,7 @@ import {
 } from '../../contracts/daily-log.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-daily-log',
@@ -31,6 +32,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     DatePipe,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './daily-log.component.html',
   styleUrl: './daily-log.component.scss',
