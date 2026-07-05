@@ -6,6 +6,10 @@ export default defineConfig({
   testDir: './e2e/specs',
   globalSetup: './e2e/global-setup.ts',
   fullyParallel: false,
+  // Each test calls resetDb() against a single shared princess_e2e database;
+  // running spec files across multiple workers races the reset/reseed and
+  // trips unique-constraint violations in the backend seeder.
+  workers: 1,
   retries: 0,
   timeout: 30_000,
 
