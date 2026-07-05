@@ -1,15 +1,27 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 440px;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
-  height: 100%;
   background: var(--mat-sys-surface-container-low);
-  border-left: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: var(--elevation-3);
+  animation: panel-slide-in var(--duration-base, 0.2s) var(--ease-standard, ease-out);
 
   &__header {
     display: flex;
@@ -100,4 +112,9 @@
     color: var(--status-danger);
     margin-left: auto;
   }
+}
+
+@keyframes panel-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject, input, output } from '@angular/core';
+import { Component, HostListener, OnInit, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -54,6 +54,11 @@ export class WbsSidePanelComponent implements OnInit {
   });
 
   protected saving = false;
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    this.close.emit();
+  }
 
   constructor() {
     effect(() => {

@@ -1,4 +1,4 @@
-<div class="page-layout" [class.detail-open]="selectedDocId()">
+<div class="page-layout">
   <div class="list-pane">
     <div class="page-header">
       <h2 class="page-title">Document Library</h2>
@@ -101,7 +101,8 @@
   </div>
 
   @if (selectedDocId(); as docId) {
-    <div class="detail-pane">
+    <div class="backdrop" (click)="closeDetail()"></div>
+    <div class="detail-pane" (click)="$event.stopPropagation()">
       <div class="detail-pane-header">
         <button mat-icon-button (click)="closeDetail()" aria-label="Close detail">
           <mat-icon>close</mat-icon>

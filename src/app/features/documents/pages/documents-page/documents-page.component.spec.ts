@@ -194,6 +194,40 @@ describe('DocumentsPageComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/p', 3, 'documents']);
   });
 
+  it('renders a backdrop when the detail pane is open', () => {
+    const { fixture } = setup([stubDoc], '1');
+    expect(fixture.nativeElement.querySelector('.backdrop')).toBeTruthy();
+  });
+
+  it('does not render a backdrop when the detail pane is closed', () => {
+    const { fixture } = setup([stubDoc]);
+    expect(fixture.nativeElement.querySelector('.backdrop')).toBeFalsy();
+  });
+
+  it('clicking the backdrop closes the detail pane', () => {
+    const { fixture } = setup([stubDoc], '1');
+    const comp = fixture.componentInstance as any;
+    const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
+    fixture.nativeElement.querySelector('.backdrop').click();
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 3, 'documents']);
+  });
+
+  it('pressing Escape closes the detail pane', () => {
+    const { fixture } = setup([stubDoc], '1');
+    const comp = fixture.componentInstance as any;
+    const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
+    comp.onEscape();
+    expect(navigateSpy).toHaveBeenCalledWith(['/p', 3, 'documents']);
+  });
+
+  it('pressing Escape does nothing when the detail pane is closed', () => {
+    const { fixture } = setup([stubDoc]);
+    const comp = fixture.componentInstance as any;
+    const navigateSpy = vi.spyOn(comp['router'], 'navigate').mockImplementation(() => Promise.resolve(true));
+    comp.onEscape();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
   it('openCreateDialog() opens CreateDocumentDialogComponent', () => {
     const { fixture } = setup([stubDoc]);
     const comp = fixture.componentInstance as any;

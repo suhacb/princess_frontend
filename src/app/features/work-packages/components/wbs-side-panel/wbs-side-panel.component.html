@@ -1,4 +1,6 @@
-<div class="panel">
+<div class="backdrop" (click)="close.emit()"></div>
+
+<div class="panel" (click)="$event.stopPropagation()">
 
   <div class="panel__header">
     <div class="panel__type">

@@ -156,4 +156,35 @@ describe('WbsSidePanelComponent', () => {
       expect(productService.remove).not.toHaveBeenCalled();
     });
   });
+
+  describe('overlay dismiss', () => {
+    it('renders a backdrop element', () => {
+      const { fixture } = setup(rootSelection);
+      expect(fixture.nativeElement.querySelector('.backdrop')).toBeTruthy();
+    });
+
+    it('clicking the backdrop emits close', () => {
+      const { fixture } = setup(rootSelection);
+      const closeSpy = vi.fn();
+      (fixture.componentInstance as any).close.subscribe(closeSpy);
+      fixture.nativeElement.querySelector('.backdrop').click();
+      expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('pressing Escape emits close', () => {
+      const { fixture } = setup(rootSelection);
+      const closeSpy = vi.fn();
+      (fixture.componentInstance as any).close.subscribe(closeSpy);
+      (fixture.componentInstance as any).onEscape();
+      expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('clicking the panel itself does not emit close', () => {
+      const { fixture } = setup(rootSelection);
+      const closeSpy = vi.fn();
+      (fixture.componentInstance as any).close.subscribe(closeSpy);
+      fixture.nativeElement.querySelector('.panel').click();
+      expect(closeSpy).not.toHaveBeenCalled();
+    });
+  });
 });

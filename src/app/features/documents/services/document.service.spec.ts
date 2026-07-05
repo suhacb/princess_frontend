@@ -11,11 +11,11 @@ const stubVersionApi: DocumentVersionApiResource = {
   document_id: 1,
   version_number: 1,
   file_name: 'brief.docx',
-  file_size: 1024,
+  file_size_bytes: 1024,
   mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   comment: null,
-  uploaded_by: { id: 5, name: 'Alice' },
-  uploaded_at: '2026-06-01T10:00:00Z',
+  created_by: { id: 5, name: 'Alice' },
+  created_at: '2026-06-01T10:00:00Z',
 };
 
 const stubApi: DocumentApiResource = {
@@ -30,7 +30,7 @@ const stubApi: DocumentApiResource = {
   tags: [],
   owner: { id: 5, name: 'Alice' },
   current_version: stubVersionApi,
-  version_count: 1,
+  versions_count: 1,
   created_at: '2026-06-01T09:00:00Z',
   updated_at: '2026-06-01T09:00:00Z',
 };
