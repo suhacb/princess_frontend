@@ -20,6 +20,7 @@ import {
 } from '../../contracts/quality-register.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-quality-list',
@@ -33,6 +34,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     QualityResultChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './quality-list.component.html',
   styleUrl: './quality-list.component.scss',

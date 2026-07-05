@@ -26,6 +26,7 @@ const ISSUE_TYPE_TONES: Record<IssueType, BadgeTone> = {
 };
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 type SortKey = 'priority' | 'raised_at';
 
@@ -41,6 +42,7 @@ type SortKey = 'priority' | 'raised_at';
     IssuePriorityChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './issue-list.component.html',
   styleUrl: './issue-list.component.scss',

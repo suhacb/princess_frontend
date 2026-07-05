@@ -44,14 +44,14 @@ import { MatIconModule } from '@angular/material/icon';
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      min-width: 90px;
+      min-width: 64px;
     }
 
     .stepper__connector {
       flex: 1;
       height: 2px;
       background: var(--mat-sys-outline-variant);
-      margin-bottom: 22px;
+      margin-top: 13px;
       transition: background var(--duration-base) var(--ease-standard);
 
       &--done {

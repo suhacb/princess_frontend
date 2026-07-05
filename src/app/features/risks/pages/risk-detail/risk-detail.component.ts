@@ -27,6 +27,7 @@ import {
   riskScoreClass,
 } from '../../contracts/risk.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-risk-detail',
@@ -41,6 +42,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     RiskStatusChipComponent,
     RiskScoreBadgeComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './risk-detail.component.html',
   styleUrl: './risk-detail.component.scss',

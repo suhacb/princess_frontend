@@ -18,6 +18,7 @@ import {
 } from '../../contracts/lesson.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-lesson-list',
@@ -30,6 +31,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     DatePipe,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './lesson-list.component.html',
   styleUrl: './lesson-list.component.scss',

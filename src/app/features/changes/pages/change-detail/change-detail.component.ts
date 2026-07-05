@@ -27,6 +27,7 @@ import {
   canDecide,
 } from '../../contracts/change.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-change-detail',
@@ -41,6 +42,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     DatePipe,
     ChangeStatusChipComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './change-detail.component.html',
   styleUrl: './change-detail.component.scss',

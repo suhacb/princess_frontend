@@ -21,6 +21,7 @@ import {
   UpdateQualityEntryPayload,
 } from '../../contracts/quality-register.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-quality-detail',
@@ -34,6 +35,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     DatePipe,
     QualityResultChipComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './quality-detail.component.html',
   styleUrl: './quality-detail.component.scss',

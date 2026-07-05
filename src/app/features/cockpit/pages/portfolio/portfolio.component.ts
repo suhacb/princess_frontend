@@ -16,6 +16,7 @@ import {
   CreateProjectDialogComponent,
 } from '../../../projects/components/create-project-dialog/create-project-dialog.component';
 import { Project, PROJECT_STATUS_LABELS, PROJECT_STATUSES, ProjectStatus } from '../../../projects/contracts/project.contracts';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 type ToleranceHealth = 'ok' | 'warn' | 'exception';
 
@@ -32,6 +33,7 @@ type ToleranceHealth = 'ok' | 'warn' | 'exception';
     StatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.scss',
