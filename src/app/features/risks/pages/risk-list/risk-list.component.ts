@@ -25,6 +25,7 @@ import {
 } from '../../contracts/risk.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 type SortKey = 'score' | 'raised_at';
 
@@ -40,6 +41,7 @@ type SortKey = 'score' | 'raised_at';
     RiskScoreBadgeComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './risk-list.component.html',
   styleUrl: './risk-list.component.scss',

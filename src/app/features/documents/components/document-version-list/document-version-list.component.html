@@ -36,18 +36,48 @@
             [matTooltip]="'Download v' + v.versionNumber"
             (click)="downloadVersion(v)"
           >
-            <mat-icon>download</mat-icon>
+            <mat-icon>file_download</mat-icon>
           </button>
           <button
             mat-icon-button
-            [matTooltip]="revertTooltip(v)"
+            [matTooltip]="'View v' + v.versionNumber + ' (read-only)'"
+            (click)="viewVersion(v)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            [matTooltip]="restoreTooltip(v)"
             [disabled]="!canRevert(v) || reverting()"
             (click)="openRevertDialog(v)"
           >
-            <mat-icon>history</mat-icon>
+            <mat-icon>restore</mat-icon>
           </button>
         </div>
       </div>
     }
   </div>
+
+  @if (lastPage() > 1) {
+    <div class="vl-pagination">
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === 1"
+        matTooltip="Previous page"
+        (click)="goToPage(currentPage() - 1)"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="vl-page-label">{{ currentPage() }} / {{ lastPage() }}</span>
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === lastPage()"
+        matTooltip="Next page"
+        (click)="goToPage(currentPage() + 1)"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  }
 }

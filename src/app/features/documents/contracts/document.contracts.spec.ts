@@ -13,11 +13,11 @@ const stubVersionApi: DocumentVersionApiResource = {
   document_id: 1,
   version_number: 3,
   file_name: 'brief_v3.docx',
-  file_size: 204800,
+  file_size_bytes: 204800,
   mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   comment: 'Updated scope section',
-  uploaded_by: { id: 5, name: 'Alice Smith' },
-  uploaded_at: '2026-06-28T10:00:00Z',
+  created_by: { id: 5, name: 'Alice Smith' },
+  created_at: '2026-06-28T10:00:00Z',
 };
 
 const stubDocApi: DocumentApiResource = {
@@ -32,7 +32,7 @@ const stubDocApi: DocumentApiResource = {
   tags: ['important', 'phase1'],
   owner: { id: 5, name: 'Alice Smith' },
   current_version: stubVersionApi,
-  version_count: 3,
+  versions_count: 3,
   created_at: '2026-06-01T09:00:00Z',
   updated_at: '2026-06-28T10:00:00Z',
 };

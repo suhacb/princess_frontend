@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { DocumentDetailComponent } from './document-detail.component';
@@ -51,14 +50,12 @@ function setup(doc: Document | null = stubDoc) {
     revertVersion: vi.fn().mockReturnValue(of({})),
   };
   const dialog = { open: vi.fn().mockReturnValue({ afterClosed: () => of(undefined) }) };
-  const router = { navigate: vi.fn() };
 
   TestBed.configureTestingModule({
     imports: [DocumentDetailComponent, BrowserAnimationsModule],
     providers: [
       { provide: DocumentService, useValue: documentService },
       { provide: MatDialog, useValue: dialog },
-      { provide: Router, useValue: router },
     ],
   });
 
@@ -66,7 +63,7 @@ function setup(doc: Document | null = stubDoc) {
   fixture.componentRef.setInput('docId', 1);
   fixture.componentRef.setInput('projectId', 3);
   fixture.detectChanges();
-  return { fixture, documentService, dialog, router };
+  return { fixture, documentService, dialog };
 }
 
 describe('DocumentDetailComponent', () => {
@@ -125,8 +122,7 @@ describe('DocumentDetailComponent', () => {
 
   it('calls download on download button click', () => {
     const { fixture, documentService } = setup();
-    const btn = Array.from(fixture.nativeElement.querySelectorAll('button'))
-      .find((b: any) => b.textContent?.includes('Download')) as HTMLButtonElement | undefined;
+    const btn = fixture.nativeElement.querySelector('.version-actions button') as HTMLButtonElement | null;
     btn?.click();
     expect(documentService.download).toHaveBeenCalledWith(3, 1);
   });
@@ -259,16 +255,23 @@ describe('DocumentDetailComponent', () => {
 
     it('edit button is rendered in current-version section', () => {
       const { fixture } = setup();
-      const btn = Array.from(fixture.nativeElement.querySelectorAll('button'))
-        .find((b: any) => b.textContent?.includes('Edit')) as HTMLButtonElement | undefined;
-      expect(btn).toBeTruthy();
+      const buttons = fixture.nativeElement.querySelectorAll('.version-actions button');
+      expect(buttons.length).toBe(2);
     });
 
-    it('openEditor() navigates to editor route', () => {
-      const { fixture, router } = setup();
+    it('edit button is disabled when the document is not editable', () => {
+      const { fixture } = setup({ ...stubDoc, status: 'confirmed' });
+      const buttons = fixture.nativeElement.querySelectorAll('.version-actions button');
+      expect((buttons[1] as HTMLButtonElement).disabled).toBe(true);
+    });
+
+    it('openEditor() opens the editor route in a new tab', () => {
+      const { fixture } = setup();
       const comp = fixture.componentInstance as any;
+      const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
       comp.openEditor();
-      expect(router.navigate).toHaveBeenCalledWith(['/p', 3, 'documents', 1, 'edit']);
+      expect(openSpy).toHaveBeenCalledWith('/editor/3/documents/1', '_blank');
+      openSpy.mockRestore();
     });
   });
 });

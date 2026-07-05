@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -116,6 +116,11 @@ export class DocumentsPageComponent {
     const project = this.project();
     if (!project) return;
     this.router.navigate(['/p', project.id, 'documents']);
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.selectedDocId() !== null) this.closeDetail();
   }
 
   protected openCreateDialog(): void {

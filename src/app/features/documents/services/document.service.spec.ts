@@ -11,11 +11,11 @@ const stubVersionApi: DocumentVersionApiResource = {
   document_id: 1,
   version_number: 1,
   file_name: 'brief.docx',
-  file_size: 1024,
+  file_size_bytes: 1024,
   mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   comment: null,
-  uploaded_by: { id: 5, name: 'Alice' },
-  uploaded_at: '2026-06-01T10:00:00Z',
+  created_by: { id: 5, name: 'Alice' },
+  created_at: '2026-06-01T10:00:00Z',
 };
 
 const stubApi: DocumentApiResource = {
@@ -30,7 +30,7 @@ const stubApi: DocumentApiResource = {
   tags: [],
   owner: { id: 5, name: 'Alice' },
   current_version: stubVersionApi,
-  version_count: 1,
+  versions_count: 1,
   created_at: '2026-06-01T09:00:00Z',
   updated_at: '2026-06-01T09:00:00Z',
 };
@@ -205,21 +205,38 @@ describe('DocumentService', () => {
   });
 
   describe('listVersions()', () => {
-    it('returns mapped versions array', () => {
+    it('returns mapped, paginated versions sorted newest-first', () => {
       const v2: DocumentVersionApiResource = {
         ...stubVersionApi,
         id: 13,
         version_number: 2,
         file_name: 'brief_v2.docx',
       };
-      apiMock.get.mockReturnValue(of({ data: [v2, stubVersionApi] }));
+      apiMock.get.mockReturnValue(of({
+        data: [stubVersionApi, v2],
+        meta: { current_page: 1, last_page: 2, total: 3 },
+      }));
 
-      let result: unknown;
+      let result: { versions: { id: number }[]; currentPage: number; lastPage: number; total: number } | undefined;
       service.listVersions(3, 1).subscribe(v => (result = v));
 
-      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/1/versions');
-      expect((result as unknown[]).length).toBe(2);
-      expect((result as Array<{ id: number }>)[0].id).toBe(13);
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/1/versions', { page: 1 });
+      expect(result?.versions.length).toBe(2);
+      expect(result?.versions[0].id).toBe(13);
+      expect(result?.currentPage).toBe(1);
+      expect(result?.lastPage).toBe(2);
+      expect(result?.total).toBe(3);
+    });
+
+    it('requests the given page', () => {
+      apiMock.get.mockReturnValue(of({
+        data: [stubVersionApi],
+        meta: { current_page: 2, last_page: 2, total: 3 },
+      }));
+
+      service.listVersions(3, 1, 2).subscribe();
+
+      expect(apiMock.get).toHaveBeenCalledWith('/projects/3/documents/1/versions', { page: 2 });
     });
   });
 

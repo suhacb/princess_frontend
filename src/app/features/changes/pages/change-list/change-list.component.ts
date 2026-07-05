@@ -34,6 +34,7 @@ const PRIORITY_TONES: Record<string, BadgeTone> = {
 };
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-change-list',
@@ -48,6 +49,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     ChangeStatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './change-list.component.html',
   styleUrl: './change-list.component.scss',

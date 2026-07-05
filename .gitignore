@@ -53,3 +53,6 @@ playwright-report/
 test-results/
 .playwright-mcp/
 e2e/.auth/
+
+# Ad hoc manual-testing screenshots (repo root only)
+/*.png

@@ -8,6 +8,7 @@ import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, ProjectStatus } from '../../co
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { StatusChipComponent } from '../../../../shared/components/status-chip/status-chip.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 const TABS = [
   { label: 'Overview', path: 'overview' },
@@ -34,6 +35,7 @@ const TABS = [
     BadgeComponent,
     StatusChipComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.scss',

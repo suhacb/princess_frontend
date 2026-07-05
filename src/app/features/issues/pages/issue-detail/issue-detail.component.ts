@@ -36,6 +36,7 @@ import {
   canResolve,
 } from '../../contracts/issue.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-issue-detail',
@@ -51,6 +52,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     IssueStatusChipComponent,
     IssuePriorityChipComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './issue-detail.component.html',
   styleUrl: './issue-detail.component.scss',

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -34,6 +35,7 @@ type InlineMode =
 @Component({
   selector: 'app-wbs-tree',
   imports: [
+    NgTemplateOutlet,
     MatButtonModule,
     MatIconModule,
     EmptyStateComponent,
@@ -53,6 +55,8 @@ export class WbsTreeComponent {
   protected readonly products = this.productService.products;
   protected readonly loading = this.productService.loading;
   protected readonly typeLabels = PRODUCT_TYPE_LABELS;
+
+  protected typeLabel(product: Product): string { return PRODUCT_TYPE_LABELS[product.type]; }
 
   // ─── Expand/collapse ─────────────────────────────────────────────────────────
 

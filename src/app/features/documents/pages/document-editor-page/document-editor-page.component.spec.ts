@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { DocumentEditorPageComponent } from './document-editor-page.component';
 import { DocumentService } from '../../services/document.service';
-import { ProjectService } from '../../../projects/services/project.service';
 
 const stubConfig = {
   document: { fileType: 'docx', key: 'key1', title: 'Project Brief', url: 'https://s3/file' },
@@ -14,14 +12,14 @@ const stubConfig = {
   token: 'jwt',
 };
 
-const stubProject = { id: 3, name: 'Project A' };
-
 function setup(options: {
   config?: object | 'error';
   projectId?: number | null;
   docId?: number | null;
+  versionId?: number | null;
+  view?: boolean;
 } = {}) {
-  const { config = stubConfig, projectId = 3, docId = 1 } = options;
+  const { config = stubConfig, projectId = 3, docId = 1, versionId = null, view = false } = options;
 
   const documentService = {
     loadEditorConfig: vi.fn().mockReturnValue(
@@ -31,14 +29,17 @@ function setup(options: {
     ),
   };
 
-  const projectService = {
-    selectedProject: signal(projectId !== null ? { ...stubProject, id: projectId } : null).asReadonly(),
-  };
-
-  const router = { navigate: vi.fn() };
-
   const activatedRoute = {
-    snapshot: { params: docId !== null ? { docId: String(docId) } : {} },
+    snapshot: {
+      params: {
+        ...(projectId !== null ? { projectId: String(projectId) } : {}),
+        ...(docId !== null ? { docId: String(docId) } : {}),
+      },
+      queryParams: {
+        ...(versionId !== null ? { versionId: String(versionId) } : {}),
+        ...(view ? { view: '1' } : {}),
+      },
+    },
   };
 
   (globalThis as any).DocsAPI = {
@@ -49,15 +50,13 @@ function setup(options: {
     imports: [DocumentEditorPageComponent, BrowserAnimationsModule],
     providers: [
       { provide: DocumentService, useValue: documentService },
-      { provide: ProjectService, useValue: projectService },
-      { provide: Router, useValue: router },
       { provide: ActivatedRoute, useValue: activatedRoute },
     ],
   });
 
   const fixture: ComponentFixture<DocumentEditorPageComponent> = TestBed.createComponent(DocumentEditorPageComponent);
   fixture.detectChanges();
-  return { fixture, documentService, projectService, router };
+  return { fixture, documentService };
 }
 
 describe('DocumentEditorPageComponent', () => {
@@ -69,7 +68,12 @@ describe('DocumentEditorPageComponent', () => {
 
   it('calls loadEditorConfig with project and doc ids', () => {
     const { documentService } = setup();
-    expect(documentService.loadEditorConfig).toHaveBeenCalledWith(3, 1);
+    expect(documentService.loadEditorConfig).toHaveBeenCalledWith(3, 1, undefined);
+  });
+
+  it('calls loadEditorConfig with versionId when present in query params', () => {
+    const { documentService } = setup({ versionId: 12 });
+    expect(documentService.loadEditorConfig).toHaveBeenCalledWith(3, 1, 12);
   });
 
   it('is loading while script is pending', () => {
@@ -85,7 +89,7 @@ describe('DocumentEditorPageComponent', () => {
     expect(comp.loading()).toBe(false);
   });
 
-  it('sets error when project is missing', () => {
+  it('sets error when project is missing from route params', () => {
     const { fixture } = setup({ projectId: null });
     const comp = fixture.componentInstance as any;
     expect(comp.error()).toBe('Could not determine project or document.');
@@ -97,17 +101,20 @@ describe('DocumentEditorPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Failed to load editor configuration');
   });
 
-  it('renders toolbar back button', () => {
-    const { fixture } = setup();
-    const backBtn = fixture.nativeElement.querySelector('button[aria-label="Back to document"]');
-    expect(backBtn).toBeTruthy();
+  it('renders a close button when an error occurs', () => {
+    const { fixture } = setup({ config: 'error' });
+    const closeBtn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+      .find((b: any) => b.textContent?.includes('Close')) as HTMLButtonElement | undefined;
+    expect(closeBtn).toBeTruthy();
   });
 
-  it('goBack() navigates to document detail', () => {
-    const { fixture, router } = setup();
+  it('closeTab() calls window.close()', () => {
+    const { fixture } = setup();
     const comp = fixture.componentInstance as any;
-    comp.goBack();
-    expect(router.navigate).toHaveBeenCalledWith(['/p', 3, 'documents', '1']);
+    const closeSpy = vi.spyOn(window, 'close').mockImplementation(() => {});
+    comp.closeTab();
+    expect(closeSpy).toHaveBeenCalled();
+    closeSpy.mockRestore();
   });
 
   it('destroyEditor is called on destroy when editor is set', () => {
@@ -150,13 +157,6 @@ describe('DocumentEditorPageComponent', () => {
     const { documentService } = setup();
     expect(documentService.loadEditorConfig).toHaveBeenCalled();
     existing.remove();
-  });
-
-  it('goBack() falls back to navigate(..) when project is missing', () => {
-    const { fixture, router } = setup({ projectId: null });
-    const comp = fixture.componentInstance as any;
-    comp.goBack();
-    expect(router.navigate).toHaveBeenCalledWith(['..'], expect.objectContaining({ relativeTo: expect.anything() }));
   });
 
   it('ngOnDestroy removes the script tag', () => {

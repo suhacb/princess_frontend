@@ -8,8 +8,15 @@ import { MatButtonModule } from '@angular/material/button';
   template: `
     <div class="empty-state">
       <mat-icon class="empty-state__icon">{{ icon() }}</mat-icon>
-      <h3 class="empty-state__title">{{ title() }}</h3>
-      <p class="empty-state__message">{{ message() }}</p>
+      @if (title()) {
+        <h3 class="empty-state__title">{{ title() }}</h3>
+      }
+      @if (message()) {
+        <p class="empty-state__message">{{ message() }}</p>
+      }
+      @if (hint()) {
+        <p class="empty-state__hint">{{ hint() }}</p>
+      }
       @if (actionLabel()) {
         <button mat-stroked-button (click)="actionClick.emit()">
           {{ actionLabel() }}
@@ -38,16 +45,25 @@ import { MatButtonModule } from '@angular/material/button';
 
       &__title {
         margin: 0;
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 600;
         color: var(--mat-sys-on-surface);
-        font-family: 'Instrument Sans', sans-serif;
+        font-family: var(--font-display);
       }
 
       &__message {
-        margin: 0 0 16px;
-        font-size: 14px;
+        margin: 0;
+        font-size: 0.875rem;
         color: var(--mat-sys-on-surface-variant);
+        max-width: 360px;
+        line-height: 1.5;
+      }
+
+      &__hint {
+        margin: 0 0 8px;
+        font-size: 0.8125rem;
+        color: var(--mat-sys-on-surface-variant);
+        opacity: 0.75;
         max-width: 360px;
         line-height: 1.5;
       }
@@ -56,8 +72,9 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class EmptyStateComponent {
   readonly icon = input<string>('inbox');
-  readonly title = input<string>('Nothing here');
+  readonly title = input<string>('');
   readonly message = input<string>('');
+  readonly hint = input<string>('');
   readonly actionLabel = input<string>('');
   readonly actionClick = output<void>();
 }

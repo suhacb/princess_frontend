@@ -1,3 +1,5 @@
+<app-page-scroll>
+
 <div class="page-header">
   <h2 class="page-title">Risk Log</h2>
   <div class="header-actions">
@@ -38,7 +40,7 @@
   </div>
 } @else if (filteredAndSorted().length === 0) {
   <app-empty-state
-    message="No risks recorded yet"
+    title="No risks recorded yet"
     hint="Raise a risk to start tracking threats to the project."
   />
 } @else {
@@ -70,3 +72,5 @@
     }
   </div>
 }
+
+</app-page-scroll>

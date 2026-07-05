@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output, computed, effect, inject, input, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,13 +7,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DatePipe } from '@angular/common';
 import { DocumentService } from '../../services/document.service';
 import { DocumentStatusChipComponent } from '../document-status-chip/document-status-chip.component';
 import { DocumentTypeSelectComponent } from '../document-type-select/document-type-select.component';
 import { UploadVersionDialogComponent, UploadVersionResult } from '../upload-version-dialog/upload-version-dialog.component';
+import { DocumentVersionHistoryDialogComponent } from '../document-version-history-dialog/document-version-history-dialog.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
-import { DocumentVersionListComponent } from '../document-version-list/document-version-list.component';
 import {
   DocumentType,
   DocumentStatus,
@@ -37,11 +37,11 @@ import {
     MatSelectModule,
     MatDialogModule,
     MatDividerModule,
+    MatTooltipModule,
     DatePipe,
     DocumentStatusChipComponent,
     DocumentTypeSelectComponent,
     SkeletonComponent,
-    DocumentVersionListComponent,
   ],
   templateUrl: './document-detail.component.html',
   styleUrl: './document-detail.component.scss',
@@ -55,7 +55,6 @@ export class DocumentDetailComponent {
   private readonly documentService = inject(DocumentService);
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
-  private readonly router = inject(Router);
 
   protected readonly doc = this.documentService.selectedDocument;
   protected readonly loading = this.documentService.loading;
@@ -78,7 +77,9 @@ export class DocumentDetailComponent {
     const d = this.doc();
     if (!d || !d.currentVersion) return false;
     if (d.status === 'confirmed' || d.status === 'superseded') return false;
-    return ONLYOFFICE_EDITABLE_MIME_TYPES.has(d.currentVersion.mimeType);
+    const mime = d.currentVersion.mimeType;
+    if (!mime) return true; // backend omits mime_type; let OnlyOffice reject unsupported formats
+    return ONLYOFFICE_EDITABLE_MIME_TYPES.has(mime);
   });
 
   protected readonly form = this.fb.group({
@@ -176,11 +177,22 @@ export class DocumentDetailComponent {
       });
   }
 
+  protected openVersionHistory(): void {
+    const d = this.doc();
+    const projectId = this.projectId();
+    if (!d || !projectId) return;
+    this.dialog.open(DocumentVersionHistoryDialogComponent, {
+      panelClass: 'princess-dialog',
+      minWidth: '520px',
+      data: { projectId, docId: d.id },
+    });
+  }
+
   protected openEditor(): void {
     const d = this.doc();
     const projectId = this.projectId();
     if (!d || !projectId) return;
-    this.router.navigate(['/p', projectId, 'documents', d.id, 'edit']);
+    window.open(`/editor/${projectId}/documents/${d.id}`, '_blank');
   }
 
   protected download(): void {

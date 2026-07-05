@@ -48,14 +48,27 @@ const stubDoc: Document = {
   updatedAt: new Date('2026-06-02T10:00:00Z'),
 };
 
+function paginatedResult(
+  versions: DocumentVersion[],
+  overrides: Partial<{ currentPage: number; lastPage: number; total: number }> = {},
+) {
+  return {
+    versions,
+    currentPage: overrides.currentPage ?? 1,
+    lastPage: overrides.lastPage ?? 1,
+    total: overrides.total ?? versions.length,
+  };
+}
+
 function setup(
   doc: Document | null = stubDoc,
   versions: DocumentVersion[] = [stubVersion2, stubVersion1],
+  pageOverrides: Partial<{ currentPage: number; lastPage: number; total: number }> = {},
 ) {
   const docSignal = signal(doc);
   const documentService = {
     selectedDocument: docSignal.asReadonly(),
-    listVersions: vi.fn().mockReturnValue(of(versions)),
+    listVersions: vi.fn().mockReturnValue(of(paginatedResult(versions, pageOverrides))),
     revertVersion: vi.fn().mockReturnValue(of(stubVersion2)),
     download: vi.fn(),
   };
@@ -82,7 +95,7 @@ describe('DocumentVersionListComponent', () => {
 
   it('calls listVersions on init', () => {
     const { documentService } = setup();
-    expect(documentService.listVersions).toHaveBeenCalledWith(3, 1);
+    expect(documentService.listVersions).toHaveBeenCalledWith(3, 1, 1);
   });
 
   it('renders version badges', () => {
@@ -213,5 +226,42 @@ describe('DocumentVersionListComponent', () => {
     comp.openRevertDialog(stubVersion1);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Revert failed');
+  });
+
+  describe('pagination', () => {
+    it('does not render pagination controls when there is only one page', () => {
+      const { fixture } = setup(stubDoc, [stubVersion2, stubVersion1], { lastPage: 1 });
+      expect(fixture.nativeElement.querySelector('.vl-pagination')).toBeFalsy();
+    });
+
+    it('renders pagination controls when there is more than one page', () => {
+      const { fixture } = setup(stubDoc, [stubVersion2, stubVersion1], { currentPage: 1, lastPage: 3, total: 5 });
+      expect(fixture.nativeElement.querySelector('.vl-pagination')).toBeTruthy();
+      expect(fixture.nativeElement.textContent).toContain('1 / 3');
+    });
+
+    it('goToPage() requests the given page and updates currentPage', () => {
+      const { fixture, documentService } = setup(stubDoc, [stubVersion2, stubVersion1], { currentPage: 1, lastPage: 3 });
+      const comp = fixture.componentInstance as any;
+      documentService.listVersions.mockReturnValue(
+        of(paginatedResult([stubVersion1], { currentPage: 2, lastPage: 3, total: 5 })),
+      );
+      comp.goToPage(2);
+      expect(documentService.listVersions).toHaveBeenCalledWith(3, 1, 2);
+      expect(comp.currentPage()).toBe(2);
+    });
+
+    it('previous-page button is disabled on the first page', () => {
+      const { fixture } = setup(stubDoc, [stubVersion2, stubVersion1], { currentPage: 1, lastPage: 3 });
+      const prevBtn = fixture.nativeElement.querySelector('.vl-pagination button') as HTMLButtonElement;
+      expect(prevBtn.disabled).toBe(true);
+    });
+
+    it('next-page button is disabled on the last page', () => {
+      const { fixture } = setup(stubDoc, [stubVersion2, stubVersion1], { currentPage: 3, lastPage: 3 });
+      const buttons = fixture.nativeElement.querySelectorAll('.vl-pagination button');
+      const nextBtn = buttons[buttons.length - 1] as HTMLButtonElement;
+      expect(nextBtn.disabled).toBe(true);
+    });
   });
 });

@@ -11,6 +11,7 @@ import { StageTimelineComponent } from '../../../stages/components/stage-timelin
 import { TaskPanelComponent } from '../../../tasks/components/task-panel/task-panel.component';
 import { MeetingPanelComponent } from '../../../meetings/components/meeting-panel/meeting-panel.component';
 import { AuditTrailFeedComponent } from '../../../audit-trail/components/audit-trail-feed/audit-trail-feed.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 const LIFECYCLE_STEPS = ['Pre-Project', 'Initiation', 'Delivery', 'Closing', 'Closed'];
 const STATUS_INDEX: Record<string, number> = {
@@ -19,7 +20,7 @@ const STATUS_INDEX: Record<string, number> = {
 
 @Component({
   selector: 'app-plan',
-  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent, StageTimelineComponent, TaskPanelComponent, MeetingPanelComponent, AuditTrailFeedComponent],
+  imports: [MatIconModule, MatButtonModule, LifecycleStepperComponent, EmptyStateComponent, WbsTreeComponent, WorkPackageListComponent, StageTimelineComponent, TaskPanelComponent, MeetingPanelComponent, AuditTrailFeedComponent, PageScrollComponent],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.scss',
 })

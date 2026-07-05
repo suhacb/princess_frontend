@@ -19,6 +19,7 @@ import { ProjectService } from '../../services/project.service';
 import { Project, PROJECT_STATUS_LABELS, PROJECT_STATUSES, ProjectStatus } from '../../contracts/project.contracts';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-project-list',
@@ -40,6 +41,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     StatusChipComponent,
     EmptyStateComponent,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.scss',

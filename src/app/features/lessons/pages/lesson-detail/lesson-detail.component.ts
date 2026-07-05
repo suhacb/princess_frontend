@@ -16,6 +16,7 @@ import {
   UpdateLessonPayload,
 } from '../../contracts/lesson.contracts';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { PageScrollComponent } from '../../../../shared/components/page-scroll/page-scroll.component';
 
 @Component({
   selector: 'app-lesson-detail',
@@ -28,6 +29,7 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
     MatSelectModule,
     DatePipe,
     SkeletonComponent,
+    PageScrollComponent,
   ],
   templateUrl: './lesson-detail.component.html',
   styleUrl: './lesson-detail.component.scss',

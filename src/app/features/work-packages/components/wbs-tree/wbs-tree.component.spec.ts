@@ -207,4 +207,34 @@ describe('WbsTreeComponent', () => {
     expect(sel?.productId).toBe(20);
     expect(sel?.parentId).toBe(1);
   });
+
+  describe('nested (grandchild) products', () => {
+    const stubGrandchild: Product = {
+      id: 30, projectId: 7, parentId: 20, identifier: null,
+      title: 'Login Screen', purpose: null, type: 'specialist', status: 'draft',
+      children: [],
+    };
+    const childWithGrandchild: Product = { ...stubChild, children: [stubGrandchild] };
+    const rootWithGrandchild: Product = { ...stubProduct, children: [childWithGrandchild] };
+
+    it('renders grandchild products when expanded at every level', () => {
+      const { fixture } = setup([rootWithGrandchild]);
+      const comp = fixture.componentInstance as any;
+      comp.expandAll();
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('Login Screen');
+    });
+
+    it('startAddChild on a non-root product allows adding a grandchild', () => {
+      const { fixture, productService } = setup([rootWithGrandchild]);
+      const comp = fixture.componentInstance as any;
+      comp.startAddChild(new Event('click'), 20);
+      comp.inlineTitle.set('New Grandchild');
+      comp.saveNew(20);
+      expect(productService.create).toHaveBeenCalledWith(7, expect.objectContaining({
+        title: 'New Grandchild',
+        parent_id: 20,
+      }));
+    });
+  });
 });

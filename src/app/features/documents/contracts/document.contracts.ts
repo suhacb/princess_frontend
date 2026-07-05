@@ -138,11 +138,11 @@ export interface DocumentVersionApiResource {
   document_id: number;
   version_number: number;
   file_name: string;
-  file_size: number;
-  mime_type: string;
+  file_size_bytes: number;
+  mime_type?: string;
   comment: string | null;
-  uploaded_by: { id: number; name: string };
-  uploaded_at: string;
+  created_by?: { id: number; name: string; email?: string };
+  created_at: string;
 }
 
 export interface DocumentApiResource {
@@ -150,14 +150,14 @@ export interface DocumentApiResource {
   project_id: number;
   title: string;
   type: DocumentType;
-  type_label: string;
+  type_label?: string;
   category: DocumentCategory;
-  category_label: string;
+  category_label?: string;
   status: DocumentStatus;
-  tags: string[];
-  owner: { id: number; name: string } | null;
-  current_version: DocumentVersionApiResource | null;
-  version_count: number;
+  tags?: string[];
+  owner?: { id: number; name: string } | null;
+  current_version?: DocumentVersionApiResource | null;
+  versions_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -223,11 +223,13 @@ export function mapDocumentVersion(api: DocumentVersionApiResource): DocumentVer
     documentId: api.document_id,
     versionNumber: api.version_number,
     fileName: api.file_name,
-    fileSize: api.file_size,
-    mimeType: api.mime_type,
+    fileSize: api.file_size_bytes,
+    mimeType: api.mime_type ?? '',
     comment: api.comment,
-    uploadedBy: api.uploaded_by,
-    uploadedAt: new Date(api.uploaded_at),
+    uploadedBy: api.created_by
+      ? { id: api.created_by.id, name: api.created_by.name }
+      : { id: 0, name: 'Unknown' },
+    uploadedAt: new Date(api.created_at),
   };
 }
 
@@ -237,16 +239,16 @@ export function mapDocument(api: DocumentApiResource): Document {
     projectId: api.project_id,
     title: api.title,
     type: api.type,
-    typeLabel: api.type_label,
+    typeLabel: api.type_label ?? DOCUMENT_TYPE_LABELS[api.type as DocumentType] ?? api.type,
     category: api.category,
-    categoryLabel: api.category_label,
+    categoryLabel: api.category_label ?? DOCUMENT_CATEGORY_LABELS[api.category as DocumentCategory] ?? api.category,
     status: api.status,
     tags: api.tags ?? [],
-    owner: api.owner,
+    owner: api.owner ?? null,
     currentVersion: api.current_version
       ? mapDocumentVersion({ ...api.current_version, document_id: api.id })
       : null,
-    versionCount: api.version_count,
+    versionCount: api.versions_count ?? 0,
     createdAt: new Date(api.created_at),
     updatedAt: new Date(api.updated_at),
   };
