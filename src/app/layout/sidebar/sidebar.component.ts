@@ -75,6 +75,7 @@ export class SidebarComponent {
       {
         label: 'Logs',
         items: [
+          { label: 'Requirements', icon: 'checklist',    route: `${base}/requirements` },
           { label: 'Risk Log',    icon: 'warning_amber', route: `${base}/risks` },
           { label: 'Issue Log',   icon: 'bug_report',    route: `${base}/issues` },
           { label: 'Change Log',  icon: 'sync_alt',      route: `${base}/changes`,  roles: ['pm', 'pmo'] },

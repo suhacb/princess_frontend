@@ -1,0 +1,104 @@
+:host { display: block; padding: 24px; height: 100%; overflow: hidden; }
+
+.detail-skeleton { display: flex; flex-direction: column; gap: 12px; }
+.load-error { color: var(--mat-sys-error); padding: 16px; }
+
+.detail-layout { display: flex; flex-direction: column; gap: 24px; }
+
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.header-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.requirement-ref {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-title { margin: 0; font-family: var(--font-display); font-size: 1.625rem; font-weight: 400; }
+
+.header-chips { display: flex; gap: 8px; align-items: center; }
+
+.version-badge {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  padding: 2px 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--radius-chip);
+}
+
+.header-actions { display: flex; gap: 8px; flex-shrink: 0; align-self: flex-start; margin-top: 4px; }
+
+.error-banner {
+  background: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
+  color: var(--mat-sys-error);
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.meta-row {
+  display: flex;
+  gap: 24px;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.detail-form { display: flex; flex-direction: column; gap: 4px; }
+
+.form-section {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-heading {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  mat-form-field { flex: 1; }
+}
+
+.full-width { width: 100%; }
+
+.workflow-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.workflow-terminal-note { font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+.workflow-meta { margin-top: 8px; font-size: 0.8rem; color: var(--mat-sys-on-surface-variant); }
+
+.children-list, .ac-list { display: flex; flex-direction: column; gap: 4px; }
+
+.child-row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  &:first-child { border-top: none; }
+}
+
+.child-ref { font-family: var(--font-mono, monospace); font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+.child-title { font-size: 0.9rem; }

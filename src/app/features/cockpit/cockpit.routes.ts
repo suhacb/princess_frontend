@@ -86,6 +86,18 @@ export const cockpitRoutes: Routes = [
         title: 'Change',
       },
       {
+        path: 'requirements',
+        loadComponent: () =>
+          import('../requirements/pages/requirement-list/requirement-list.component').then(m => m.RequirementListComponent),
+        title: 'Requirements',
+      },
+      {
+        path: 'requirements/:requirementId',
+        loadComponent: () =>
+          import('../requirements/pages/requirement-detail/requirement-detail.component').then(m => m.RequirementDetailComponent),
+        title: 'Requirement',
+      },
+      {
         path: 'quality',
         loadComponent: () =>
           import('../quality-register/pages/quality-list/quality-list.component').then(m => m.QualityListComponent),
