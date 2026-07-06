@@ -102,3 +102,29 @@
 
 .child-ref { font-family: var(--font-mono, monospace); font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
 .child-title { font-size: 0.9rem; }
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  .section-heading { margin: 0; }
+}
+
+.no-ac-note { margin: 0; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+
+.ac-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  cursor: pointer;
+  &:first-child { border-top: none; }
+  &:hover { background: var(--mat-sys-surface-container-low); }
+}
+
+.ac-ref { font-family: var(--font-mono, monospace); font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+.ac-title { font-size: 0.9rem; }

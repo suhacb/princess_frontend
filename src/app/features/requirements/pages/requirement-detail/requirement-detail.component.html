@@ -143,11 +143,46 @@
       }
     </form>
 
+    @if (!isEpic()) {
+      <section class="form-section">
+        <div class="section-header-row">
+          <h3 class="section-heading">Acceptance criteria</h3>
+          <button mat-stroked-button (click)="openCreateAcceptanceCriterionDialog()">
+            <mat-icon>add</mat-icon> Add
+          </button>
+        </div>
+        @if (acceptanceCriteria().length === 0) {
+          <p class="no-ac-note">No acceptance criteria linked yet.</p>
+        } @else {
+          <div class="ac-list">
+            @for (ac of acceptanceCriteria(); track ac.id) {
+              <div class="ac-row" (click)="openAcceptanceCriterion(ac.id)" role="button" tabindex="0"
+                   (keydown.enter)="openAcceptanceCriterion(ac.id)" (keydown.space)="openAcceptanceCriterion(ac.id)">
+                <span class="ac-ref">{{ ac.ref }}</span>
+                <span class="ac-title">{{ ac.title }}</span>
+                <app-ac-status-chip [status]="ac.status" />
+                <app-ac-decision-chip [decision]="ac.supplierDecision" />
+                <app-ac-decision-chip [decision]="ac.clientDecision" />
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+
     <section class="form-section">
       <h3 class="section-heading">Version history</h3>
       <app-requirement-version-list [projectId]="project()!.id" [requirementId]="r.id" />
     </section>
   </div>
+
+  @if (selectedCriterionId(); as acId) {
+    <app-acceptance-criterion-detail-panel
+      [projectId]="project()!.id"
+      [criterionId]="acId"
+      (close)="closeAcceptanceCriterionPanel()"
+    />
+  }
 }
 
 </app-page-scroll>

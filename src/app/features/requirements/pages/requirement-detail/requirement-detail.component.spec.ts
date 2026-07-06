@@ -7,7 +7,26 @@ import { RequirementDetailComponent } from './requirement-detail.component';
 import { RequirementService } from '../../services/requirement.service';
 import { MemberService } from '../../../members/services/member.service';
 import { ProjectService } from '../../../projects/services/project.service';
+import { AcceptanceCriterionService } from '../../../acceptance-criteria/services/acceptance-criterion.service';
+import { AcceptanceCriterion } from '../../../acceptance-criteria/contracts/acceptance-criterion.contracts';
 import { Requirement } from '../../contracts/requirement.contracts';
+
+function buildAcceptanceCriterionServiceMock() {
+  return {
+    criteria: signal([]).asReadonly(),
+    loading: signal(false).asReadonly(),
+    selectedCriterion: signal<AcceptanceCriterion | null>(null).asReadonly(),
+    list: vi.fn().mockReturnValue(of([])),
+    create: vi.fn().mockReturnValue(of({})),
+    load: vi.fn().mockReturnValue(of({})),
+    update: vi.fn().mockReturnValue(of({})),
+    remove: vi.fn().mockReturnValue(of(undefined)),
+    approve: vi.fn().mockReturnValue(of({})),
+    supplierDecision: vi.fn().mockReturnValue(of({})),
+    clientDecision: vi.fn().mockReturnValue(of({})),
+    listVersions: vi.fn().mockReturnValue(of({ versions: [], currentPage: 1, lastPage: 1, total: 0 })),
+  };
+}
 
 const stubRequirement: Requirement = {
   id: 1,
@@ -59,6 +78,7 @@ function setup(requirement: Requirement | null = stubRequirement, loading = fals
   const projectService = {
     selectedProject: signal({ id: 5, name: 'Test' } as never).asReadonly(),
   };
+  const acceptanceCriterionService = buildAcceptanceCriterionServiceMock();
 
   TestBed.configureTestingModule({
     imports: [RequirementDetailComponent, BrowserAnimationsModule],
@@ -67,13 +87,14 @@ function setup(requirement: Requirement | null = stubRequirement, loading = fals
       { provide: RequirementService, useValue: requirementService },
       { provide: MemberService, useValue: memberService },
       { provide: ProjectService, useValue: projectService },
+      { provide: AcceptanceCriterionService, useValue: acceptanceCriterionService },
     ],
   });
 
   const fixture: ComponentFixture<RequirementDetailComponent> = TestBed.createComponent(RequirementDetailComponent);
   fixture.componentRef.setInput('requirementId', '1');
   fixture.detectChanges();
-  return { fixture, requirementService, memberService };
+  return { fixture, requirementService, memberService, acceptanceCriterionService };
 }
 
 describe('RequirementDetailComponent', () => {
@@ -171,6 +192,7 @@ describe('RequirementDetailComponent', () => {
         { provide: RequirementService, useValue: requirementService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },
+        { provide: AcceptanceCriterionService, useValue: buildAcceptanceCriterionServiceMock() },
       ],
     });
     const fixture: ComponentFixture<RequirementDetailComponent> = TestBed.createComponent(RequirementDetailComponent);
@@ -234,6 +256,7 @@ describe('RequirementDetailComponent', () => {
         { provide: RequirementService, useValue: requirementService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },
+        { provide: AcceptanceCriterionService, useValue: buildAcceptanceCriterionServiceMock() },
       ],
     });
 
@@ -253,5 +276,87 @@ describe('RequirementDetailComponent', () => {
     const { fixture, requirementService } = setup();
     expect(fixture.nativeElement.querySelector('app-requirement-version-list')).toBeTruthy();
     expect(requirementService.listVersions).toHaveBeenCalledWith(5, 1, 1);
+  });
+
+  it('loads linked acceptance criteria for the requirement on init', () => {
+    const { acceptanceCriterionService } = setup();
+    expect(acceptanceCriterionService.list).toHaveBeenCalledWith(5, { requirement_id: 1 });
+  });
+
+  it('renders linked acceptance criteria', () => {
+    const stubAc: AcceptanceCriterion = {
+      id: 9,
+      projectId: 5,
+      requirementId: 1,
+      ref: 'AC-001',
+      title: 'Login succeeds with valid SSO token',
+      description: 'desc',
+      measurementMethod: null,
+      acceptanceThreshold: null,
+      verifier: null,
+      verificationMethod: 'test',
+      status: 'draft',
+      version: 1,
+      approvedBy: null,
+      approvedAt: null,
+      supplierPassed: false,
+      supplierPassedAt: null,
+      supplierDecision: 'pending',
+      supplierDecidedBy: null,
+      supplierDecidedAt: null,
+      supplierDecisionNote: null,
+      clientPassed: false,
+      clientPassedAt: null,
+      clientDecision: 'pending',
+      clientDecidedBy: null,
+      clientDecidedAt: null,
+      clientDecisionNote: null,
+      acceptedAt: null,
+      requirement: { id: 1, ref: 'REQ-001', title: 'System must support SSO', type: 'classic' },
+      createdAt: '2026-06-01T09:00:00Z',
+      updatedAt: '2026-06-01T09:00:00Z',
+    };
+    const acceptanceCriterionService = {
+      criteria: signal([stubAc]).asReadonly(),
+      loading: signal(false).asReadonly(),
+      selectedCriterion: signal<AcceptanceCriterion | null>(null).asReadonly(),
+      list: vi.fn().mockReturnValue(of([stubAc])),
+      create: vi.fn().mockReturnValue(of(stubAc)),
+      load: vi.fn().mockReturnValue(of(stubAc)),
+      update: vi.fn().mockReturnValue(of(stubAc)),
+      remove: vi.fn().mockReturnValue(of(undefined)),
+      approve: vi.fn().mockReturnValue(of(stubAc)),
+      supplierDecision: vi.fn().mockReturnValue(of(stubAc)),
+      clientDecision: vi.fn().mockReturnValue(of(stubAc)),
+      listVersions: vi.fn().mockReturnValue(of({ versions: [], currentPage: 1, lastPage: 1, total: 0 })),
+    };
+    const requirementService = buildRequirementServiceMock(stubRequirement);
+    const memberService = { members: signal([]).asReadonly(), list: vi.fn().mockReturnValue(of([])) };
+    const projectService = { selectedProject: signal({ id: 5, name: 'Test' } as never).asReadonly() };
+
+    TestBed.configureTestingModule({
+      imports: [RequirementDetailComponent, BrowserAnimationsModule],
+      providers: [
+        provideRouter([]),
+        { provide: RequirementService, useValue: requirementService },
+        { provide: MemberService, useValue: memberService },
+        { provide: ProjectService, useValue: projectService },
+        { provide: AcceptanceCriterionService, useValue: acceptanceCriterionService },
+      ],
+    });
+    const fixture: ComponentFixture<RequirementDetailComponent> = TestBed.createComponent(RequirementDetailComponent);
+    fixture.componentRef.setInput('requirementId', '1');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Login succeeds with valid SSO token');
+
+    const comp = fixture.componentInstance as any;
+    comp.openAcceptanceCriterion(9);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-acceptance-criterion-detail-panel')).toBeTruthy();
+  });
+
+  it('hides the acceptance criteria section for an epic', () => {
+    const { fixture } = setup({ ...stubRequirement, type: 'epic' });
+    expect(fixture.nativeElement.textContent).not.toContain('Acceptance criteria');
   });
 });

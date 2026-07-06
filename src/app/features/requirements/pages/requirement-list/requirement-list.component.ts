@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RequirementService } from '../../services/requirement.service';
 import { MemberService } from '../../../members/services/member.service';
@@ -36,7 +36,6 @@ import { PageScrollComponent } from '../../../../shared/components/page-scroll/p
     MatIconModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatDialogModule,
     MatTooltipModule,
     RequirementStatusChipComponent,
     RequirementPriorityChipComponent,

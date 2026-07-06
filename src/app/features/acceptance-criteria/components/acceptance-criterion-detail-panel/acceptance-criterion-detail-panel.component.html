@@ -1,0 +1,145 @@
+<div class="backdrop" (click)="close.emit()"></div>
+
+<div class="panel" (click)="$event.stopPropagation()">
+  <div class="panel__header">
+    <div class="panel__type">
+      <mat-icon class="panel__type-icon">fact_check</mat-icon>
+      <span class="panel__type-label">Acceptance Criterion</span>
+    </div>
+    <button mat-icon-button class="panel__close" (click)="close.emit()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  @if (loading() && !criterion()) {
+    <div class="panel__skeleton">
+      <app-skeleton height="24px" width="200px" borderRadius="4px" />
+      <app-skeleton height="100px" borderRadius="8px" />
+    </div>
+  } @else if (criterion(); as c) {
+    <div class="panel__scroll">
+      <h2 class="panel__title">{{ c.title }}</h2>
+
+      <div class="panel__status-row">
+        <span class="panel__ref">{{ c.ref }}</span>
+        <app-ac-status-chip [status]="c.status" />
+        @if (c.verificationMethod) {
+          <app-ac-verification-method-chip [method]="c.verificationMethod" />
+        }
+        <span class="panel__version">v{{ c.version }}</span>
+      </div>
+
+      @if (c.requirement) {
+        <div class="panel__requirement-ref">Linked to {{ c.requirement.ref }} — {{ c.requirement.title }}</div>
+      }
+
+      @if (saveError()) { <div class="error-banner">{{ saveError() }}</div> }
+      @if (actionError()) { <div class="error-banner">{{ actionError() }}</div> }
+
+      @if (c.acceptedAt) {
+        <div class="accepted-banner">
+          <mat-icon>verified</mat-icon>
+          Accepted on {{ c.acceptedAt | date: 'dd MMM yyyy' }}
+        </div>
+      }
+
+      <form [formGroup]="form" class="panel__form">
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Verification method</mat-label>
+          <mat-select formControlName="verification_method">
+            <mat-option [value]="null">None</mat-option>
+            @for (m of methods; track m) {
+              <mat-option [value]="m">{{ methodLabels[m] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Verifier</mat-label>
+          <mat-select formControlName="verifier_id">
+            <mat-option [value]="null">None</mat-option>
+            @for (m of members(); track m.id) {
+              <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Measurement method</mat-label>
+          <input matInput formControlName="measurement_method" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="panel__field">
+          <mat-label>Acceptance threshold</mat-label>
+          <input matInput formControlName="acceptance_threshold" />
+        </mat-form-field>
+
+        <div class="panel__actions">
+          <button mat-flat-button type="button" [disabled]="form.pristine || form.invalid" (click)="save()">Save changes</button>
+          @if (c.status === 'draft') {
+            <button mat-stroked-button type="button" (click)="approve()">Approve</button>
+          }
+          <button mat-button type="button" class="panel__delete-btn" (click)="deleteCriterion()">
+            <mat-icon>delete_outline</mat-icon>
+            Delete
+          </button>
+        </div>
+      </form>
+
+      <section class="panel__section">
+        <h3 class="panel__section-heading">Sign-off</h3>
+
+        <div class="signoff-grid">
+          <div class="signoff-col">
+            <div class="signoff-col-header">
+              <span class="signoff-label">Supplier</span>
+              <span class="signoff-signal" [class.signoff-signal--pass]="c.supplierPassed">
+                {{ c.supplierPassed ? 'Test: Passed' : 'Test: Failed' }}
+              </span>
+            </div>
+            <app-ac-decision-chip [decision]="c.supplierDecision" />
+            @if (c.supplierDecidedBy) {
+              <span class="signoff-meta">{{ c.supplierDecidedBy.name }} · {{ c.supplierDecidedAt | date: 'dd MMM yyyy' }}</span>
+            }
+            @if (c.supplierDecisionNote) {
+              <span class="signoff-note">{{ c.supplierDecisionNote }}</span>
+            }
+            <button mat-stroked-button (click)="openSupplierDecision()">Record decision</button>
+          </div>
+
+          <div class="signoff-col">
+            <div class="signoff-col-header">
+              <span class="signoff-label">Client</span>
+              <span class="signoff-signal" [class.signoff-signal--pass]="c.clientPassed">
+                {{ c.clientPassed ? 'Test: Passed' : 'Test: Failed' }}
+              </span>
+            </div>
+            <app-ac-decision-chip [decision]="c.clientDecision" />
+            @if (c.clientDecidedBy) {
+              <span class="signoff-meta">{{ c.clientDecidedBy.name }} · {{ c.clientDecidedAt | date: 'dd MMM yyyy' }}</span>
+            }
+            @if (c.clientDecisionNote) {
+              <span class="signoff-note">{{ c.clientDecisionNote }}</span>
+            }
+            <button mat-stroked-button (click)="openClientDecision()">Record decision</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel__section">
+        <h3 class="panel__section-heading">Version history</h3>
+        <app-acceptance-criterion-version-list [projectId]="projectId()" [criterionId]="c.id" />
+      </section>
+    </div>
+  }
+</div>

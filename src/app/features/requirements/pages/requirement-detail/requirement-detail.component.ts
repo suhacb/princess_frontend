@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { RequirementService } from '../../services/requirement.service';
 import { MemberService } from '../../../members/services/member.service';
@@ -13,6 +14,15 @@ import { ProjectService } from '../../../projects/services/project.service';
 import { RequirementStatusChipComponent } from '../../components/requirement-status-chip/requirement-status-chip.component';
 import { RequirementPriorityChipComponent } from '../../components/requirement-priority-chip/requirement-priority-chip.component';
 import { RequirementVersionListComponent } from '../../components/requirement-version-list/requirement-version-list.component';
+import { AcceptanceCriterionService } from '../../../acceptance-criteria/services/acceptance-criterion.service';
+import { AcStatusChipComponent } from '../../../acceptance-criteria/components/ac-status-chip/ac-status-chip.component';
+import { AcDecisionChipComponent } from '../../../acceptance-criteria/components/ac-decision-chip/ac-decision-chip.component';
+import { AcceptanceCriterionDetailPanelComponent } from '../../../acceptance-criteria/components/acceptance-criterion-detail-panel/acceptance-criterion-detail-panel.component';
+import {
+  CreateAcceptanceCriterionDialogComponent,
+  CreateAcceptanceCriterionDialogData,
+} from '../../../acceptance-criteria/components/create-acceptance-criterion-dialog/create-acceptance-criterion-dialog.component';
+import { CreateAcceptanceCriterionPayload } from '../../../acceptance-criteria/contracts/acceptance-criterion.contracts';
 import {
   REQUIREMENT_PRIORITIES,
   REQUIREMENT_PRIORITY_LABELS,
@@ -36,6 +46,9 @@ import { PageScrollComponent } from '../../../../shared/components/page-scroll/p
     RequirementStatusChipComponent,
     RequirementPriorityChipComponent,
     RequirementVersionListComponent,
+    AcStatusChipComponent,
+    AcDecisionChipComponent,
+    AcceptanceCriterionDetailPanelComponent,
     SkeletonComponent,
     PageScrollComponent,
   ],
@@ -48,13 +61,17 @@ export class RequirementDetailComponent {
   private readonly requirementService = inject(RequirementService);
   private readonly memberService = inject(MemberService);
   private readonly projectService = inject(ProjectService);
+  private readonly acceptanceCriterionService = inject(AcceptanceCriterionService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly requirement = this.requirementService.selectedRequirement;
   protected readonly project = this.projectService.selectedProject;
   protected readonly members = this.memberService.members;
   protected readonly loading = this.requirementService.loading;
+  protected readonly acceptanceCriteria = this.acceptanceCriterionService.criteria;
+  protected readonly selectedCriterionId = signal<number | null>(null);
 
   protected readonly typeLabels = REQUIREMENT_TYPE_LABELS;
   protected readonly priorities = REQUIREMENT_PRIORITIES;
@@ -91,6 +108,7 @@ export class RequirementDetailComponent {
         if (this.memberService.members().length === 0) {
           this.memberService.list(project.id).subscribe();
         }
+        this.acceptanceCriterionService.list(project.id, { requirement_id: +id }).subscribe();
       }
     });
 
@@ -174,5 +192,33 @@ export class RequirementDetailComponent {
     fn(r.id).subscribe({
       error: () => this.actionError.set('Action failed — you may not have permission to do this.'),
     });
+  }
+
+  protected openCreateAcceptanceCriterionDialog(): void {
+    const r = this.requirement();
+    const project = this.project();
+    if (!r || !project) return;
+    const data: CreateAcceptanceCriterionDialogData = {
+      requirements: [{ id: r.id, ref: r.ref, title: r.title, type: r.type }],
+      members: this.members(),
+      preselectedRequirementId: r.id,
+    };
+    this.dialog
+      .open(CreateAcceptanceCriterionDialogComponent, { panelClass: 'princess-dialog', disableClose: true, data })
+      .afterClosed()
+      .subscribe((payload: CreateAcceptanceCriterionPayload | undefined) => {
+        if (!payload) return;
+        this.acceptanceCriterionService.create(project.id, payload).subscribe({
+          next: criterion => this.selectedCriterionId.set(criterion.id),
+        });
+      });
+  }
+
+  protected openAcceptanceCriterion(id: number): void {
+    this.selectedCriterionId.set(id);
+  }
+
+  protected closeAcceptanceCriterionPanel(): void {
+    this.selectedCriterionId.set(null);
   }
 }
