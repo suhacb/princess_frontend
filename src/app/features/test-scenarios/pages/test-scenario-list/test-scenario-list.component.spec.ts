@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { TestScenarioListComponent } from './test-scenario-list.component';
 import { TestScenarioService } from '../../services/test-scenario.service';
 import { TestCaseService } from '../../services/test-case.service';
@@ -179,6 +179,44 @@ describe('TestScenarioListComponent', () => {
     const comp = fixture.componentInstance as any;
     comp.markReady(stubScenario);
     expect(scenarioService.ready).toHaveBeenCalledWith(5, 1);
+  });
+
+  it('markObsolete() calls the service', () => {
+    const { fixture, scenarioService } = setup([stubScenario]);
+    const comp = fixture.componentInstance as any;
+    comp.markObsolete(stubScenario);
+    expect(scenarioService.obsolete).toHaveBeenCalledWith(5, 1);
+  });
+
+  it('reopen() calls the service', () => {
+    const { fixture, scenarioService } = setup([stubScenario]);
+    const comp = fixture.componentInstance as any;
+    comp.reopen(stubScenario);
+    expect(scenarioService.reopen).toHaveBeenCalledWith(5, 1);
+  });
+
+  it('markTestable() calls the service', () => {
+    const { fixture, scenarioService } = setup([stubScenario]);
+    const comp = fixture.componentInstance as any;
+    comp.markTestable(stubScenario);
+    expect(scenarioService.markTestable).toHaveBeenCalledWith(5, 1);
+  });
+
+  it('markNotTestable() calls the service', () => {
+    const { fixture, scenarioService } = setup([stubScenario]);
+    const comp = fixture.componentInstance as any;
+    comp.markNotTestable(stubScenario);
+    expect(scenarioService.markNotTestable).toHaveBeenCalledWith(5, 1);
+  });
+
+  it('sets actionError when a transition fails', () => {
+    const { fixture, scenarioService } = setup([stubScenario]);
+    scenarioService.ready.mockReturnValue(throwError(() => new Error('forbidden')));
+    const comp = fixture.componentInstance as any;
+    comp.markReady(stubScenario);
+    fixture.detectChanges();
+    expect(comp.actionError()).toBe('Action failed — you may not have permission to do this.');
+    expect(fixture.nativeElement.querySelector('.action-error')?.textContent).toContain('Action failed');
   });
 
   it('deleteScenario() calls remove', () => {
