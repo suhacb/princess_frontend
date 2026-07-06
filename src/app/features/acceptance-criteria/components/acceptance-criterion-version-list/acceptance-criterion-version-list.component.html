@@ -1,0 +1,62 @@
+@if (loading()) {
+  <div class="vl-skeleton">
+    @for (n of [1, 2, 3]; track n) {
+      <app-skeleton height="48px" />
+    }
+  </div>
+} @else if (error()) {
+  <p class="error-msg">{{ error() }}</p>
+} @else if (versions().length === 0) {
+  <p class="no-versions">No version history yet.</p>
+} @else {
+  <div class="version-rows">
+    @for (v of versions(); track v.id) {
+      <div class="version-row">
+        <div class="version-badge">v{{ v.versionNumber }}</div>
+
+        <div class="version-info">
+          <span class="vr-title">{{ v.title }}</span>
+          <span class="vr-meta">
+            {{ statusLabels[v.status] }} ·
+            Supplier: {{ decisionLabels[v.supplierDecision] }} ({{ v.supplierPassed ? 'passed' : 'failed' }}) ·
+            Client: {{ decisionLabels[v.clientDecision] }} ({{ v.clientPassed ? 'passed' : 'failed' }})
+          </span>
+          @if (v.supplierDecisionNote || v.clientDecisionNote) {
+            <span class="vr-note">
+              @if (v.supplierDecisionNote) { Supplier note: {{ v.supplierDecisionNote }} }
+              @if (v.clientDecisionNote) { Client note: {{ v.clientDecisionNote }} }
+            </span>
+          }
+          <span class="vr-author">
+            @if (v.createdBy) { {{ v.createdBy.name }} · }
+            <span [matTooltip]="v.createdAt | date: 'dd MMM yyyy, HH:mm'">
+              {{ relativeTime(v.createdAt) }}
+            </span>
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (lastPage() > 1) {
+    <div class="vl-pagination">
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === 1"
+        matTooltip="Previous page"
+        (click)="goToPage(currentPage() - 1)"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="vl-page-label">{{ currentPage() }} / {{ lastPage() }}</span>
+      <button
+        mat-icon-button
+        [disabled]="currentPage() === lastPage()"
+        matTooltip="Next page"
+        (click)="goToPage(currentPage() + 1)"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  }
+}

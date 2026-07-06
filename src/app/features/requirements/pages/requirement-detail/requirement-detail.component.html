@@ -1,0 +1,188 @@
+<app-page-scroll>
+
+@if (loading() && !requirement()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (requirement(); as r) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <span class="requirement-ref">{{ r.ref }} · {{ typeLabels[r.type] }}</span>
+        <h2 class="requirement-title">{{ r.title }}</h2>
+        <div class="header-chips">
+          <app-requirement-priority-chip [priority]="r.priority" />
+          <app-requirement-status-chip [status]="r.status" />
+          <span class="version-badge">v{{ r.version }}</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (isDeletable()) {
+          <button mat-flat-button color="warn" class="delete-btn" (click)="deleteRequirement()">Delete</button>
+        }
+        <button mat-flat-button color="primary" [disabled]="form.pristine || form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
+
+    @if (saveError()) {
+      <div class="error-banner">{{ saveError() }}</div>
+    }
+    @if (actionError()) {
+      <div class="error-banner">{{ actionError() }}</div>
+    }
+
+    <section class="form-section workflow-section">
+      <h3 class="section-heading">Workflow</h3>
+      <div class="workflow-actions">
+        @if (r.status === 'draft') {
+          <button mat-stroked-button (click)="sendForReview()">Send for review</button>
+        }
+        @if (r.status === 'reviewed') {
+          <button mat-flat-button color="primary" (click)="approve()">Approve</button>
+          <button mat-stroked-button color="warn" (click)="reject()">Reject</button>
+        }
+        @if (r.status === 'draft' || r.status === 'reviewed') {
+          <button mat-stroked-button (click)="defer()">Defer</button>
+        }
+        @if (r.status === 'approved' || r.status === 'rejected' || r.status === 'deferred') {
+          <span class="workflow-terminal-note">No further workflow actions available for this status.</span>
+        }
+      </div>
+      @if (r.approvedBy) {
+        <div class="workflow-meta">Approved by {{ r.approvedBy.name }} on {{ r.approvedAt | date: 'dd MMM yyyy' }}</div>
+      }
+    </section>
+
+    <div class="meta-row">
+      @if (r.createdBy) { <span>Created by {{ r.createdBy.name }}</span> }
+      <span>Updated {{ r.updatedAt | date: 'dd MMM yyyy HH:mm' }}</span>
+    </div>
+
+    <form [formGroup]="form" class="detail-form">
+      <section class="form-section">
+        <h3 class="section-heading">Details</h3>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+
+        @if (isUserStory()) {
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>As a…</mat-label>
+              <input matInput formControlName="role" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>I want…</mat-label>
+              <input matInput formControlName="action" />
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>So that…</mat-label>
+            <input matInput formControlName="benefit" />
+          </mat-form-field>
+        }
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">Prioritisation & Ownership</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Priority (MoSCoW)</mat-label>
+            <mat-select formControlName="priority">
+              @for (p of priorities; track p) {
+                <mat-option [value]="p">{{ priorityLabels[p] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Owner</mat-label>
+            <mat-select formControlName="owner_id">
+              <mat-option [value]="null">None</mat-option>
+              @for (m of members(); track m.id) {
+                <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Source</mat-label>
+          <input matInput formControlName="source" placeholder="e.g. Stakeholder workshop" />
+        </mat-form-field>
+      </section>
+
+      @if (r.children.length > 0) {
+        <section class="form-section">
+          <h3 class="section-heading">Child requirements</h3>
+          <div class="children-list">
+            @for (child of r.children; track child.id) {
+              <div class="child-row">
+                <span class="child-ref">{{ child.ref }}</span>
+                <span class="child-title">{{ child.title }}</span>
+                <app-requirement-status-chip [status]="child.status" />
+              </div>
+            }
+          </div>
+        </section>
+      }
+    </form>
+
+    @if (!isEpic()) {
+      <section class="form-section">
+        <div class="section-header-row">
+          <h3 class="section-heading">Acceptance criteria</h3>
+          <button mat-stroked-button (click)="openCreateAcceptanceCriterionDialog()">
+            <mat-icon>add</mat-icon> Add
+          </button>
+        </div>
+        @if (acceptanceCriteria().length === 0) {
+          <p class="no-ac-note">No acceptance criteria linked yet.</p>
+        } @else {
+          <div class="ac-list">
+            @for (ac of acceptanceCriteria(); track ac.id) {
+              <div class="ac-row" (click)="openAcceptanceCriterion(ac.id)" role="button" tabindex="0"
+                   (keydown.enter)="openAcceptanceCriterion(ac.id)" (keydown.space)="openAcceptanceCriterion(ac.id)">
+                <span class="ac-ref">{{ ac.ref }}</span>
+                <span class="ac-title">{{ ac.title }}</span>
+                <app-ac-status-chip [status]="ac.status" />
+                <app-ac-decision-chip [decision]="ac.supplierDecision" />
+                <app-ac-decision-chip [decision]="ac.clientDecision" />
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <section class="form-section">
+      <h3 class="section-heading">Version history</h3>
+      <app-requirement-version-list [projectId]="project()!.id" [requirementId]="r.id" />
+    </section>
+  </div>
+
+  @if (selectedCriterionId(); as acId) {
+    <app-acceptance-criterion-detail-panel
+      [projectId]="project()!.id"
+      [criterionId]="acId"
+      (close)="closeAcceptanceCriterionPanel()"
+    />
+  }
+}
+
+</app-page-scroll>
