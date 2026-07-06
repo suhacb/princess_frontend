@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Test Case' : 'New Test Case' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Short summary" />
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          @for (t of types; track t) {
+            <mat-option [value]="t">{{ typeLabels[t] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          @for (p of priorities; track p) {
+            <mat-option [value]="p">{{ priorityLabels[p] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="steps-section">
+      <label class="steps-label">Steps</label>
+      <div
+        class="steps-list"
+        cdkDropList
+        (cdkDropListDropped)="dropped($event)"
+      >
+        @for (step of steps(); track $index) {
+          <div class="step-row" cdkDrag>
+            <div class="step-placeholder" *cdkDragPlaceholder></div>
+            <mat-icon class="step-handle" cdkDragHandle>drag_indicator</mat-icon>
+            <span class="step-index">{{ $index + 1 }}</span>
+            <mat-form-field appearance="outline" class="step-input" subscriptSizing="dynamic">
+              <input
+                matInput
+                [value]="step"
+                (input)="updateStep($index, $any($event.target).value)"
+                placeholder="Step description"
+              />
+            </mat-form-field>
+            <button
+              mat-icon-button
+              type="button"
+              [disabled]="steps().length <= 1"
+              (click)="removeStep($index)"
+              aria-label="Remove step"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      <button mat-stroked-button type="button" (click)="addStep()">
+        <mat-icon>add</mat-icon> Add step
+      </button>
+      @if (!stepsValid()) {
+        <p class="steps-error">At least one non-empty step is required.</p>
+      }
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Expected result</mat-label>
+      <textarea matInput formControlName="expected_result" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="form.invalid || !stepsValid()"
+    (click)="confirm()"
+  >{{ isEdit ? 'Save' : 'Create' }}</button>
+</mat-dialog-actions>

@@ -104,6 +104,12 @@ export const cockpitRoutes: Routes = [
         title: 'Acceptance Criteria',
       },
       {
+        path: 'test-scenarios',
+        loadComponent: () =>
+          import('../test-scenarios/pages/test-scenario-list/test-scenario-list.component').then(m => m.TestScenarioListComponent),
+        title: 'Test Scenarios',
+      },
+      {
         path: 'quality',
         loadComponent: () =>
           import('../quality-register/pages/quality-list/quality-list.component').then(m => m.QualityListComponent),

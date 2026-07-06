@@ -1,0 +1,203 @@
+<app-page-scroll>
+
+<div class="page-header">
+  <h2 class="page-title">Test Scenarios</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="type-filter">
+      <mat-label>Type</mat-label>
+      <mat-select [value]="typeFilter()" (valueChange)="typeFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (t of testScenarioTypes; track t) {
+          <mat-option [value]="t">{{ typeLabels[t] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of testScenarioStatuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="testable-filter">
+      <mat-label>Testable</mat-label>
+      <mat-select [value]="testableFilter()" (valueChange)="testableFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        <mat-option value="yes">Testable</mat-option>
+        <mat-option value="no">Not testable</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateScenarioDialog()">
+      <mat-icon>add</mat-icon> New Test Scenario
+    </button>
+  </div>
+</div>
+
+@if (actionError(); as error) {
+  <div class="action-error">{{ error }}</div>
+}
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filtered().length === 0) {
+  <app-empty-state
+    icon="fact_check"
+    title="No test scenarios recorded yet"
+    hint="Create a test scenario to start building the test suite."
+  />
+} @else {
+  <div class="scenario-tree">
+    <div class="scenario-tree-header">
+      <span class="col-expand"></span>
+      <span class="col-ref">Ref</span>
+      <span class="col-title">Title</span>
+      <span class="col-type">Type</span>
+      <span class="col-status">Status</span>
+      <span class="col-testable">Testable</span>
+      <span class="col-cases">Test cases</span>
+      <span class="col-actions"></span>
+    </div>
+    @for (scenario of filtered(); track scenario.id) {
+      <div class="scenario-group">
+        <div
+          class="scenario-row"
+          (click)="toggleExpand(scenario)"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="toggleExpand(scenario)"
+          (keydown.space)="toggleExpand(scenario)"
+        >
+          <span class="col-expand">
+            <mat-icon>{{ isExpanded(scenario.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          </span>
+          <span class="col-ref">{{ scenario.ref }}</span>
+          <span class="col-title">{{ scenario.title }}</span>
+          <span class="col-type"><app-test-scenario-type-chip [type]="scenario.type" /></span>
+          <span class="col-status"><app-test-scenario-status-chip [status]="scenario.status" /></span>
+          <span class="col-testable">
+            <mat-icon
+              [class.testable-yes]="scenario.isTestable"
+              [class.testable-no]="!scenario.isTestable"
+              [matTooltip]="scenario.testableNotes ?? ''"
+            >{{ scenario.isTestable ? 'check_circle' : 'block' }}</mat-icon>
+          </span>
+          <span class="col-cases">
+            {{ isExpanded(scenario.id) ? caseService.casesFor(scenario.id).length : '—' }}
+          </span>
+          <span class="col-actions" (click)="$event.stopPropagation()">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Test scenario actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              @if (scenario.status === 'draft') {
+                <button mat-menu-item (click)="markReady(scenario)">
+                  <mat-icon>check_circle</mat-icon> Mark ready
+                </button>
+              }
+              @if (scenario.status === 'ready') {
+                <button mat-menu-item (click)="markObsolete(scenario)">
+                  <mat-icon>archive</mat-icon> Mark obsolete
+                </button>
+              }
+              @if (scenario.status === 'obsolete') {
+                <button mat-menu-item (click)="reopen(scenario)">
+                  <mat-icon>restore</mat-icon> Reopen
+                </button>
+              }
+              @if (scenario.isTestable) {
+                <button mat-menu-item (click)="markNotTestable(scenario)">
+                  <mat-icon>block</mat-icon> Mark not testable
+                </button>
+              } @else {
+                <button mat-menu-item (click)="markTestable(scenario)">
+                  <mat-icon>check_circle</mat-icon> Mark testable
+                </button>
+              }
+              @if (scenario.status === 'draft') {
+                <button mat-menu-item (click)="deleteScenario(scenario)">
+                  <mat-icon>delete</mat-icon> Delete
+                </button>
+              }
+            </mat-menu>
+          </span>
+        </div>
+
+        @if (isExpanded(scenario.id)) {
+          <div class="scenario-cases">
+            @if (scenario.description || scenario.preconditions) {
+              <div class="scenario-meta">
+                @if (scenario.description) {
+                  <p class="scenario-description">{{ scenario.description }}</p>
+                }
+                @if (scenario.preconditions) {
+                  <p class="scenario-preconditions"><strong>Preconditions:</strong> {{ scenario.preconditions }}</p>
+                }
+              </div>
+            }
+
+            @if (caseService.isLoading(scenario.id)) {
+              <div class="skeleton-rows">
+                @for (n of [1,2]; track n) {
+                  <app-skeleton height="40px" borderRadius="0" />
+                }
+              </div>
+            } @else if (caseService.casesFor(scenario.id).length === 0) {
+              <app-empty-state
+                icon="checklist"
+                title="No test cases yet"
+                hint="Add a test case to define the steps for this scenario."
+              />
+            } @else {
+              <div class="case-table">
+                <div class="case-table-header">
+                  <span class="col-case-ref">Ref</span>
+                  <span class="col-case-title">Title</span>
+                  <span class="col-case-type">Type</span>
+                  <span class="col-case-priority">Priority</span>
+                  <span class="col-case-steps">Steps</span>
+                  <span class="col-case-actions"></span>
+                </div>
+                @for (testCase of caseService.casesFor(scenario.id); track testCase.id) {
+                  <div class="case-row">
+                    <span class="col-case-ref">{{ testCase.ref }}</span>
+                    <span class="col-case-title">{{ testCase.title }}</span>
+                    <span class="col-case-type">
+                      @if (testCase.type) { <app-test-case-type-chip [type]="testCase.type" /> }
+                    </span>
+                    <span class="col-case-priority">
+                      @if (testCase.priority) { <app-test-case-priority-chip [priority]="testCase.priority" /> }
+                    </span>
+                    <span class="col-case-steps">{{ testCase.steps.length }}</span>
+                    <span class="col-case-actions">
+                      <button mat-icon-button (click)="openEditCaseDialog(scenario, testCase)" aria-label="Edit test case">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="deleteCase(scenario, testCase)" aria-label="Delete test case">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+
+            <button mat-stroked-button class="add-case-btn" (click)="openCreateCaseDialog(scenario)">
+              <mat-icon>add</mat-icon> Add test case
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
+
+</app-page-scroll>
