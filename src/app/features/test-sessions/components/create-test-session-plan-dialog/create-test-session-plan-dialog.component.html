@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Test Session Plan' : 'New Test Session Plan' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Short summary" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description (optional)</mat-label>
+      <textarea matInput formControlName="description" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Planned date</mat-label>
+        <input matInput type="date" formControlName="planned_date" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Team</mat-label>
+        <mat-select formControlName="team_type">
+          @for (t of teamTypes; track t) {
+            <mat-option [value]="t">{{ teamTypeLabels[t] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Assignee (optional)</mat-label>
+      <mat-select formControlName="assignee_id">
+        <mat-option [value]="null">Unassigned</mat-option>
+        @for (m of data.members; track m.id) {
+          <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="scenario-picker">
+      <span class="field-label">Scenarios (testable only)</span>
+
+      <div class="scenario-columns">
+        <div class="scenario-column">
+          <h4 class="column-heading">Available</h4>
+          <div class="scenario-list">
+            @for (s of availableScenarios(); track s.id) {
+              <div class="scenario-item">
+                <span class="scenario-ref">{{ s.ref }}</span>
+                <span class="scenario-title">{{ s.title }}</span>
+                <button mat-icon-button type="button" (click)="addScenario(s)" aria-label="Add scenario">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            }
+            @if (availableScenarios().length === 0) {
+              <p class="empty-hint">No more testable scenarios to add.</p>
+            }
+          </div>
+        </div>
+
+        <div class="scenario-column">
+          <h4 class="column-heading">Selected (execution order)</h4>
+          <div class="scenario-list">
+            @for (s of selectedScenarios(); track s.id; let i = $index) {
+              <div class="scenario-item">
+                <span class="order-index">{{ i + 1 }}</span>
+                <span class="scenario-ref">{{ s.ref }}</span>
+                <span class="scenario-title">{{ s.title }}</span>
+                <button mat-icon-button type="button" [disabled]="i === 0" (click)="moveUp(i)" aria-label="Move up">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  [disabled]="i === selectedScenarios().length - 1"
+                  (click)="moveDown(i)"
+                  aria-label="Move down"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button mat-icon-button type="button" (click)="removeScenario(s)" aria-label="Remove scenario">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            }
+            @if (selectedScenarios().length === 0) {
+              <p class="empty-hint">No scenarios selected yet.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="confirm()">
+    {{ isEdit ? 'Save' : 'Create' }}
+  </button>
+</mat-dialog-actions>

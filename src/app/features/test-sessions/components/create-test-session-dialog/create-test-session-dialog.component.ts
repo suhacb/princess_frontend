@@ -1,11 +1,14 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Member } from '../../../members/contracts/member.contracts';
+import { ProjectService } from '../../../projects/services/project.service';
 import {
   TEAM_TYPE_LABELS,
   TEAM_TYPES,
@@ -26,6 +29,7 @@ export interface CreateTestSessionDialogData {
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
   ],
@@ -36,6 +40,8 @@ export class CreateTestSessionDialogComponent {
   protected readonly data = inject<CreateTestSessionDialogData>(MAT_DIALOG_DATA);
   private readonly dialogRef = inject(MatDialogRef<CreateTestSessionDialogComponent>);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly projectService = inject(ProjectService);
 
   protected readonly teamTypes = TEAM_TYPES;
   protected readonly teamTypeLabels = TEAM_TYPE_LABELS;
@@ -63,5 +69,11 @@ export class CreateTestSessionDialogComponent {
       notes: v.notes || null,
     };
     this.dialogRef.close(payload);
+  }
+
+  protected managePlans(): void {
+    const project = this.projectService.selectedProject();
+    this.dialogRef.close();
+    if (project) this.router.navigate(['/p', project.id, 'test-session-plans']);
   }
 }
