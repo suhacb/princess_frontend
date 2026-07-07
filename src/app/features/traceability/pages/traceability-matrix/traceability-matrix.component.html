@@ -1,0 +1,196 @@
+<app-page-scroll>
+
+<div class="page-header">
+  <h2 class="page-title">Traceability Matrix</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [value]="search()" (input)="search.set($any($event.target).value)" placeholder="Ref or title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Coverage status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of derivedStatuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+@if (stats(); as s) {
+  <div class="stats-bar">
+    <div class="stat-tile">
+      <span class="stat-label">
+        AC design coverage
+        <mat-icon
+          class="info-icon"
+          matTooltip="Share of acceptance criteria with at least one linked test scenario, regardless of whether it has ever been executed."
+        >info</mat-icon>
+      </span>
+      <span class="stat-value">{{ s.acsWithTestPct }}%</span>
+      <span class="stat-sub">{{ s.acsWithTest }} / {{ s.acsTotal }} ACs</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-label">
+        Test case pass rate
+        <mat-icon
+          class="info-icon"
+          matTooltip="Share of test cases whose latest completed execution passed. This is execution data and can disagree with an AC's acceptance status shown below."
+        >info</mat-icon>
+      </span>
+      <span class="stat-value">{{ s.testCasesPassedPct }}%</span>
+      <span class="stat-sub">{{ s.testCasesPassed }} / {{ s.testCasesTotal }} test cases</span>
+    </div>
+  </div>
+}
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filteredRequirements().length === 0) {
+  <app-empty-state
+    icon="account_tree"
+    title="No requirements to trace yet"
+    hint="Add requirements, acceptance criteria and test scenarios to build up the traceability matrix."
+  />
+} @else {
+  <div class="matrix-tree">
+    @for (req of filteredRequirements(); track req.id) {
+      <div class="req-group">
+        <div class="req-row" (click)="toggle('req-' + req.id)" role="button" tabindex="0"
+             (keydown.enter)="toggle('req-' + req.id)" (keydown.space)="toggle('req-' + req.id)">
+          <span class="col-expand">
+            <mat-icon>{{ isExpanded('req-' + req.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          </span>
+          <span class="col-ref">{{ req.ref }}</span>
+          <span class="col-title">{{ req.title }}</span>
+          <span class="col-priority"><app-requirement-priority-chip [priority]="req.priority" /></span>
+          <span class="col-status"><app-traceability-status-chip [status]="req.derivedStatus" /></span>
+        </div>
+
+        @if (isExpanded('req-' + req.id)) {
+          <div class="req-children">
+            @if (userStoriesOf(req); as stories) {
+              @for (us of stories; track us.id) {
+                <div class="us-group">
+                  <div class="us-row" (click)="toggle('us-' + us.id)" role="button" tabindex="0"
+                       (keydown.enter)="toggle('us-' + us.id)" (keydown.space)="toggle('us-' + us.id)">
+                    <span class="col-expand">
+                      <mat-icon>{{ isExpanded('us-' + us.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                    </span>
+                    <span class="col-ref">{{ us.ref }}</span>
+                    <span class="col-title">{{ us.title }}</span>
+                    <span class="col-status"><app-traceability-status-chip [status]="us.derivedStatus" /></span>
+                  </div>
+                  @if (isExpanded('us-' + us.id)) {
+                    <div class="us-children">
+                      <ng-container
+                        *ngTemplateOutlet="acList; context: { acs: us.acceptanceCriteria }"
+                      ></ng-container>
+                    </div>
+                  }
+                </div>
+              }
+            } @else if (acceptanceCriteriaOf(req); as acs) {
+              <ng-container *ngTemplateOutlet="acList; context: { acs: acs }"></ng-container>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
+
+<ng-template #acList let-acs="acs">
+  @if (acs.length === 0) {
+    <div class="empty-branch">No acceptance criteria linked.</div>
+  } @else {
+    @for (ac of acs; track ac.id) {
+      <div class="ac-group">
+        <div class="ac-row" (click)="toggle('ac-' + ac.id)" role="button" tabindex="0"
+             (keydown.enter)="toggle('ac-' + ac.id)" (keydown.space)="toggle('ac-' + ac.id)">
+          <span class="col-expand">
+            <mat-icon>{{ isExpanded('ac-' + ac.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          </span>
+          <span class="col-ref">{{ ac.ref }}</span>
+          <span class="col-title">{{ ac.description }}</span>
+          <span class="col-accepted">
+            <mat-icon
+              [class.accepted-yes]="ac.acceptedAt"
+              [class.accepted-no]="!ac.acceptedAt"
+              matTooltip="AC acceptance status (design + sign-off), independent of test-case execution rate"
+            >{{ ac.acceptedAt ? 'verified' : 'radio_button_unchecked' }}</mat-icon>
+          </span>
+          <span class="col-scenarios">{{ ac.testScenarios.length }} scenario(s)</span>
+        </div>
+
+        @if (isExpanded('ac-' + ac.id)) {
+          <div class="ac-children">
+            @if (ac.testScenarios.length === 0) {
+              <div class="empty-branch">No test scenarios linked.</div>
+            } @else {
+              @for (scenario of ac.testScenarios; track scenario.id) {
+                <div class="scenario-group">
+                  <div class="scenario-row" (click)="toggle('sc-' + scenario.id)" role="button" tabindex="0"
+                       (keydown.enter)="toggle('sc-' + scenario.id)" (keydown.space)="toggle('sc-' + scenario.id)">
+                    <span class="col-expand">
+                      <mat-icon>{{ isExpanded('sc-' + scenario.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                    </span>
+                    <span class="col-ref">{{ scenario.ref }}</span>
+                    <span class="col-title">{{ scenario.title }}</span>
+                    <span class="col-type"><app-test-scenario-type-chip [type]="scenario.type" /></span>
+                    <span class="col-result">
+                      @if (scenario.latestSupplierResult) {
+                        <app-test-result-chip [result]="scenario.latestSupplierResult" />
+                      } @else {
+                        <span class="no-result">Supplier: not run</span>
+                      }
+                    </span>
+                    <span class="col-result">
+                      @if (scenario.latestClientResult) {
+                        <app-test-result-chip [result]="scenario.latestClientResult" />
+                      } @else {
+                        <span class="no-result">Client: not run</span>
+                      }
+                    </span>
+                    <span class="col-cases">{{ scenario.testCases.length }} case(s)</span>
+                  </div>
+
+                  @if (isExpanded('sc-' + scenario.id)) {
+                    <div class="scenario-children">
+                      @if (scenario.testCases.length === 0) {
+                        <div class="empty-branch">No test cases yet.</div>
+                      } @else {
+                        <div class="case-table">
+                          @for (testCase of scenario.testCases; track testCase.id) {
+                            <div class="case-row">
+                              <span class="col-case-title">{{ testCase.title }}</span>
+                              <span class="col-case-type">
+                                @if (testCase.type) { <app-test-case-type-chip [type]="testCase.type" /> }
+                              </span>
+                              <span class="col-case-priority">
+                                @if (testCase.priority) { <app-test-case-priority-chip [priority]="testCase.priority" /> }
+                              </span>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</ng-template>
+
+</app-page-scroll>
