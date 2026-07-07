@@ -12,6 +12,8 @@ const stubConfig = {
   token: 'jwt',
 };
 
+let activeFixture: ComponentFixture<DocumentEditorPageComponent> | null = null;
+
 function setup(options: {
   config?: object | 'error';
   projectId?: number | null;
@@ -57,11 +59,14 @@ function setup(options: {
 
   const fixture: ComponentFixture<DocumentEditorPageComponent> = TestBed.createComponent(DocumentEditorPageComponent);
   fixture.detectChanges();
+  activeFixture = fixture;
   return { fixture, documentService };
 }
 
 describe('DocumentEditorPageComponent', () => {
   afterEach(() => {
+    try { activeFixture?.destroy(); } catch { /* already destroyed by the test itself */ }
+    activeFixture = null;
     TestBed.resetTestingModule();
     delete (globalThis as any).DocsAPI;
     document.querySelectorAll('script[src*="onlyoffice"]').forEach(s => s.remove());

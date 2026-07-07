@@ -22,6 +22,8 @@ export class DocumentEditorPageComponent implements OnDestroy {
   protected readonly error = signal<string | null>(null);
 
   private editor: any = null;
+  private initTimer: ReturnType<typeof setTimeout> | null = null;
+  private destroyed = false;
 
   constructor() {
     const projectId = +this.route.snapshot.params['projectId'];
@@ -44,10 +46,12 @@ export class DocumentEditorPageComponent implements OnDestroy {
       next: config => {
         this.loadScript(ONLYOFFICE_SCRIPT)
           .then(() => {
+            if (this.destroyed) return;
             this.loading.set(false);
             // Give Angular one event-loop tick to render the now-visible container
             // before DocsAPI measures its dimensions for initialization.
-            setTimeout(() => {
+            this.initTimer = setTimeout(() => {
+              if (this.destroyed) return;
               this.editor = new DocsAPI.DocEditor('onlyoffice-editor', {
                 ...config,
                 editorConfig: {
@@ -59,6 +63,7 @@ export class DocumentEditorPageComponent implements OnDestroy {
             }, 0);
           })
           .catch(() => {
+            if (this.destroyed) return;
             this.loading.set(false);
             this.error.set('Failed to load document editor. Is OnlyOffice running?');
           });
@@ -94,6 +99,11 @@ export class DocumentEditorPageComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    if (this.initTimer !== null) {
+      clearTimeout(this.initTimer);
+      this.initTimer = null;
+    }
     if (this.editor) {
       try { this.editor.destroyEditor(); } catch { /* ignore */ }
       this.editor = null;

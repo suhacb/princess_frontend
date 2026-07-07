@@ -46,7 +46,7 @@ function setup(issue: Issue | null = stubIssue) {
   TestBed.configureTestingModule({
     imports: [IssueDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: IssueDetailComponent }]),
       { provide: IssueService, useValue: issueService },
       { provide: ProjectService, useValue: projectService },
     ],

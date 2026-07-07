@@ -53,7 +53,7 @@ function setup(entry: QualityEntry | null = stubEntry, loading = false) {
   TestBed.configureTestingModule({
     imports: [QualityDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: QualityDetailComponent }]),
       { provide: QualityRegisterService, useValue: qualityService },
       { provide: ProjectService, useValue: projectService },
       { provide: MemberService, useValue: memberService },
@@ -172,7 +172,7 @@ describe('QualityDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [QualityDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: QualityDetailComponent }]),
         { provide: QualityRegisterService, useValue: qualityService },
         { provide: ProjectService, useValue: projectService },
         { provide: MemberService, useValue: memberService },

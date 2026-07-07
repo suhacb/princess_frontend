@@ -26,7 +26,10 @@ describe('LayoutService', () => {
     };
   });
 
-  afterEach(() => localStorage.clear());
+  afterEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
 
   function createService(): LayoutService {
     TestBed.configureTestingModule({

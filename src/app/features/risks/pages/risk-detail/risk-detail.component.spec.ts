@@ -51,7 +51,7 @@ function setup(risk: Risk | null = stubRisk, loading = false) {
   TestBed.configureTestingModule({
     imports: [RiskDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: RiskDetailComponent }]),
       { provide: RiskService, useValue: riskService },
       { provide: MemberService, useValue: memberService },
       { provide: ProjectService, useValue: projectService },
@@ -154,7 +154,7 @@ describe('RiskDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [RiskDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: RiskDetailComponent }]),
         { provide: RiskService, useValue: riskService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },

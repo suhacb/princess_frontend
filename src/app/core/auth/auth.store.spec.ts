@@ -48,6 +48,7 @@ describe('AuthStore', () => {
   afterEach(() => {
     http.verify();
     localStorage.clear();
+    TestBed.resetTestingModule();
   });
 
   describe('initial state', () => {
