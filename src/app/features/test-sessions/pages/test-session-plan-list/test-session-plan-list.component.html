@@ -1,0 +1,93 @@
+<app-page-scroll>
+
+<div class="page-header">
+  <h2 class="page-title">Test Session Plans</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="team-filter">
+      <mat-label>Team</mat-label>
+      <mat-select [value]="teamTypeFilter()" (valueChange)="teamTypeFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (t of teamTypes; track t) {
+          <mat-option [value]="t">{{ teamTypeLabels[t] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of statuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> New Plan
+    </button>
+  </div>
+</div>
+
+@if (actionError(); as error) {
+  <div class="error-banner">{{ error }}</div>
+}
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filtered().length === 0) {
+  <app-empty-state
+    icon="event_note"
+    title="No test session plans yet"
+    hint="Create a plan to organize scenarios and assign a tester before starting a test session."
+  />
+} @else {
+  <div class="plan-table">
+    <div class="plan-table-header">
+      <span class="col-ref">Ref</span>
+      <span class="col-title">Title</span>
+      <span class="col-team">Team</span>
+      <span class="col-status">Status</span>
+      <span class="col-date">Planned date</span>
+      <span class="col-assignee">Assignee</span>
+      <span class="col-scenarios">Scenarios</span>
+      <span class="col-actions"></span>
+    </div>
+    @for (plan of filtered(); track plan.id) {
+      <div
+        class="plan-row"
+        [class.plan-row-clickable]="plan.status === 'draft'"
+        (click)="openEditDialog(plan)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="openEditDialog(plan)"
+      >
+        <span class="col-ref">{{ plan.ref }}</span>
+        <span class="col-title">{{ plan.title }}</span>
+        <span class="col-team">{{ teamTypeLabels[plan.teamType] }}</span>
+        <span class="col-status"><app-test-session-plan-status-chip [status]="plan.status" /></span>
+        <span class="col-date">{{ plan.plannedDate ? (plan.plannedDate | date: 'dd MMM yyyy') : '—' }}</span>
+        <span class="col-assignee">{{ plan.assignee?.name ?? 'Unassigned' }}</span>
+        <span class="col-scenarios">{{ plan.scenarios.length }}</span>
+        <span class="col-actions" (click)="$event.stopPropagation()">
+          @if (plan.status === 'draft') {
+            <button mat-icon-button (click)="deletePlan(plan)" aria-label="Delete plan">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-stroked-button (click)="activatePlan(plan)">Activate</button>
+          }
+          @if (plan.status === 'active') {
+            <button mat-stroked-button color="warn" (click)="cancelPlan(plan)">Cancel</button>
+            <button mat-flat-button color="primary" (click)="completePlan(plan)">Complete</button>
+          }
+        </span>
+      </div>
+    }
+  </div>
+}
+
+</app-page-scroll>

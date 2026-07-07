@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>New Test Session</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Short summary" />
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Session date</mat-label>
+        <input matInput type="date" formControlName="session_date" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Team</mat-label>
+        <mat-select formControlName="team_type">
+          @for (t of teamTypes; track t) {
+            <mat-option [value]="t">{{ teamTypeLabels[t] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tester</mat-label>
+      <mat-select formControlName="tester_id">
+        @for (m of data.members; track m.id) {
+          <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Test session plan</mat-label>
+      <mat-select formControlName="test_session_plan_id">
+        @for (p of data.plans; track p.id) {
+          <mat-option [value]="p.id">{{ p.ref }} — {{ p.title }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>Session content is derived from the selected plan's scenarios and test cases.</mat-hint>
+    </mat-form-field>
+
+    @if (data.plans.length === 0) {
+      <button mat-button type="button" class="manage-plans-link" (click)="managePlans()">
+        <mat-icon>add</mat-icon> No plans yet — create one
+      </button>
+    } @else {
+      <button mat-button type="button" class="manage-plans-link" (click)="managePlans()">Manage plans</button>
+    }
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Environment (optional)</mat-label>
+      <input matInput formControlName="environment" placeholder="e.g. Staging" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes (optional)</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="confirm()">Create</button>
+</mat-dialog-actions>

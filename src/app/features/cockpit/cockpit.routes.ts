@@ -110,6 +110,24 @@ export const cockpitRoutes: Routes = [
         title: 'Test Scenarios',
       },
       {
+        path: 'test-sessions',
+        loadComponent: () =>
+          import('../test-sessions/pages/test-session-list/test-session-list.component').then(m => m.TestSessionListComponent),
+        title: 'Test Sessions',
+      },
+      {
+        path: 'test-sessions/:sessionId',
+        loadComponent: () =>
+          import('../test-sessions/pages/test-session-detail/test-session-detail.component').then(m => m.TestSessionDetailComponent),
+        title: 'Test Session',
+      },
+      {
+        path: 'test-session-plans',
+        loadComponent: () =>
+          import('../test-sessions/pages/test-session-plan-list/test-session-plan-list.component').then(m => m.TestSessionPlanListComponent),
+        title: 'Test Session Plans',
+      },
+      {
         path: 'quality',
         loadComponent: () =>
           import('../quality-register/pages/quality-list/quality-list.component').then(m => m.QualityListComponent),

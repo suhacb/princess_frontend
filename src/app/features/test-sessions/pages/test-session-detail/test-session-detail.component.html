@@ -1,0 +1,232 @@
+<app-page-scroll>
+
+@if (loading() && !session()) {
+  <div class="detail-skeleton">
+    <app-skeleton height="32px" width="280px" borderRadius="4px" />
+    <app-skeleton height="20px" width="160px" borderRadius="4px" />
+    <app-skeleton height="120px" borderRadius="8px" />
+  </div>
+} @else if (loadError()) {
+  <div class="load-error">{{ loadError() }}</div>
+} @else if (session(); as s) {
+  <div class="detail-layout">
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-meta">
+        <div class="title-row">
+          <span class="ref-badge">{{ s.ref }}</span>
+          <h2 class="session-title">{{ s.title }}</h2>
+        </div>
+        <div class="header-chips">
+          <app-test-session-status-chip [status]="s.status" />
+          <span class="meta-item">Tester: {{ s.tester.name }}</span>
+          <span class="meta-item">Team: {{ teamTypeLabels[s.teamType] }}</span>
+          <span class="meta-item">{{ s.sessionDate | date: 'dd MMM yyyy' }}</span>
+          @if (s.environment) { <span class="meta-item">Env: {{ s.environment }}</span> }
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (s.status === 'planned') {
+          <button mat-stroked-button (click)="toggleEdit()">{{ editing() ? 'Cancel edit' : 'Edit' }}</button>
+          <button mat-flat-button color="warn" (click)="deleteSession()">Delete</button>
+          <button mat-flat-button color="primary" (click)="startSession()">Start</button>
+        }
+        @if (s.status === 'in_progress') {
+          <button mat-stroked-button color="warn" (click)="cancelSession()">Cancel session</button>
+          <button mat-flat-button color="primary" (click)="completeSession()">Complete &amp; Sign Off</button>
+        }
+      </div>
+    </div>
+
+    @if (actionError(); as error) {
+      <div class="error-banner">{{ error }}</div>
+    }
+
+    @if (editing() && s.status === 'planned') {
+      <form [formGroup]="editForm" class="edit-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Session date</mat-label>
+            <input matInput type="date" formControlName="session_date" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Team</mat-label>
+            <mat-select formControlName="team_type">
+              @for (t of teamTypes; track t) {
+                <mat-option [value]="t">{{ teamTypeLabels[t] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tester</mat-label>
+            <mat-select formControlName="tester_id">
+              @for (m of memberService.members(); track m.id) {
+                <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Environment</mat-label>
+          <input matInput formControlName="environment" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notes</mat-label>
+          <textarea matInput formControlName="notes" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="edit-form-actions">
+          <button mat-flat-button color="primary" [disabled]="editForm.invalid || editForm.pristine" (click)="saveEdit()">
+            Save
+          </button>
+        </div>
+      </form>
+    }
+
+    @if (report(); as r) {
+      <div class="summary-card">
+        <h3 class="section-heading">Result summary</h3>
+        <app-session-summary-donut [summary]="r.summary" />
+      </div>
+    }
+
+    <div class="scenario-list">
+      <h3 class="section-heading">Scenarios &amp; test cases</h3>
+
+      @for (group of scenarioGroups(); track group.scenario.id) {
+        <div class="scenario-group">
+          <div class="scenario-row" (click)="toggleExpand(group.scenario.id)" role="button" tabindex="0" (keydown.enter)="toggleExpand(group.scenario.id)">
+            <mat-icon class="expand-icon">{{ isExpanded(group.scenario.id) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+            <span class="scenario-ref">{{ group.scenario.ref }}</span>
+            <span class="scenario-title">{{ group.scenario.title }}</span>
+            @if (group.scenarioResult) {
+              <app-test-result-chip [result]="group.scenarioResult.result" />
+            } @else if (group.caseResults.length > 0) {
+              <span class="case-count">{{ group.caseResults.length }} test case(s)</span>
+            }
+          </div>
+
+          @if (isExpanded(group.scenario.id)) {
+            <div class="scenario-body">
+              @if (group.caseResults.length === 0 && group.scenarioResult) {
+                <div class="scenario-level-result">
+                  <span class="field-label">Scenario result (no test cases)</span>
+                  <div class="result-toggle-group">
+                    @for (opt of scenarioResultOptions; track opt) {
+                      <button
+                        mat-stroked-button
+                        [class.result-selected]="group.scenarioResult.result === opt"
+                        [disabled]="s.status !== 'in_progress'"
+                        (click)="setScenarioResult(group.scenario, opt)"
+                      >{{ resultLabels[opt] }}</button>
+                    }
+                  </div>
+                </div>
+              }
+
+              @for (caseResult of group.caseResults; track caseResult.id) {
+                @if (caseResult.testCase; as testCase) {
+                  <div class="case-card" [formGroup]="caseFormFor(testCase)">
+                    <div class="case-card-header">
+                      <span class="case-ref">{{ testCase.ref }}</span>
+                      <span class="case-title">{{ testCase.title }}</span>
+                      <app-test-result-chip [result]="caseResult.result" />
+                    </div>
+
+                    <div class="steps-list" formArrayName="steps">
+                      @for (step of testCase.steps; track $index) {
+                        <div class="step-row" [formGroupName]="$index">
+                          <span class="step-index">{{ $index + 1 }}</span>
+                          <span class="step-desc">{{ step }}</span>
+                          <mat-button-toggle-group formControlName="result" [disabled]="s.status !== 'in_progress'">
+                            @for (opt of stepResultOptions; track opt) {
+                              <mat-button-toggle [value]="opt">{{ resultLabels[opt] }}</mat-button-toggle>
+                            }
+                          </mat-button-toggle-group>
+                          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="step-actual">
+                            <mat-label>Notes</mat-label>
+                            <input matInput formControlName="actual_result" [disabled]="s.status !== 'in_progress'" />
+                          </mat-form-field>
+                          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="step-defect">
+                            <mat-label>Defect ref</mat-label>
+                            <input matInput formControlName="defect_ref" [disabled]="s.status !== 'in_progress'" />
+                          </mat-form-field>
+                          <input
+                            type="file"
+                            class="attachment-input"
+                            accept=".png,.jpg,.jpeg,.gif,.pdf,.webp"
+                            [disabled]="s.status !== 'in_progress'"
+                            (change)="onFileSelected($event, group.scenario, testCase, $index)"
+                          />
+                          @for (att of attachmentsFor(caseResult, '' + $index); track att.id) {
+                            <span class="attachment-chip">
+                              <mat-icon>{{ isImage(att.mimeType) ? 'image' : 'attach_file' }}</mat-icon>
+                              {{ att.fileName }}
+                              @if (isImage(att.mimeType)) {
+                                <em class="preview-note">(preview not available)</em>
+                              }
+                              <button mat-icon-button (click)="removeAttachment(att.id, testCase)" aria-label="Remove attachment">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </span>
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    <div class="case-footer">
+                      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="case-notes">
+                        <mat-label>Case notes</mat-label>
+                        <input matInput formControlName="notes" [disabled]="s.status !== 'in_progress'" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="case-defect">
+                        <mat-label>Defect ref</mat-label>
+                        <input matInput formControlName="defect_ref" [disabled]="s.status !== 'in_progress'" />
+                      </mat-form-field>
+                      <input
+                        type="file"
+                        class="attachment-input"
+                        accept=".png,.jpg,.jpeg,.gif,.pdf,.webp"
+                        [disabled]="s.status !== 'in_progress'"
+                        (change)="onFileSelected($event, group.scenario, testCase)"
+                      />
+                      @for (att of attachmentsFor(caseResult, 'case'); track att.id) {
+                        <span class="attachment-chip">
+                          <mat-icon>{{ isImage(att.mimeType) ? 'image' : 'attach_file' }}</mat-icon>
+                          {{ att.fileName }}
+                          <button mat-icon-button (click)="removeAttachment(att.id, testCase)" aria-label="Remove attachment">
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </span>
+                      }
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        class="save-case-btn"
+                        [disabled]="s.status !== 'in_progress'"
+                        (click)="saveCaseResult(group.scenario, testCase)"
+                      >Save</button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+</app-page-scroll>

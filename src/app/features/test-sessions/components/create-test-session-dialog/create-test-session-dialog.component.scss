@@ -1,0 +1,4 @@
+.form { display: flex; flex-direction: column; gap: 4px; min-width: 480px; padding-top: 8px; }
+.form-row { display: flex; gap: 12px; mat-form-field { flex: 1; } }
+.full-width { width: 100%; }
+.manage-plans-link { align-self: flex-start; margin: -4px 0 8px; }

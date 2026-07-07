@@ -1,0 +1,83 @@
+<app-page-scroll>
+
+<div class="page-header">
+  <h2 class="page-title">Test Sessions</h2>
+  <div class="header-actions">
+    <mat-form-field appearance="outline" class="team-filter">
+      <mat-label>Team</mat-label>
+      <mat-select [value]="teamTypeFilter()" (valueChange)="teamTypeFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (t of teamTypes; track t) {
+          <mat-option [value]="t">{{ teamTypeLabels[t] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (valueChange)="statusFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (s of statuses; track s) {
+          <mat-option [value]="s">{{ statusLabels[s] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="tester-filter">
+      <mat-label>Tester</mat-label>
+      <mat-select [value]="testerFilter()" (valueChange)="testerFilter.set($event)">
+        <mat-option value="all">All</mat-option>
+        @for (m of members(); track m.id) {
+          <mat-option [value]="m.person.id">{{ m.person.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> New Test Session
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="skeleton-rows">
+    @for (n of [1,2,3,4,5]; track n) {
+      <app-skeleton height="48px" borderRadius="0" />
+    }
+  </div>
+} @else if (filtered().length === 0) {
+  <app-empty-state
+    icon="fact_check"
+    title="No test sessions recorded yet"
+    hint="Create a test session from an existing test session plan to start executing tests."
+  />
+} @else {
+  <div class="session-table">
+    <div class="session-table-header">
+      <span class="col-ref">Ref</span>
+      <span class="col-title">Title</span>
+      <span class="col-tester">Tester</span>
+      <span class="col-team">Team</span>
+      <span class="col-status">Status</span>
+      <span class="col-date">Session date</span>
+    </div>
+    @for (session of filtered(); track session.id) {
+      <div
+        class="session-row"
+        (click)="openSession(session)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="openSession(session)"
+      >
+        <span class="col-ref">{{ session.ref }}</span>
+        <span class="col-title">{{ session.title }}</span>
+        <span class="col-tester">{{ session.tester.name }}</span>
+        <span class="col-team">{{ teamTypeLabels[session.teamType] }}</span>
+        <span class="col-status"><app-test-session-status-chip [status]="session.status" /></span>
+        <span class="col-date">{{ session.sessionDate | date: 'dd MMM yyyy' }}</span>
+      </div>
+    }
+  </div>
+}
+
+</app-page-scroll>

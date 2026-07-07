@@ -78,6 +78,8 @@ export class SidebarComponent {
           { label: 'Requirements', icon: 'checklist',    route: `${base}/requirements` },
           { label: 'Acceptance Criteria', icon: 'task_alt', route: `${base}/acceptance-criteria` },
           { label: 'Test Scenarios', icon: 'science',    route: `${base}/test-scenarios` },
+          { label: 'Test Sessions', icon: 'assignment_turned_in', route: `${base}/test-sessions` },
+          { label: 'Test Session Plans', icon: 'event_note', route: `${base}/test-session-plans` },
           { label: 'Risk Log',    icon: 'warning_amber', route: `${base}/risks` },
           { label: 'Issue Log',   icon: 'bug_report',    route: `${base}/issues` },
           { label: 'Change Log',  icon: 'sync_alt',      route: `${base}/changes`,  roles: ['pm', 'pmo'] },
