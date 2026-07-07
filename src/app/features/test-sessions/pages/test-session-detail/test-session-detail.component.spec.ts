@@ -119,7 +119,7 @@ function setup(session: TestSession | null = stubSession, loading = false) {
   TestBed.configureTestingModule({
     imports: [TestSessionDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: TestSessionDetailComponent }]),
       { provide: TestSessionService, useValue: sessionService },
       { provide: MemberService, useValue: memberService },
       { provide: ProjectService, useValue: projectService },
@@ -168,7 +168,7 @@ describe('TestSessionDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [TestSessionDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: TestSessionDetailComponent }]),
         { provide: TestSessionService, useValue: sessionService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },

@@ -106,13 +106,15 @@ export function computeRangeEnd(rows: TimelineRow[], rangeStart: Date): Date {
     .filter((d): d is string => d !== null);
   if (!dates.length) {
     const end = new Date(rangeStart);
-    end.setMonth(end.getMonth() + 6);
+    end.setUTCMonth(end.getUTCMonth() + 6);
     return end;
   }
   const maxDate = new Date(dates.reduce((a, b) => (a > b ? a : b)));
-  // Ensure at least 3 months visible
+  // Ensure at least 3 months visible. UTC arithmetic avoids losing an hour
+  // across a DST boundary, which local setMonth() would do for a date parsed
+  // from a UTC-midnight ISO string (e.g. Jan -> Apr crosses CET -> CEST).
   const minEnd = new Date(rangeStart);
-  minEnd.setMonth(minEnd.getMonth() + 3);
+  minEnd.setUTCMonth(minEnd.getUTCMonth() + 3);
   return maxDate > minEnd ? maxDate : minEnd;
 }
 

@@ -83,7 +83,7 @@ function setup(requirement: Requirement | null = stubRequirement, loading = fals
   TestBed.configureTestingModule({
     imports: [RequirementDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: RequirementDetailComponent }]),
       { provide: RequirementService, useValue: requirementService },
       { provide: MemberService, useValue: memberService },
       { provide: ProjectService, useValue: projectService },
@@ -188,7 +188,7 @@ describe('RequirementDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [RequirementDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: RequirementDetailComponent }]),
         { provide: RequirementService, useValue: requirementService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },
@@ -252,7 +252,7 @@ describe('RequirementDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [RequirementDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: RequirementDetailComponent }]),
         { provide: RequirementService, useValue: requirementService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },
@@ -337,7 +337,7 @@ describe('RequirementDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [RequirementDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: RequirementDetailComponent }]),
         { provide: RequirementService, useValue: requirementService },
         { provide: MemberService, useValue: memberService },
         { provide: ProjectService, useValue: projectService },

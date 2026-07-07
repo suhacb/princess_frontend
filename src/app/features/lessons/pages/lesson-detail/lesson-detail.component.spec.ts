@@ -43,7 +43,7 @@ function setup(lesson: Lesson | null = stubLesson, loading = false) {
   TestBed.configureTestingModule({
     imports: [LessonDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: LessonDetailComponent }]),
       { provide: LessonService, useValue: lessonService },
       { provide: ProjectService, useValue: projectService },
     ],
@@ -162,7 +162,7 @@ describe('LessonDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [LessonDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: LessonDetailComponent }]),
         { provide: LessonService, useValue: lessonService },
         { provide: ProjectService, useValue: projectService },
       ],

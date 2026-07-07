@@ -128,6 +128,12 @@ export const cockpitRoutes: Routes = [
         title: 'Test Session Plans',
       },
       {
+        path: 'traceability',
+        loadComponent: () =>
+          import('../traceability/pages/traceability-matrix/traceability-matrix.component').then(m => m.TraceabilityMatrixComponent),
+        title: 'Traceability Matrix',
+      },
+      {
         path: 'quality',
         loadComponent: () =>
           import('../quality-register/pages/quality-list/quality-list.component').then(m => m.QualityListComponent),

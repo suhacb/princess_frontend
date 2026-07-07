@@ -56,7 +56,7 @@ function setup(change: Change | null = stubChange, loading = false) {
   TestBed.configureTestingModule({
     imports: [ChangeDetailComponent, BrowserAnimationsModule],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', component: ChangeDetailComponent }]),
       { provide: ChangeService, useValue: changeService },
       { provide: ProjectService, useValue: projectService },
     ],
@@ -199,7 +199,7 @@ describe('ChangeDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [ChangeDetailComponent, BrowserAnimationsModule],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: '**', component: ChangeDetailComponent }]),
         { provide: ChangeService, useValue: changeService },
         { provide: ProjectService, useValue: projectService },
       ],
